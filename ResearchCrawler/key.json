@@ -1,0 +1,14 @@
+{
+    "keys": ["faculty", "professor", "lecturer", "affiliate", "directory/people"],
+    "site_flag": ["website", "personal", "homepage", "home", "Home page", "Personal Web site"],
+    "stop_word": ["http", "https", "www", "edu", "com", "lab", "calendar"],
+    "notprof": ["CONTACTS", "ADMINISTRATION", "qa", "ADVISORY", "BOARD", "OPENINGS"],
+    "interest_line_mode": ["focuses on", "focuse on", "spans", "research includes", "interests include", "interest includes", "is in", "are in", "I research", "applications of", "such as", "areas of", "fields of", "interests are", "I am interested in"],
+    "replace": ["of", "for", "and", "or", "in", "using", "exploring", "applications", "among", "I", "currently", "on", "to", "the", "at", "am", "a", "studies", "with"],
+    "notresearch": ["services", "news", "INSTITUTES", "service", "new", "INSTITUTE", "Sponsored"],
+    "div_pass": ["nav", "navigation", "navbar", "foot", "footer", "head", "header", "menu", "about"],
+    "interest_break": ["contact me", "admission", "financial aid", "more about", "Conference", "\"", "publications", "theoretical , practical", "More details", "has received", "years", "please send", "Professor"],
+    "open_term": ["regularly", "always"],
+    "open_position": ["position available", "available for", "looking for", "Interested PhD"],
+    "skip_file": ["pdf", "ps", "zip", "rar"]
+}

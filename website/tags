@@ -1,0 +1,266 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+'new') }}	.\templates\majorList.html	/^                    <a href="{{ url_for('uni_major_page.major_form', name='new') }}" target="_blank" class="btn btn-primary">添加<\/a>$/;"	a
+'new') }}	.\templates\universityList.html	/^                    <a href="{{ url_for('uni_major_page.college_form', name='new') }}" target="_blank" class="btn btn-primary">添加<\/a>$/;"	a
+1-1	.\static\js\college.js	/^        major_map = {"1-1": "计算机科学(CS)",$/;"	p
+1-2	.\static\js\college.js	/^                      "1-2": "计算机工程(CE)", $/;"	p
+1-3	.\static\js\college.js	/^                      "1-3": "软件工程(SE)", $/;"	p
+1-4	.\static\js\college.js	/^                      "1-4": "信息技术(IT)",$/;"	p
+10	.\static\js\college.js	/^                      "10": "Biological\/Agricultural",$/;"	p
+11	.\static\js\college.js	/^                      "11": "Engineering Management (MEM)",$/;"	p
+12	.\static\js\college.js	/^                      "12": "Environmental\/Mining",$/;"	p
+13	.\static\js\college.js	/^                      "13": "Financial Engineering",$/;"	p
+14	.\static\js\college.js	/^                      "14": "Material Science and Engineering",$/;"	p
+15	.\static\js\college.js	/^                      "15": "Analytics",$/;"	p
+16	.\static\js\college.js	/^                      "16": "Nano\/Nuclear\/Power",$/;"	p
+17	.\static\js\college.js	/^                      "17": "Healthcare",$/;"	p
+18	.\static\js\college.js	/^                      "18": "Nursing",$/;"	p
+19	.\static\js\college.js	/^                      "19": "Dental",$/;"	p
+2	.\static\js\college.js	/^                      "2": "航空航天",$/;"	p
+20	.\static\js\college.js	/^                      "20": "Veterinary Science",$/;"	p
+21	.\static\js\college.js	/^                      "21": "Pharmacy",$/;"	p
+22	.\static\js\college.js	/^                      "22": "Commerce\/Finance\/Actuarial",$/;"	p
+23	.\static\js\college.js	/^                      "23": "Government\/Administrative",$/;"	p
+24	.\static\js\college.js	/^                      "24": "Pure Sciences",$/;"	p
+25	.\static\js\college.js	/^                      "25": "Arts\/Media",$/;"	p
+26	.\static\js\college.js	/^                      "26": "Education\/Languages\/Counselling",$/;"	p
+27	.\static\js\college.js	/^                      "27": "Humanities\/Journalism",$/;"	p
+28	.\static\js\college.js	/^                      "28": "Management",$/;"	p
+29	.\static\js\college.js	/^                      "29": "Finance",$/;"	p
+3	.\static\js\college.js	/^                      "3": "Chemical\/Petroleum",$/;"	p
+30	.\static\js\college.js	/^                      "30": "Marketing",$/;"	p
+31	.\static\js\college.js	/^                      "31": "Human Resources",$/;"	p
+32	.\static\js\college.js	/^                      "32": "International Management",$/;"	p
+33	.\static\js\college.js	/^                      "33": "General Law",$/;"	p
+34	.\static\js\college.js	/^                      "34": "International Law",$/;"	p
+35	.\static\js\college.js	/^                      "35": "Architecture"}$/;"	p
+4	.\static\js\college.js	/^                      "4": "Civil\/Construction\/Structural",$/;"	p
+5	.\static\js\college.js	/^                      "5": "Electrical\/Electronics\/Telecomm",$/;"	p
+6	.\static\js\college.js	/^                      "6": "Industrial\/Operations",$/;"	p
+7	.\static\js\college.js	/^                      "7": "Mechanical\/Automobile",$/;"	p
+8	.\static\js\college.js	/^                      "8": "Biomedical\/Biotechnical",$/;"	p
+9	.\static\js\college.js	/^                      "9": "Management Information System (MIS)",$/;"	p
+College	.\models.py	/^class College(db.Model):$/;"	c
+CrawlTask	.\models.py	/^class CrawlTask(db.Model):$/;"	c
+Interests	.\models.py	/^class Interests(db.Model):$/;"	c
+Professor	.\models.py	/^class Professor(db.Model):$/;"	c
+ResearchCrawler	.\crawler.py	/^class ResearchCrawler:$/;"	c
+TempCollege	.\models.py	/^class TempCollege(db.Model):$/;"	c
+TempUniversity	.\models.py	/^class TempUniversity(db.Model):$/;"	c
+University	.\models.py	/^class University(db.Model):$/;"	c
+__init__	.\crawler.py	/^    def __init__(self):$/;"	m	class:ResearchCrawler
+__init__	.\models.py	/^    def __init__(self, name, degree, major, site_url):$/;"	m	class:TempCollege
+__init__	.\models.py	/^    def __init__(self, name, degree, major, site_url, pname=''):$/;"	m	class:College
+__init__	.\models.py	/^    def __init__(self, name, info):$/;"	m	class:TempUniversity
+__init__	.\models.py	/^    def __init__(self, name, info):$/;"	m	class:University
+__init__	.\models.py	/^    def __init__(self, name, major):$/;"	m	class:Interests
+__init__	.\models.py	/^    def __init__(self, name, school, major):$/;"	m	class:Professor
+__init__	.\models.py	/^    def __init__(self, school, major, url, example):$/;"	m	class:CrawlTask
+__table_args__	.\models.py	/^    __table_args__ = (UniqueConstraint('name', 'degree', 'major', 'program_name',$/;"	v	class:College
+__table_args__	.\models.py	/^    __table_args__ = (UniqueConstraint('name', 'major', name='_interests_uniq'),)$/;"	v	class:Interests
+__table_args__	.\models.py	/^    __table_args__ = (UniqueConstraint('name', 'school', 'major',$/;"	v	class:Professor
+__table_args__	.\models.py	/^    __table_args__ = (UniqueConstraint('school', 'major',$/;"	v	class:CrawlTask
+__tablename__	.\models.py	/^    __tablename__ = 'Interests'$/;"	v	class:Interests
+__tablename__	.\models.py	/^    __tablename__ = 'Professor'$/;"	v	class:Professor
+__tablename__	.\models.py	/^    __tablename__ = 'college'$/;"	v	class:College
+__tablename__	.\models.py	/^    __tablename__ = 'interests_task'$/;"	v	class:CrawlTask
+__tablename__	.\models.py	/^    __tablename__ = 'temp_college'$/;"	v	class:TempCollege
+__tablename__	.\models.py	/^    __tablename__ = 'temp_university'$/;"	v	class:TempUniversity
+__tablename__	.\models.py	/^    __tablename__ = 'university'$/;"	v	class:University
+addOneInfo	.\static\js\college.js	/^function addOneInfo(key, item, i) {$/;"	f
+appendButton	.\static\js\college.js	/^function appendButton(item, tr, n, url) {$/;"	f
+approve	.\static\js\college.js	/^function approve(type, id, n) {$/;"	f
+backref	.\models.py	/^        backref=db.backref('Professor', lazy='dynamic'))$/;"	v	class:Professor
+category_name	.\models.py	/^    category_name = db.Column(db.String(50), default='')$/;"	v	class:Interests
+collegeList	.\static\js\college.js	/^var collegeList = null;$/;"	v
+collegeListPage	.\views.py	/^def collegeListPage(pageno = 1):$/;"	f
+college_approve	.\views.py	/^def college_approve():$/;"	f
+college_form	.\views.py	/^def college_form(name):$/;"	f
+college_page	.\views.py	/^def college_page():$/;"	f
+compare	.\static\js\college.js	/^function compare(property, isstring, ininfo) {$/;"	f
+contain_keys	.\crawler.py	/^def contain_keys(href, keys, is_name=False):$/;"	f
+convert_dict	.\views.py	/^def convert_dict(e):$/;"	f
+crawl_faculty_list	.\crawler.py	/^    def crawl_faculty_list(self, directory_url, example):$/;"	m	class:ResearchCrawler
+crawl_from_directory	.\crawler.py	/^    def crawl_from_directory(self, directory_url, example, name):$/;"	m	class:ResearchCrawler
+crawler	.\crawler.py	/^    crawler = ResearchCrawler()$/;"	v	class:ResearchCrawler
+data.category	.\static\js\research.js	/^        data = {'name': name, 'zh': zh, 'category': category, 'type': 0};$/;"	p
+data.name	.\static\js\research.js	/^        data = {'name': name, 'type': 1};$/;"	p
+data.name	.\static\js\research.js	/^        data = {'name': name, 'zh': zh, 'category': category, 'type': 0};$/;"	p
+data.type	.\static\js\research.js	/^        data = {'name': name, 'type': 1};$/;"	p
+data.type	.\static\js\research.js	/^        data = {'name': name, 'zh': zh, 'category': category, 'type': 0};$/;"	p
+data.zh	.\static\js\research.js	/^        data = {'name': name, 'zh': zh, 'category': category, 'type': 0};$/;"	p
+deadline_url	.\models.py	/^    deadline_url = db.Column(db.String(250))$/;"	v	class:College
+deadline_url	.\models.py	/^    deadline_url = db.Column(db.String(250))$/;"	v	class:TempCollege
+debug_level	.\crawler.py	/^debug_level = 0$/;"	v
+degree	.\models.py	/^    degree = db.Column(db.Integer)$/;"	v	class:College
+degree	.\models.py	/^    degree = db.Column(db.Integer)$/;"	v	class:TempCollege
+dive_into_page	.\crawler.py	/^    def dive_into_page(self, faculty_ele):$/;"	m	class:ResearchCrawler
+docum_url	.\models.py	/^    docum_url = db.Column(db.String(250))$/;"	v	class:College
+docum_url	.\models.py	/^    docum_url = db.Column(db.String(250))$/;"	v	class:TempCollege
+eng_url	.\models.py	/^    eng_url = db.Column(db.String(250))$/;"	v	class:College
+eng_url	.\models.py	/^    eng_url = db.Column(db.String(250))$/;"	v	class:TempCollege
+evalue	.\models.py	/^    evalue = db.Column(db.String(10))$/;"	v	class:College
+evalue	.\models.py	/^    evalue = db.Column(db.String(10))$/;"	v	class:TempCollege
+example	.\models.py	/^    example = db.Column(db.String(150))$/;"	v	class:CrawlTask
+examples	.\crawler.py	/^    examples = ['https:\/\/inside.mines.edu\/CS-Faculty-and-Staff\/TracyCamp',$/;"	v	class:ResearchCrawler
+extract_from_line	.\crawler.py	/^    def extract_from_line(self, line, tags):$/;"	m	class:ResearchCrawler
+extract_from_sibling	.\crawler.py	/^    def extract_from_sibling(self, node, tags):$/;"	m	class:ResearchCrawler
+fall	.\models.py	/^    fall = db.Column(db.String(20))$/;"	v	class:College
+fall	.\models.py	/^    fall = db.Column(db.String(20))$/;"	v	class:TempCollege
+fillCollegeExtraInfo	.\static\js\college.js	/^function fillCollegeExtraInfo(item, i) {$/;"	f
+fillCollegeInformation	.\static\js\college.js	/^function fillCollegeInformation(item, i, n, backend) {$/;"	f
+fillExtraInfo	.\static\js\college.js	/^function fillExtraInfo(item, i) {$/;"	f
+fillInformation	.\static\js\college.js	/^function fillInformation(item, i, n, backend) {$/;"	f
+fillInformation.degree_map.1	.\static\js\college.js	/^    var degree_map = {'1': '本科', '2': '硕士', '3': '博士'},$/;"	p
+fillInformation.degree_map.2	.\static\js\college.js	/^    var degree_map = {'1': '本科', '2': '硕士', '3': '博士'},$/;"	p
+fillInformation.degree_map.3	.\static\js\college.js	/^    var degree_map = {'1': '本科', '2': '硕士', '3': '博士'},$/;"	p
+fillItemInfo	.\static\js\college.js	/^function fillItemInfo(toggle, item) {$/;"	f
+fillName	.\static\js\college.js	/^function fillName(name) {$/;"	f
+fillResearchInformation	.\static\js\research.js	/^function fillResearchInformation(item) {$/;"	f
+filterCollege	.\static\js\college.js	/^function filterCollege(l, col, t) {$/;"	f
+filterList	.\static\js\college.js	/^var filterList = null;$/;"	v
+filterProfessorByPosition	.\static\js\research.js	/^function filterProfessorByPosition() {$/;"	f
+filterProfessors	.\static\js\research.js	/^function filterProfessors(col, value) {$/;"	f
+filter_list	.\crawler.py	/^    def filter_list(self, e):$/;"	m	class:ResearchCrawler
+filter_research_interests	.\crawler.py	/^    def filter_research_interests(self, alist):$/;"	m	class:ResearchCrawler
+finance	.\models.py	/^    finance = db.Column(db.String(10))$/;"	v	class:College
+finance	.\models.py	/^    finance = db.Column(db.String(10))$/;"	v	class:TempCollege
+find_all_anchor	.\crawler.py	/^    def find_all_anchor(self, soup, domain, page_url):$/;"	m	class:ResearchCrawler
+find_example_index	.\crawler.py	/^    def find_example_index(self, l, a):$/;"	m	class:ResearchCrawler
+find_faculty_list	.\crawler.py	/^    def find_faculty_list(self, l, faculty_url):$/;"	m	class:ResearchCrawler
+format_url	.\crawler.py	/^def format_url(href, domain, index=''):$/;"	f
+function.filterBy	.\static\js\college.js	/^function filterBy(v, t, col) {$/;"	f
+function.filterByMajor	.\static\js\college.js	/^function filterByMajor(type) {$/;"	f
+function.filterByName	.\static\js\college.js	/^function filterByName(obj, type) {$/;"	f
+function.filterMajorByAll	.\static\js\college.js	/^function filterMajorByAll() {$/;"	f
+function.getProperty	.\static\js\college.js	/^function getProperty() {$/;"	f
+function.pageTemplate	.\static\js\college.js	/^function pageTemplate(data, name, n) {$/;"	f
+function.sortCollege	.\static\js\college.js	/^function sortCollege(name, col, ininfo) {$/;"	f
+function.submitRedirect	.\static\js\college.js	/^function submitRedirect(obj, type, url) {$/;"	f
+function.submitRedirect.options.dataType	.\static\js\college.js	/^        dataType: 'json',$/;"	p
+function.submitRedirect.options.success	.\static\js\college.js	/^        success: function (data) {$/;"	m
+getCollegeRedis	.\views.py	/^def getCollegeRedis():$/;"	f
+getDataList	.\static\js\college.js	/^function getDataList(name, n) {$/;"	f
+getMajorInterestsList	.\static\js\research.js	/^function getMajorInterestsList() {$/;"	f
+getProcess	.\static\js\research.js	/^function getProcess() {$/;"	f
+getProfessorByInterests	.\static\js\research.js	/^function getProfessorByInterests() {$/;"	f
+getProfessorsList	.\static\js\research.js	/^function getProfessorsList(col) {$/;"	f
+getProfessorsList.data.position	.\static\js\research.js	/^    var data = {'tag': interest, 'position': position};$/;"	p
+getProfessorsList.data.tag	.\static\js\research.js	/^    var data = {'tag': interest, 'position': position};$/;"	p
+get_and_store_page	.\crawler.py	/^def get_and_store_page(page_url):$/;"	f
+get_major_interests_list	.\research_interests.py	/^def get_major_interests_list(major):$/;"	f
+get_open_position	.\crawler.py	/^    def get_open_position(self, soup, content):$/;"	m	class:ResearchCrawler
+get_personal_website	.\crawler.py	/^    def get_personal_website(self, l, page_url):$/;"	m	class:ResearchCrawler
+get_professor_by_interests	.\research_interests.py	/^def get_professor_by_interests(major, interest):$/;"	f
+get_professor_list	.\research_interests.py	/^def get_professor_list(school, major):$/;"	f
+get_research_interests	.\crawler.py	/^    def get_research_interests(self, soup, content, tags, website):$/;"	m	class:ResearchCrawler
+getmd	.\static\js\college.js	/^function getmd() {$/;"	f
+gpa	.\models.py	/^    gpa = db.Column(db.Float)$/;"	v	class:College
+gpa	.\models.py	/^    gpa = db.Column(db.Float)$/;"	v	class:TempCollege
+gpa_url	.\models.py	/^    gpa_url = db.Column(db.String(250))$/;"	v	class:College
+gpa_url	.\models.py	/^    gpa_url = db.Column(db.String(250))$/;"	v	class:TempCollege
+gre	.\models.py	/^    gre = db.Column(db.String(20))$/;"	v	class:College
+gre	.\models.py	/^    gre = db.Column(db.String(20))$/;"	v	class:TempCollege
+gre_url	.\models.py	/^    gre_url = db.Column(db.String(250))$/;"	v	class:College
+gre_url	.\models.py	/^    gre_url = db.Column(db.String(250))$/;"	v	class:TempCollege
+home_page	.\models.py	/^    home_page = db.Column(db.String(150))$/;"	v	class:Professor
+id	.\models.py	/^    id = db.Column('college_id', db.String, primary_key=True, default=uuid_gen)$/;"	v	class:College
+id	.\models.py	/^    id = db.Column('college_id', db.String, primary_key=True, default=uuid_gen)$/;"	v	class:TempCollege
+id	.\models.py	/^    id = db.Column('interests_id', db.String, primary_key=True, default=uuid_gen)$/;"	v	class:Interests
+id	.\models.py	/^    id = db.Column('professor_id', db.String, primary_key=True, default=uuid_gen)$/;"	v	class:Professor
+id	.\models.py	/^    id = db.Column('task_id', db.String, primary_key=True, default=uuid_gen)$/;"	v	class:CrawlTask
+id	.\models.py	/^    id = db.Column('university_id', db.String, primary_key=True, default=uuid_gen)$/;"	v	class:TempUniversity
+id	.\models.py	/^    id = db.Column('university_id', db.String, primary_key=True, default=uuid_gen)$/;"	v	class:University
+ielts	.\models.py	/^    ielts = db.Column(db.Float)$/;"	v	class:College
+ielts	.\models.py	/^    ielts = db.Column(db.Float)$/;"	v	class:TempCollege
+info	.\models.py	/^    info = db.Column(JSON)$/;"	v	class:College
+info	.\models.py	/^    info = db.Column(JSON)$/;"	v	class:TempCollege
+info	.\models.py	/^    info = db.Column(JSON)$/;"	v	class:TempUniversity
+info	.\models.py	/^    info = db.Column(JSON)$/;"	v	class:University
+int_docum_url	.\models.py	/^    int_docum_url = db.Column(db.String(250))$/;"	v	class:College
+int_docum_url	.\models.py	/^    int_docum_url = db.Column(db.String(250))$/;"	v	class:TempCollege
+interests	.\models.py	/^    interests = db.relationship('Interests', secondary=professor_interests_table,$/;"	v	class:Professor
+interests_modify	.\static\js\research.js	/^function interests_modify(obj, val) {$/;"	f
+interests_page	.\research_interests.py	/^def interests_page():$/;"	f
+is_exist_college	.\research_interests.py	/^def is_exist_college(c_list, name):$/;"	f
+load_key	.\crawler.py	/^    def load_key(self):$/;"	m	class:ResearchCrawler
+major	.\models.py	/^    major = db.Column(db.String(10))$/;"	v	class:College
+major	.\models.py	/^    major = db.Column(db.String(10))$/;"	v	class:TempCollege
+major	.\models.py	/^    major = db.Column(db.String(4))$/;"	v	class:CrawlTask
+major	.\models.py	/^    major = db.Column(db.String(4))$/;"	v	class:Interests
+major	.\models.py	/^    major = db.Column(db.String(4))$/;"	v	class:Professor
+majorListPage	.\views.py	/^def majorListPage(pageno = 1):$/;"	f
+major_approve	.\views.py	/^def major_approve():$/;"	f
+major_form	.\views.py	/^def major_form(name):$/;"	f
+major_page	.\views.py	/^def major_page(temp=0):$/;"	f
+modify_interests	.\research_interests.py	/^def modify_interests():$/;"	f
+name	.\models.py	/^                      name='_degree_major'),)$/;"	v	class:College
+name	.\models.py	/^                      name='_professor_uniq'),)$/;"	v	class:Professor
+name	.\models.py	/^                      name='_school_major_uniq'),)$/;"	v	class:CrawlTask
+name	.\models.py	/^    name = db.Column(db.String(30))$/;"	v	class:Professor
+name	.\models.py	/^    name = db.Column(db.String(50), unique=True)$/;"	v	class:Interests
+name	.\models.py	/^    name = db.Column(db.String(70))$/;"	v	class:College
+name	.\models.py	/^    name = db.Column(db.String(70))$/;"	v	class:TempCollege
+name	.\models.py	/^    name = db.Column(db.String(70), unique=True)$/;"	v	class:TempUniversity
+name	.\models.py	/^    name = db.Column(db.String(70), unique=True)$/;"	v	class:University
+onsocial	.\crawler.py	/^def onsocial(href):$/;"	f
+open_page	.\crawler.py	/^    def open_page(self, page_url):$/;"	m	class:ResearchCrawler
+pageIt	.\static\js\college.js	/^function pageIt(data, name, n) {$/;"	f
+position	.\models.py	/^    position = db.Column(db.Boolean)$/;"	v	class:Professor
+process	.\research_interests.py	/^def process():$/;"	f
+professor_interests_table	.\models.py	/^professor_interests_table = db.Table('professor_interests', db.Model.metadata,$/;"	v
+program_name	.\models.py	/^    program_name = db.Column(db.String(70))$/;"	v	class:College
+program_name	.\models.py	/^    program_name = db.Column(db.String(70))$/;"	v	class:TempCollege
+query_add_interests	.\research_interests.py	/^def query_add_interests(tag, major):$/;"	f
+query_add_professor	.\research_interests.py	/^def query_add_professor(name, college_name, major):$/;"	f
+rankBy	.\static\js\college.js	/^var rankBy = 'Q.S.';$/;"	v
+refresh	.\templates\college_form.html	/^function refresh(obj) {$/;"	f
+refresh	.\templates\major_form.html	/^function refresh(obj) {$/;"	f
+refresh	.\templates\research_form.html	/^function refresh(obj) {$/;"	f
+removeExtra	.\static\js\college.js	/^function removeExtra(obj) {$/;"	f
+replace_words	.\crawler.py	/^    def replace_words(self, line):$/;"	m	class:ResearchCrawler
+research_form	.\research_interests.py	/^def research_form():$/;"	f
+research_index	.\research_interests.py	/^def research_index():$/;"	f
+research_list_page	.\research_interests.py	/^def research_list_page():$/;"	f
+research_page	.\research_interests.py	/^research_page = Blueprint('research_page', __name__,$/;"	v
+rl	.\models.py	/^    rl = db.Column(db.String(10))$/;"	v	class:College
+rl	.\models.py	/^    rl = db.Column(db.String(10))$/;"	v	class:TempCollege
+school	.\models.py	/^    school = db.Column(db.String(60))$/;"	v	class:Professor
+school	.\models.py	/^    school = db.Column(db.String(70))$/;"	v	class:CrawlTask
+school_url	.\models.py	/^    school_url = db.Column(db.String(150))$/;"	v	class:CrawlTask
+school_url	.\models.py	/^    school_url = db.Column(db.String(150))$/;"	v	class:Professor
+select_line_part	.\crawler.py	/^    def select_line_part(self, line):$/;"	m	class:ResearchCrawler
+set	.\models.py	/^    def set(self, college):$/;"	m	class:College
+single_major	.\views.py	/^def single_major(cid):$/;"	f
+site_url	.\models.py	/^    site_url = db.Column(db.String(250))$/;"	v	class:College
+site_url	.\models.py	/^    site_url = db.Column(db.String(250))$/;"	v	class:TempCollege
+spring	.\models.py	/^    spring = db.Column(db.String(20))$/;"	v	class:College
+spring	.\models.py	/^    spring = db.Column(db.String(20))$/;"	v	class:TempCollege
+static_folder	.\research_interests.py	/^                          static_folder="static")$/;"	v
+static_folder	.\views.py	/^                         static_folder="static")$/;"	v
+submitted_college	.\views.py	/^def submitted_college():$/;"	f
+submitted_major	.\views.py	/^def submitted_major():$/;"	f
+submitted_research	.\research_interests.py	/^def submitted_research():$/;"	f
+temp_college_list	.\views.py	/^def temp_college_list():$/;"	f
+temp_college_page	.\views.py	/^def temp_college_page():$/;"	f
+temp_major_list	.\views.py	/^def temp_major_list():$/;"	f
+template_folder	.\research_interests.py	/^                          template_folder=os.path.join($/;"	v
+template_folder	.\views.py	/^                         template_folder=os.path.join($/;"	v
+term	.\models.py	/^    term = db.Column(db.String(20))$/;"	v	class:Professor
+timerId	.\static\js\research.js	/^var timerId;$/;"	v
+toefl	.\models.py	/^    toefl = db.Column(db.Integer)$/;"	v	class:College
+toefl	.\models.py	/^    toefl = db.Column(db.Integer)$/;"	v	class:TempCollege
+tuition	.\models.py	/^    tuition = db.Column(db.Float)$/;"	v	class:College
+tuition	.\models.py	/^    tuition = db.Column(db.Float)$/;"	v	class:TempCollege
+tuition_url	.\models.py	/^    tuition_url = db.Column(db.String(250))$/;"	v	class:College
+tuition_url	.\models.py	/^    tuition_url = db.Column(db.String(250))$/;"	v	class:TempCollege
+uni_major_page	.\views.py	/^uni_major_page = Blueprint('uni_major_page', __name__,$/;"	v
+university	.\views.py	/^def university(cid):$/;"	f
+url_check	.\crawler.py	/^    url_check = {'http:\/\/cs.mines.edu\/CS-Faculty': 15,$/;"	v	class:ResearchCrawler
+urls	.\crawler.py	/^    urls = ['http:\/\/cs.mines.edu\/CS-Faculty',$/;"	v	class:ResearchCrawler
+validate_deadline	.\static\js\college.js	/^function validate_deadline(obj) {$/;"	f
+zh_name	.\models.py	/^    zh_name = db.Column(db.String(20), unique=True)$/;"	v	class:Interests

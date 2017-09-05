@@ -1,0 +1,16 @@
+{
+    "该URL可能是教员": ["faculty", "professor", "lecturer", "affiliate", "people"],
+    "该名字可能是教授个人主页": ["website", "personal", "homepage", "home", "Home page", "Personal Web site"],
+    "该词不可能是名字": ["http", "https", "www", "com", "lab", "calendar", "staff", "publications", "military", "international", "teaching", "people", "faculty", "student", "college", "professor", "edu", "lecturer", "affiliate", "associate", "adjunct", "visiting", "assistant", "questions?", "aspx", "html"],
+    "该URL不可能是教员": ["CONTACT", "ADMINISTRATION", "qa", "ADVISORY", "BOARD", "OPENINGS", "INSTITUTE", "international", "admision", "assistants", "students*", "Updated", "Organizations", "Advisor", "Welcome", "Password", "login", "sign", "register"],
+    "一段研究兴趣的起始词": ["focuses on", "focus on", "spans", "research includes", "interests include", "interest includes", "Interests:", "interests are:", "is in", "are in", "I research", "applications of", "such as", "areas of", "fields of", "interests are", "I am interested in", "lie at the intersection of", "interests lie in", "am interested in"],
+    "研究兴趣需要替换的词": ["as", "well", "as", "of", "for", "or", "in", "using", "exploring", "applications", "among", "I", "currently", "on", "to", "the", "at", "am", "a", "an", "he", "she", "studies", "with", "has", "have", "solving", "u'including", "our", "also"],
+    "这个标题不是研究兴趣": ["services", "news", "INSTITUTES", "service", "new", "INSTITUTE", "Sponsored"],
+    "frameset_pass": ["nav", "navigation", "navbar", "foot", "footer", "head", "header", "menu", "about"],
+    "该句开始不再是研究兴趣": ["contact me", "admission", "financial aid", "more about", "Conference", "\"", "publications", "theoretical , practical", "More details", "has received", "years", "please send", "Professor", "spare time", "supported", "YouTube", "I have", "a member of", "impact in", "located", "scientist", "department", "the courses", "lab", "'visiting scholar"],
+    "长期招生关键词": ["regularly", "always"],
+    "招生意向关键词": ["position available", "available for", "looking for [\\w\\s\\.-]*students", "Interested PhD", "recruiting", "accepting [\\w\\s]*students"],
+    "文件而不是网页": ["pdf", "ps", "zip", "rar"],
+    "有些方向的前缀": ["bio", "geo"],
+    "其他可能的研究兴趣标语": ["research", "focuses on", "Expertise", "current Intertests"]
+}
