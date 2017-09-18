@@ -49,7 +49,7 @@ Temporary Items
 
 *.html
 
-.ipynb-checkpoints/
+.ipynb_checkpoints/
 
 *.log
 my_prof
@@ -59,3 +59,5 @@ data/
 *.pyc
 
 output*
+
+test_case/
