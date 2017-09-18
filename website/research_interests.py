@@ -4,11 +4,12 @@ import os
 import re
 import traceback
 
-from flask import request, render_template, session, json, Blueprint
+from flask import request, render_template, session, json, Blueprint, g
 from sqlalchemy.exc import InvalidRequestError
 from wtforms import StringField, validators
-from sqlalchemy import asc
+from sqlalchemy import asc, or_
 from sqlalchemy.orm.exc import MultipleResultsFound
+from sqlalchemy.exc import IntegrityError
 
 from ..validation import *
 from mindmap import app, db
@@ -34,15 +35,21 @@ def research_index():
                            types="research")
 
 
+def convertToDict(ele, tags):
+    data = {'id': ele.id, 'name': ele.name, 'school': ele.school, 
+            'major': ele.major,
+            'link': ele.school_url, 'website': ele.home_page,
+            'position': ele.position, 'term': ele.term, 'tags': tags}
+    return data
+
+
 @research_page.route('/researchList')
 def research_list_page():
     research_set = []
-    results = Professor.query.limit(20)
+    results = Professor.query.filter_by(position=True).limit(20)
     for ele in results:        
         tags = [tag.name for tag in ele.interests]
-        research_set.append({'name': ele.name, 'school': ele.school, 'major': ele.major,
-                             'link': ele.school_url, 'website': ele.home_page,
-                             'position': ele.position, 'term': ele.term, 'tags': tags})
+        research_set.append(convertToDict(ele, tags))
     return json.dumps(research_set, ensure_ascii=False)
 
 
@@ -54,7 +61,8 @@ def get_professor_list(school, major):
     if tag:
         results = Professor.query.filter(Professor.interests.any(name=tag))
     else:
-        results = Professor.query.filter_by(major=major)
+        rule = or_(Professor.major == major, Professor.major.like("%s-%%" % major))
+        results = Professor.query.filter(rule)
     if school != '0':
         results = results.filter_by(school=school)
     if position:
@@ -62,9 +70,7 @@ def get_professor_list(school, major):
 
     for ele in results:        
         tags = [tag.name for tag in ele.interests]
-        research_set.append({'name': ele.name, 'school': ele.school, 'major': ele.major,
-                             'link': ele.school_url, 'website': ele.home_page,
-                             'position': ele.position, 'term': ele.term, 'tags': tags})
+        research_set.append(convertToDict(ele, tags))
     return json.dumps({"list": research_set}, ensure_ascii=False)
 
 
@@ -74,9 +80,7 @@ def get_professor_by_interests(major, interest):
     results = Professor.query.filter(Professor.interests.any(name=interest)).filter_by(major=major).all()
     for ele in results:        
         tags = [tag.name for tag in ele.interests]
-        research_set.append({'name': ele.name, 'school': ele.school, 'major': ele.major,
-                             'link': ele.school_url, 'website': ele.home_page,
-                             'position': ele.position, 'term': ele.term, 'tags': tags})
+        research_set.append(convertToDict(ele, tags))
     return json.dumps({"list": research_set}, ensure_ascii=False)
 
 
@@ -85,7 +89,8 @@ def get_major_interests_list(major):
     research_set = []
     results = Interests.query.filter_by(major=major).order_by(asc(Interests.name)).all()
     for ele in results:
-        research_set.append({'name': ele.name, 'zh': ele.zh_name, 'category_name': ele.category_name})
+        research_set.append({'id': ele.id, 'name': ele.name, 'zh': ele.zh_name, 
+                            'category_name': ele.category_name})
     return json.dumps({"list": research_set}, ensure_ascii=False)
 
 
@@ -117,6 +122,7 @@ def query_add_interests(tag, major):
         if result is None and len(tag) < 50:
             result = Interests(tag, major)
             db.session.add(result)
+            db.session.commit()
         return result
     except MultipleResultsFound:
         return None
@@ -127,19 +133,18 @@ def query_add_professor(name, college_name, major):
         result = Professor.query.filter_by(name=name, school=college_name, 
                                            major=major).one_or_none()
         if result is None:
-            # app.logger.info("%s not exists, create" % name)
-            if name > 29:
+            if len(name) > 29:
                 words = re.findall("(\w+)", name)
                 name = words[0] + ' ' + words[-1]
-            if college_name > 59:
+            if len(college_name) > 59:
                 college_name = college_name[:57] + '..)'
             result = Professor(name, college_name, major)
             db.session.add(result)
         else:
-            # app.logger.info("%s not exists, not create" % name)
             pass
         return result
     except MultipleResultsFound:
+        app.logger.info("%s find multi" % name)
         return None
 
 
@@ -163,21 +168,22 @@ def custom_crawler():
                            veri=verification_code, types="research")
 
 
-def validate_and_extract(request):
-    if not app.debug:
-        verification_code = request.form['verification_code']
+def validate_and_extract(form):
+    if not (g.user and g.user.is_authenticated and 
+            g.user.get_name() == 'sndnyang'):
+        verification_code = form['verification_code']
         code_text = session['code_text']
         if verification_code != code_text:
             return u'Error at 验证码错误', None, None, None
 
-    major = request.form['major']
-    college_name = request.form['college_name']
-    directory_url = request.form['directory_url']
-    professor_url = request.form['professor_url']
+    major = form.get('major', "0")
+    college_name = form.get('college_name', "")
+    directory_url = form.get('directory_url', "")
+    professor_url = form.get('professor_url', "")
     
-   #if major == '0' or not college_name.strip() or not directory_url.strip() or\
-   #   not professor_url.strip():
-   #    return u'Error at 信息不全', None, None, None
+    if major == '0' or not college_name.strip() or not directory_url.strip()\
+       or not professor_url.strip():
+        return u'Error at 信息不全', None, None, None
 
     return college_name, major, directory_url, professor_url
 
@@ -203,13 +209,14 @@ def query_and_create_task(college, major):
 
 
 def crawl_directory(crawl, faculty_list, major, directory_url, count, flag):
-    app.redis.set('process of %s %s' % (directory_url, major), "%d,0" % count)
+    # app.redis.set('process of %s %s' % (directory_url, major), "%d,0" % count)
     i = 0
     link_list = []
     for link in faculty_list:
         link_list.append(crawl.dive_into_page(link, flag))
         i += 1
-        app.redis.set('process of %s %s' % (directory_url, major), "%d,%d" % (count, i))
+        # app.redis.set('process of %s %s' % (directory_url, major), "%d,%d" % (count, i))
+        app.logger.info('process of %s %s' % (directory_url, major) + " %d,%d" % (count, i))
     app.logger.info('research process %s %s ' % (directory_url, major) + "  finish")
     app.redis.set('%s-%s' % (directory_url, major), link_list)
     return link_list
@@ -219,18 +226,30 @@ def submit_professors(college_name, major, directory_url):
     entity = eval(app.redis.get('%s-%s' % (directory_url, major)))
     for ele in entity:
         professor = None
-        if ele.get("name", None):
-            professor = query_add_professor(ele.get("name"), college_name, major)
-        if ele.get('tags'):
-            for tag in ele.get('tags', []):
-                tag_obj = query_add_interests(tag, major)
-                if professor and tag_obj:
-                    professor.interests.append(tag_obj)
-        if professor:
-            professor.position = ele.get("position")
-            professor.term = ele.get("term")
-            professor.school_url = ele.get("link", "")
-            professor.home_page = ele.get("website", "")
+        try:
+            if ele.get("name", None):
+                name = ele.get("name").strip()
+                professor = query_add_professor(name, college_name, major)
+                if professor:
+                    professor.position = ele.get("position")
+                    professor.term = ele.get("term")
+                    professor.school_url = ele.get("link", "")
+                    professor.home_page = ele.get("website", "")
+                    db.session.commit()
+            if ele.get('tags'):
+                for tag in ele.get('tags', []):
+                    tag_obj = query_add_interests(tag, major)
+                    exist = Professor.query.filter_by(name=name, 
+                                                      school=college_name, 
+                                                      major=major)\
+                                     .filter(Professor.interests.any(name=tag)
+                                             ).one_or_none()
+                    # app.logger.info("tag %s exist in %s? %s" % (tag, ele.get("name"), str(exist is not None)))
+                    if professor and tag_obj and exist is None:
+                        professor.interests.append(tag_obj)
+        except IntegrityError:
+            app.logger.info(" professor %s roll back" % ele.get("name"))
+            db.session.rollback()
     try:
         db.session.commit()
     except InvalidRequestError:
@@ -245,33 +264,38 @@ def update_key_words(form, crawl):
     for k in key_words:
         if k not in form:
             continue
+        if form[k].strip() and form[k].strip()[-1] == ',':
+            return u"Error at %s 的最后一个符号是逗号" % k
         if ','.join(key_words[k]) == form[k]:
             continue
         key_words[k] = form[k].split(',')
         flag = True
 
-    return flag, key_words
-
-@research_page.route('/custom_crawler/<int:step>', methods=['POST'])
-def custom_crawler_step(step):
-    college, major, directory_url, prof_url = validate_and_extract(request)
-    code_img, code_string = create_validate_code()
-    session['code_text'] = code_string
-    task = query_and_create_task(college, major)
-    crawl = ResearchCrawler(directory_url, prof_url)
-    flag, key_words = update_key_words(request.form, crawl)
     if flag:
         crawl.key_words = key_words
         temp = crawl.save_key()
         if temp and temp.startswith("Error"):
-            return json.dumps({'error': temp}, ensure_ascii=False)
+            return temp
+    return None
+
+
+@research_page.route('/custom_crawler/<int:step>', methods=['POST'])
+def custom_crawler_step(step):
+    college, major, directory_url, prof_url = validate_and_extract(request.form)
+    if major is None:
+        return json.dumps({'error': college}, ensure_ascii=False)
+    task = query_and_create_task(college, major)
+    crawl = ResearchCrawler(directory_url, prof_url)
+    flag = update_key_words(request.form, crawl)
+    if flag:
+        return json.dumps({'error': flag}, ensure_ascii=False)
 
     count, faculty_list = crawl.crawl_faculty_list(directory_url, prof_url)
 
     if step == 1:
         link_list = []
         for link in faculty_list:
-            link_list.append(link.get("href") + "|" + link.string)
+            link_list.append(link.get("href") + "|" + str(link.get_text()))
         return json.dumps({'info': u'成功', "list": link_list, 'keywords': crawl.key_words},
                           ensure_ascii=False)
     elif step == 2:
@@ -281,8 +305,6 @@ def custom_crawler_step(step):
         return json.dumps({'info': u'成功', "list": link_list, 'keywords': crawl.key_words},
                           ensure_ascii=False)
     elif step == 3:
-        code_img, code_string = create_validate_code()
-        session['code_text'] = code_string
         if task is None:
             task = CrawlTask(college, major, directory_url, prof_url)
             db.session.add(task)
@@ -296,12 +318,12 @@ def custom_crawler_step(step):
 
 @research_page.route('/research_submitted', methods=['POST'])
 def submitted_research():
-    college, major, directory_url, prof_url = validate_and_extract(request)
+    college, major, directory_url, prof_url = validate_and_extract(request.form)
+    if major is None:
+        return json.dumps({'error': college}, ensure_ascii=False)
     task = query_and_create_task(college, major)
     if isinstance(task, (str, unicode)):
         return json.dumps({'error': task}, ensure_ascii=False)
-
-    app.logger.info(directory_url)
 
     approve = request.form['approve']
     if approve == '1':
@@ -317,9 +339,7 @@ def submitted_research():
 
     crawl = ResearchCrawler(directory_url, prof_url)
     count, faculty_list = crawl.crawl_faculty_list(directory_url, prof_url)
-    app.logger.info("%s %s total %d, start" % (directory_url, major, count))
     link_list = crawl_directory(crawl, faculty_list, major,  directory_url, count, False)
-    app.logger.info("%s %s total %d, finish" % (directory_url, major, count))
     return json.dumps({'info': u'成功', "list": link_list}, ensure_ascii=False)
 
 
@@ -332,9 +352,19 @@ def interests_page():
                            types="research")
 
 
+@research_page.route('/togglePosition', methods=['POST'])
+def query_position():
+    pid = request.json.get("pid")
+    if not pid:
+        return json.dumps({'error': 'pid %s not right' % (pid)}, ensure_ascii=False)
+
+    return json.dumps({'status': True}, ensure_ascii=False)
+
+
 @research_page.route('/modifyInterests', methods=['POST'])
 def modify_interests():
 
+    tid = request.json.get('id', None)
     name = request.json.get('name', None)
 
     action = str(request.json.get('type', None))
@@ -342,23 +372,41 @@ def modify_interests():
         return json.dumps({'error': '%s %s not right' % (name, action)}, ensure_ascii=False)
 
     try:
-        interest = Interests.query.filter_by(name=name).one_or_none()
+        old_interest = Interests.query.get(tid)
+        new_interest = Interests.query.filter_by(name=name).one_or_none()
         if action == "1":
-            if interest:
-                results = Professor.query.filter(Professor.interests.any(name=name)).all()
-                for ele in results:
-                    ele.interests.remove(interest)
-                db.session.delete(interest)
-            else:
-                return json.dumps({'error': 'not find' + name}, ensure_ascii=False)
+            if old_interest is None:
+                return json.dumps({'error': 'not find id %s name %s'%(tid,name)}, ensure_ascii=False)
+            results = Professor.query.filter(Professor.interests.any(name=old_interest.name)).all()
+            for ele in results:
+                ele.interests.remove(old_interest)
+            db.session.delete(old_interest)
         else:
-            if interest is None:
-                return json.dumps({'error': 'not find' + name}, ensure_ascii=False)
-            else:
-                interest.zh_name = request.json.get('zh', None)
-                interest.category_name = request.json.get('category', None)
+            if old_interest is None:
+                return json.dumps({'error': 'not find id %s name %s'%(tid,name)}, ensure_ascii=False)
+            
+            if old_interest.name != name and new_interest is None:
+                old_interest.name = name
+                zh = request.json.get('zh')
+                if zh:
+                    old_interest.zh_name = zh
+                old_interest.category_name = request.json.get('category', None)
+            elif old_interest.name == name:
+                old_interest.zh_name = request.json.get('zh', None)
+                old_interest.category_name = request.json.get('category', None)
+            elif old_interest.name != name and new_interest is not None:
+                results = Professor.query.filter(Professor.interests.any(name=old_interest.name)).all()
+                for ele in results:
+                    ele.interests.remove(old_interest)
+                    if not Professor.query.filter(Professor.interests.any(name=name))\
+                       .filter_by(id=ele.id).one_or_none():
+                        ele.interests.append(new_interest)
+                zh = request.json.get('zh')
+                if zh and new_interest.zh_name is None:
+                    new_interest.zh_name = zh
+                db.session.delete(old_interest)
         db.session.commit()
         return json.dumps({'info': 'success'}, ensure_ascii=False)
-    except Exception, e:
+    except Exception:
         app.logger.info(traceback.print_exc())
     return json.dumps({'error': 'not find'}, ensure_ascii=False)

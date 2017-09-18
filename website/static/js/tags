@@ -1,0 +1,110 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+1-1	college.js	/^        major_map = {"1-1": "计算机科学(CS)",$/;"	p
+1-2	college.js	/^                      "1-2": "计算机工程(CE)", $/;"	p
+1-3	college.js	/^                      "1-3": "软件工程(SE)", $/;"	p
+1-4	college.js	/^                      "1-4": "信息技术(IT)",$/;"	p
+10	college.js	/^                      "10": "Biological\/Agricultural",$/;"	p
+11	college.js	/^                      "11": "Engineering Management (MEM)",$/;"	p
+12	college.js	/^                      "12": "Environmental\/Mining",$/;"	p
+13	college.js	/^                      "13": "Financial Engineering",$/;"	p
+14	college.js	/^                      "14": "Material Science and Engineering",$/;"	p
+15	college.js	/^                      "15": "Analytics",$/;"	p
+16	college.js	/^                      "16": "Nano\/Nuclear\/Power",$/;"	p
+17	college.js	/^                      "17": "Healthcare",$/;"	p
+18	college.js	/^                      "18": "Nursing",$/;"	p
+19	college.js	/^                      "19": "Dental",$/;"	p
+2	college.js	/^                      "2": "航空航天",$/;"	p
+20	college.js	/^                      "20": "Veterinary Science",$/;"	p
+21	college.js	/^                      "21": "Pharmacy",$/;"	p
+22	college.js	/^                      "22": "Commerce\/Finance\/Actuarial",$/;"	p
+23	college.js	/^                      "23": "Government\/Administrative",$/;"	p
+24	college.js	/^                      "24": "Pure Sciences",$/;"	p
+25	college.js	/^                      "25": "Arts\/Media",$/;"	p
+26	college.js	/^                      "26": "Education\/Languages\/Counselling",$/;"	p
+27	college.js	/^                      "27": "Humanities\/Journalism",$/;"	p
+28	college.js	/^                      "28": "Management",$/;"	p
+29	college.js	/^                      "29": "Finance",$/;"	p
+3	college.js	/^                      "3": "Chemical\/Petroleum",$/;"	p
+30	college.js	/^                      "30": "Marketing",$/;"	p
+31	college.js	/^                      "31": "Human Resources",$/;"	p
+32	college.js	/^                      "32": "International Management",$/;"	p
+33	college.js	/^                      "33": "General Law",$/;"	p
+34	college.js	/^                      "34": "International Law",$/;"	p
+35	college.js	/^                      "35": "Architecture"}$/;"	p
+4	college.js	/^                      "4": "Civil\/Construction\/Structural",$/;"	p
+5	college.js	/^                      "5": "Electrical\/Electronics\/Telecomm",$/;"	p
+6	college.js	/^                      "6": "Industrial\/Operations",$/;"	p
+7	college.js	/^                      "7": "Mechanical\/Automobile",$/;"	p
+8	college.js	/^                      "8": "Biomedical\/Biotechnical",$/;"	p
+9	college.js	/^                      "9": "Management Information System (MIS)",$/;"	p
+addOneInfo	college.js	/^function addOneInfo(key, item, i) {$/;"	f
+appendButton	college.js	/^function appendButton(item, tr, n, url) {$/;"	f
+approve	college.js	/^function approve(type, id, n) {$/;"	f
+collegeList	college.js	/^var collegeList = null;$/;"	v
+compare	college.js	/^function compare(property, isstring, ininfo) {$/;"	f
+data.category	research.js	/^        data = {'name': name, 'zh': zh, 'category': category, 'type': 0};$/;"	p
+data.name	research.js	/^        data = {'name': name, 'type': 1};$/;"	p
+data.name	research.js	/^        data = {'name': name, 'zh': zh, 'category': category, 'type': 0};$/;"	p
+data.type	research.js	/^        data = {'name': name, 'type': 1};$/;"	p
+data.type	research.js	/^        data = {'name': name, 'zh': zh, 'category': category, 'type': 0};$/;"	p
+data.zh	research.js	/^        data = {'name': name, 'zh': zh, 'category': category, 'type': 0};$/;"	p
+fillCollegeExtraInfo	college.js	/^function fillCollegeExtraInfo(item, i) {$/;"	f
+fillCollegeInformation	college.js	/^function fillCollegeInformation(item, i, n, backend) {$/;"	f
+fillExtraInfo	college.js	/^function fillExtraInfo(item, i) {$/;"	f
+fillInformation	college.js	/^function fillInformation(item, i, n, backend) {$/;"	f
+fillInformation.degree_map.1	college.js	/^    var degree_map = {'1': '本科', '2': '硕士', '3': '博士'},$/;"	p
+fillInformation.degree_map.2	college.js	/^    var degree_map = {'1': '本科', '2': '硕士', '3': '博士'},$/;"	p
+fillInformation.degree_map.3	college.js	/^    var degree_map = {'1': '本科', '2': '硕士', '3': '博士'},$/;"	p
+fillItemInfo	college.js	/^function fillItemInfo(toggle, item) {$/;"	f
+fillName	college.js	/^function fillName(name) {$/;"	f
+fillResearchInformation	research.js	/^function fillResearchInformation(item, showSchool) {$/;"	f
+fillResearchInformationByGrid	research.js	/^function fillResearchInformationByGrid(item) {$/;"	f
+fillSourceInfo	research.js	/^function fillSourceInfo(toggle, item) {$/;"	f
+filterCollege	college.js	/^function filterCollege(l, col, t) {$/;"	f
+filterList	college.js	/^var filterList = null;$/;"	v
+filterProfessorByPosition	research.js	/^function filterProfessorByPosition() {$/;"	f
+filterProfessors	research.js	/^function filterProfessors(col, value) {$/;"	f
+function.filterBy	college.js	/^function filterBy(v, t, col) {$/;"	f
+function.filterByMajor	college.js	/^function filterByMajor(type) {$/;"	f
+function.filterByName	college.js	/^function filterByName(obj, type) {$/;"	f
+function.filterMajorByAll	college.js	/^function filterMajorByAll() {$/;"	f
+function.getProperty	college.js	/^function getProperty() {$/;"	f
+function.pageTemplate	college.js	/^function pageTemplate(data, name, n) {$/;"	f
+function.sortCollege	college.js	/^function sortCollege(name, col, ininfo) {$/;"	f
+function.submitRedirect	college.js	/^function submitRedirect(obj, type, url) {$/;"	f
+function.submitRedirect.options.dataType	college.js	/^        dataType: 'json',$/;"	p
+function.submitRedirect.options.success	college.js	/^        success: function (data) {$/;"	m
+getDataList	college.js	/^function getDataList(name, n) {$/;"	f
+getMajorInterestsList	research.js	/^function getMajorInterestsList() {$/;"	f
+getProcess	research.js	/^function getProcess() {$/;"	f
+getProfessorByInterests	research.js	/^function getProfessorByInterests() {$/;"	f
+getProfessorsList	research.js	/^function getProfessorsList(col) {$/;"	f
+getProfessorsList.data.position	research.js	/^    var data = {'tag': interest, 'position': position};$/;"	p
+getProfessorsList.data.tag	research.js	/^    var data = {'tag': interest, 'position': position};$/;"	p
+getmd	college.js	/^function getmd() {$/;"	f
+interests_modify	research.js	/^function interests_modify(obj, val) {$/;"	f
+keyWords	research.js	/^var keyWords = null;$/;"	v
+options.error	college.js	/^        error: function(){  $/;"	m
+pageIt	college.js	/^function pageIt(data, name, n) {$/;"	f
+rankBy	college.js	/^var rankBy = 'Q.S.';$/;"	v
+recrawl	research.js	/^function recrawl(obj, i) {$/;"	f
+recrawl.data.college_name	research.js	/^    var data = {'directory_url': url, 'major': major, 'college_name': college,$/;"	p
+recrawl.data.directory_url	research.js	/^    var data = {'directory_url': url, 'major': major, 'college_name': college,$/;"	p
+recrawl.data.major	research.js	/^    var data = {'directory_url': url, 'major': major, 'college_name': college,$/;"	p
+recrawl.data.no	research.js	/^                'professor_url': prof, 'no': i};$/;"	p
+recrawl.data.professor_url	research.js	/^                'professor_url': prof, 'no': i};$/;"	p
+removeExtra	college.js	/^function removeExtra(obj) {$/;"	f
+showKeyWords	research.js	/^function showKeyWords(data, step) {$/;"	f
+timerId	research.js	/^var timerId;$/;"	v
+validate_deadline	college.js	/^function validate_deadline(obj) {$/;"	f
+var.head.link	research.js	/^        var head = {'name': '名字', 'link': '学校页', 'website': '个人页', $/;"	p
+var.head.name	research.js	/^        var head = {'name': '名字', 'link': '学校页', 'website': '个人页', $/;"	p
+var.head.position	research.js	/^                    'tags': '研究方向', 'position': '招生意向', 'term': '招生期'}$/;"	p
+var.head.tags	research.js	/^                    'tags': '研究方向', 'position': '招生意向', 'term': '招生期'}$/;"	p
+var.head.term	research.js	/^                    'tags': '研究方向', 'position': '招生意向', 'term': '招生期'}$/;"	p
+var.head.website	research.js	/^        var head = {'name': '名字', 'link': '学校页', 'website': '个人页', $/;"	p

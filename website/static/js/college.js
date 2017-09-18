@@ -448,6 +448,14 @@ function sortCollege(name, col, ininfo) {
     }
     if (col == 'fall') col = 'deadline';
     data.sort(compare(col, false, ininfo));
+    var params = getSharpParam();
+    if (params)
+        params['sortBy'] = col;
+    else {
+        params = {'sortBy': col};
+    }
+    var temp = "{0}#{1}".format(document.URL.split("#")[0], jsonToSharpParam(params));
+    window.location.href = temp;
     pageIt(data, name, 0);
 }
 
@@ -478,6 +486,16 @@ function pageTemplate(data, name, n) {
 
 function filterBy(v, t, col) {
     var newList = filterCollege(filterList, col, v);
+    var params = getSharpParam();
+    if (params)
+        params['filterBy'+col] = v;
+    else {
+        params = {};
+        params['filterBy'+col] = v;
+    }
+    
+    var temp = "{0}#{1}".format(document.URL.split("#")[0], jsonToSharpParam(params));
+    window.location.href = temp;
     pageIt(newList, "college", 0);
 }
 
@@ -485,11 +503,19 @@ function filterByName(obj, type) {
     var name = $(obj).val();
     if (!rankBy) rankBy = "Q.S.";
     var newList = filterCollege(filterList, 'name', name);
+    var params = getSharpParam();
+    if (params)
+        params['filterByName'] = name;
+    else {
+        params = {'filterByName': name};
+    }
+    var temp = "{0}#{1}".format(document.URL.split("#")[0], jsonToSharpParam(params));
+    window.location.href = temp;
+    
     if (type == "research") {
         filterProfessors('school', name);
         return;
     }
-
     if (!name && type == "college")
         sortCollege(type, rankBy, true);
     else
@@ -502,6 +528,24 @@ function filterMajorByAll() {
         evalue = $("#evalueName").val(),
         transcript = $("#transcriptName").val(),
         rl = parseInt($("#rlName").val());
+
+    var params = getSharpParam() || {};
+    if (degree != "") {
+        params["学历"] = degree;
+    }
+    if (major != 0) {
+        params["专业"] = major;
+    }
+    if (evalue != "") {
+        params["成绩单认证"] = degree;
+    }
+    if (rl != "0") {
+        params["推荐信"] = degree;
+    }
+
+    var temp = "{0}#{1}".format(document.URL.split("#")[0], jsonToSharpParam(params));
+    window.location.href = temp;
+
     var newList = filterCollege(filterCollege(
         filterCollege(
             filterCollege(
@@ -521,29 +565,112 @@ function filterByMajor(type) {
     pageIt(newList, "major", 0);
 }
 
+function showCollegeKeyWords(data) {
+    
+    var showTags = ['招生录取URL不可能包含', '招生录取URL可能包含', 
+                    '院系教员URL不可能包含', '院系教员URL可能包含'];
+    $("#keyWords").html("<p>爬虫抽取信息关键词(以逗号,隔开， 正则表达式匹配):</p>");
+    
+    showKeyWordsList(data, showTags);
+}
+
+function extract_uniq_part(parts, id) {
+    var uniq_parts = [];
+    for (var i in parts) {
+        var flag = false, re = new RegExp("\\b" + parts[i] + "\\b","i");
+        for (var j in filterList.list) {
+            if (j == id)
+                continue;
+            if (filterList.list[j].match(re)) {
+                console.log(parts[i] + ' contains in ' + filterList.list[j]);
+                flag = true;
+                break;
+            }
+        }
+        if (!flag) {
+            console.log(parts[i] + ' is uniq');
+            uniq_parts.push(parts[i]);
+        }
+    }
+    return uniq_parts;
+}
+
+function delete_btn_update(obj) {
+    var ele = $(obj).parent().parent(), url = $($(ele.children("td")[2]).children("a")[0]).html(),
+        id = $(ele.children("td")[0]).html();
+    console.log(url);
+    var parts = url.split(/\W/g);
+    console.log(parts);
+
+    var uniq_parts = extract_uniq_part(parts, id);
+    var input = $($("#keyWords").children("div").children("input")[0]),
+        words = input.val();
+    for (var i in uniq_parts) {
+        words = uniq_parts[i] + ',' + words;
+    }
+    input.val(words);
+    ele.remove();
+}
+
+function showCollegeCrawlerResult(data) {
+    var showTags, list = data.list, table = $("<table class='table table-striped'></table>");
+    showCollegeKeyWords(data);
+
+
+    for (var i in list) {
+        var tr = $("<tr></tr>"), td = $("<td></td>"), toggle = null;
+        var url = list[i].split("|")[0], name = list[i].split("|")[1];
+        var btn = $("<a class='btn btn-danger'>删除该链接</a>");
+        btn.attr("onclick", "delete_btn_update(this)");
+        td.append("<span>链接URL为：</span>");
+        td.append('<a href="{0}" target="_blank">{1}</a>'.format(url, url));
+        tr.append("<td>{0}</td>".format(i));
+        tr.append("<td>链接名字显示为：{0}</td>".format(name));
+        tr.append(td);
+        tr.append($("<td></td>").append(btn));
+        table.append(tr);
+        if (toggle) {
+            table.append(toggle);
+        }
+    }
+    $("#crawlResult").append(table);
+}
+
 function submitRedirect(obj, type, url) {
     var options = {
         dataType: 'json',
         success: function (data) {
-            console.log(data);
             $("#loadingDiv").remove();
             if (data.error) {
                 alert(data.error);
                 document.getElementById("vericode")
                     .setAttribute('src','/verifycode?random='+Math.random());
+                $("#loadingDiv").remove();
+                return;
+            }
+            console.log(data.info);
+            if (type.indexOf("college") > -1) {
+                $("#loadingDiv").remove();
+                filterList = data;
+                showCollegeCrawlerResult(data);
+                document.getElementById("vericode")
+                    .setAttribute('src','/verifycode?random='+Math.random());
                 return;
             }
             if (type.indexOf("crawler") > -1) {
+                $("#loadingDiv").remove();
                 if (type.split("-")[1] != '3') {
-                    var list = data.list;
                     filterList = data;
                     showCrawlerResult(data, type.split("-")[1]);
+                    document.getElementById("vericode")
+                        .setAttribute('src','/verifycode?random='+Math.random());
                     return;
                 }
                 window.location.href = "{0}.html".format(url);
                 return;
             }
 
+            $("#loadingDiv").remove();
             if (type.indexOf("research") == -1 || (type.indexOf("research") > -1 && $("#approveIt").val() == 1)) {
             // if (type != "research") {
                 alert('请等待审核，准备跳转...');
@@ -559,20 +686,24 @@ function submitRedirect(obj, type, url) {
                     table.append(tr);
                 }
                 $("#crawlResult").append(table);
+                $("#loadingDiv").remove();
             }
         },  
         //请求出错的处理  
         error: function(){  
             $("#loadingDiv").remove();
             alert("出错");  
+            document.getElementById("vericode")
+                .setAttribute('src','/verifycode?random='+Math.random());
+            $("#loadingDiv").remove();
         }
     };
-    if ($("#approveIt").val() == 0) {
+    if ($("#approveIt").val() == 0 || type.indexOf("crawler") > -1) {
         $("#crawlResult").html("");
         // timerId = window.setInterval(getProcess, 2000);  
         
-        //var loadingDiv = createLoadingDiv('总共{0}位可能学者，正在爬取第{0}位')
-        var loadingDiv = createLoadingDiv('正在处理中，请稍等');
+        // var loadingDiv = createLoadingDiv('总共{0}位可能学者，正在爬取第{0}位')
+        var loadingDiv = createLoadingDiv('正在处理中，估计需要几分钟~~~没开发进度监视');
         
         // 呈现loading效果
         $(".container-fluid").append(loadingDiv);
@@ -614,7 +745,7 @@ $(document).ready(function () {
             $("#collegeNameList").html("");
             for (var i in collegeList) {
                 var item = collegeList[i].name;
-                if (item.toLowerCase().indexOf(text) > 0) {
+                if (item.toLowerCase().indexOf(text) >= 0) {
                     var option = $('<option value="{0}">{1}</option>'.format(item, item));
                     $("#collegeNameList").append(option);
                 }

@@ -44,15 +44,86 @@
 7	.\static\js\college.js	/^                      "7": "Mechanical\/Automobile",$/;"	p
 8	.\static\js\college.js	/^                      "8": "Biomedical\/Biotechnical",$/;"	p
 9	.\static\js\college.js	/^                      "9": "Management Information System (MIS)",$/;"	p
+ACTIONS	.\data\gmu\cs551-chen-j.html.html	/^<h3><a name="ACTIONS" id="ACTIONS">ACTIONS<\/a>:<\/h3>$/;"	a
+ASSN	.\data\gmu\cs551-chen-j.html.html	/^<h3><a name="ASSN" id="ASSN"><\/a>ASSIGNMENTS: (announced in class and due one day $/;"	a
+BackdropImages	.\data\gmu\stuff.html	/^	<a name="BackdropImages"><\/a>$/;"	a
+Bibliography	.\data\gmu\CS468_F17.html.html	/^                      Description:<\/strong><\/font><\/u><\/span><\/p>$/;"	a
+BigCountdown	.\data\gmu\stuff.html	/^	  	<a name="BigCountdown"><\/a>$/;"	a
+Bio	.\data\ucf\homepage.html.html	/^<a name="Bio"><b>GARY T. LEAVENS<\/b><\/a>$/;"	a
+Biography	.\data\ucf\~yuksem.html	/^<p class=MsoNormal style='mso-outline-level:1'><a name=Biography><b$/;"	a
+Books	.\data\gmu\stuff.html	/^	  	<a name="Books"><\/a>$/;"	a
+CLASSES	.\data\gmu\~offutt.html	/^            <a NAME="CLASSES"><\/a>$/;"	a
+COWS	.\data\gmu\stuff.html	/^	<a name="COWS"><\/a>$/;"	a
+Chinese	.\data\gmu\stuff.html	/^	<a name="Chinese"><\/a>$/;"	a
 College	.\models.py	/^class College(db.Model):$/;"	c
+CollegeCrawler	.\crawler.py	/^class CollegeCrawler:$/;"	c
+Commute	.\data\gmu\stuff.html	/^<a name="Commute"><\/a>$/;"	a
+Contact	.\data\ucf\homepage.html.html	/^<h2><a name="Contact">Contact Information<\/a><\/h2>$/;"	a
+Contact	.\data\ucf\~leavens.html	/^<h2><a name="Contact">Contact Information<\/a><\/h2>$/;"	a
 CrawlTask	.\models.py	/^class CrawlTask(db.Model):$/;"	c
+DESC	.\data\gmu\cs551-chen-j.html.html	/^<h3><a name="DESC" id="DESC"><\/a>DESCRIPTION:<\/h3>$/;"	a
+DemoVideo	.\data\gmu\scit.html	/^<h2><a name=DemoVideo><\/a><a name=SCITWebserverDemo><\/a>Video of SCIT Web$/;"	a
+Fonts	.\data\gmu\stuff.html	/^	  	<a name="Fonts"><\/a>$/;"	a
+FormalMethods	.\data\ucf\homepage.html.html	/^<h3><a name="FormalMethods">Formal Methods<\/a><\/h3>$/;"	a
+Fun	.\data\ucf\~leavens.html	/^<h2><a name="Fun">Just for Fun<\/a><\/h2>$/;"	a
+GRADING	.\data\gmu\cs551-chen-j.html.html	/^<h3><a name="GRADING" id="GRADING"><\/a>GRADING POLICY:<\/h3>$/;"	a
+HONORCODE	.\data\gmu\cs551-chen-j.html.html	/^<h3><a name="HONORCODE" id="HONORCODE"><\/a>HONOR CODE:<\/h3>$/;"	a
+Hemlock	.\data\gmu\stuff.html	/^	  	<a name="Hemlock"><\/a>$/;"	a
+Homepage	.\data\ucf\~leavens.html	/^<h2><a name="Homepage">About Me<\/a><\/h2>$/;"	a
 Interests	.\models.py	/^class Interests(db.Model):$/;"	c
+LispatGMU	.\data\gmu\stuff.html	/^<a name="LispatGMU"><\/a>$/;"	a
+MM_reloadPage	.\data\gmu\~astavrou.html	/^function MM_reloadPage(init) {  \/\/reloads the window if Nav4 resized$/;"	f
+MP100	.\data\gmu\stuff.html	/^	<a name="MP100"><\/a>$/;"	a
+N800	.\data\gmu\stuff.html	/^	<a name="N800"><\/a>$/;"	a
+OLE_LINK1	.\data\ucf\~yuksem.html	/^<p class=MsoNormal style='margin-left:.25in'><a name="OLE_LINK1"><span$/;"	a
+OLE_LINK15	.\data\ucf\~yuksem.html	/^name="OLE_LINK16"><\/a><a name="OLE_LINK15"><span style='mso-bookmark:OLE_LINK16'><\/span><\/a><a$/;"	a
+OLE_LINK18	.\data\ucf\~yuksem.html	/^O. <span class=SpellE>Kilavuz<\/span> and M. Yuksel, <a name="OLE_LINK18"><\/a><a$/;"	a
+OLE_LINK20	.\data\ucf\~yuksem.html	/^name="OLE_LINK19"><\/a><a name="OLE_LINK20"><span style='mso-bookmark:OLE_LINK19'>(<\/span><\/a><\/span><span$/;"	a
+OLE_LINK4	.\data\ucf\~yuksem.html	/^Houle, and R. <span class=SpellE>Sadhvani<\/span>, <a name="OLE_LINK4"><\/a><a$/;"	a
+OLE_LINK5	.\data\ucf\~yuksem.html	/^name="OLE_LINK6"><\/a><a name="OLE_LINK5"><span style='mso-bookmark:OLE_LINK6'><\/span><\/a><a$/;"	a
+OLE_LINK8	.\data\ucf\~yuksem.html	/^Yuksel, <a name="OLE_LINK8"><\/a><a name="OLE_LINK7"><span style='mso-bookmark:$/;"	a
+OUTCOME	.\data\gmu\cs551-chen-j.html.html	/^<h3><a name="OUTCOME" id="OUTCOME"><\/a>COURSE OUTCOMES:<\/h3>$/;"	a
+ObjC	.\data\gmu\stuff.html	/^	<a name="ObjC"><\/a>$/;"	a
+Overlord	.\data\gmu\stuff.html	/^	<a name="Overlord"><\/a>$/;"	a
+Personal	.\data\ucf\~leavens.html	/^<h2><a name="Personal">Personal Information<\/a><\/h2>$/;"	a
 Professor	.\models.py	/^class Professor(db.Model):$/;"	c
+ProgLang	.\data\ucf\homepage.html.html	/^<h3><a name="ProgLang">Programming Language Design and Semantics<\/a><\/h3>$/;"	a
+Publications	.\data\ucf\~yuksem.html	/^<p class=MsoNormal style='mso-outline-level:1'><a name=Publications><\/a><b$/;"	a
+Pubs	.\data\ucf\homepage.html.html	/^<h2><a name="Pubs">Representative Publications<\/a><\/h2>$/;"	a
+Research	.\data\ucf\homepage.html.html	/^<h2><a name="Research">Current Research<\/a><\/h2>$/;"	a
+Research	.\data\ucf\~leavens.html	/^<h2><a name="Research">Pages about my research<\/a><\/h2>$/;"	a
+Research	.\data\ucf\~yuksem.html	/^<p class=MsoNormal style='mso-outline-level:1'><a name=Research><b$/;"	a
+Research Interest	.\data\gmu\~xwangc.html	/^    <span class="style85"><a name="Research Interest" href="Research%20Interest"><\/a><\/span>$/;"	a
+Research Publications	.\data\gmu\~xwangc.html	/^  <div class="story style89">    <span class="style85"><a name="Research Publications" href="Research%20Publications"><\/a>$/;"	a
 ResearchCrawler	.\crawler.py	/^class ResearchCrawler:$/;"	c
+Resound	.\data\gmu\stuff.html	/^	<a name="Resound"><\/a>$/;"	a
+Resources	.\data\ucf\~leavens.html	/^<h2><a name="Resources">Helpful Resources<\/a><\/h2>$/;"	a
+SECTION00010000000000000000	.\data\gmu\CS_571SimonR.html.html	/^<H2><A NAME="SECTION00010000000000000000"> D<SMALL>ESCRIPTION<\/SMALL><\/A>$/;"	a
+SECTION00020000000000000000	.\data\gmu\CS_571SimonR.html.html	/^<H2><A NAME="SECTION00020000000000000000">$/;"	a
+SECTION00030000000000000000	.\data\gmu\CS_571SimonR.html.html	/^<H2><A NAME="SECTION00030000000000000000">$/;"	a
+SECTION00040000000000000000	.\data\gmu\CS_571SimonR.html.html	/^<H2><A NAME="SECTION00040000000000000000">$/;"	a
+SECTION00041000000000000000	.\data\gmu\CS_571SimonR.html.html	/^<H2><A NAME="SECTION00041000000000000000">$/;"	a
+SECTION00050000000000000000	.\data\gmu\CS_571SimonR.html.html	/^<H2><A NAME="SECTION00050000000000000000">$/;"	a
+SECTION00070000000000000000	.\data\gmu\CS_571SimonR.html.html	/^<H2><A NAME="SECTION00070000000000000000">$/;"	a
+SECTION00080000000000000000	.\data\gmu\CS_571SimonR.html.html	/^<H2><A NAME="SECTION00080000000000000000">$/;"	a
+SYLL	.\data\gmu\cs551-chen-j.html.html	/^<h3><a name="SYLL" id="SYLL"><\/a>SYLLABUS: (tentative)<\/h3>$/;"	a
+Schedule	.\data\gmu\CS468_F17.html.html	/^                    Statement<\/strong><\/span><\/span><span class="style28"><br \/>$/;"	a
+Service	.\data\ucf\~yuksem.html	/^<p class=MsoNormal style='mso-outline-level:1'><a name=Service><\/a><b$/;"	a
+Students	.\data\ucf\~yuksem.html	/^<p class=MsoNormal style='mso-outline-level:1'><a name=Students><\/a><b$/;"	a
+TA	.\data\gmu\cs551-chen-j.html.html	/^<h3><a name="TA" id="TA"><\/a>TEACHING ASSISTANT AND OFFICE HOURS: (will be announced $/;"	a
+TEXT	.\data\gmu\cs551-chen-j.html.html	/^<h3><a name="TEXT" id="TEXT"><\/a>TEXT BOOKS:<\/h3>$/;"	a
+Teaching	.\data\gmu\~xwangc.html	/^    <span class="style85"><a name="Teaching" href="Teaching"><\/a><\/span>$/;"	a
+Teaching	.\data\ucf\~leavens.html	/^<h2><a name="Teaching">Pages about my teaching<\/a><\/h2>$/;"	a
+Teaching	.\data\ucf\~yuksem.html	/^<p class=MsoNormal><a name=Teaching><b style='mso-bidi-font-weight:normal'><span$/;"	a
 TempCollege	.\models.py	/^class TempCollege(db.Model):$/;"	c
 TempUniversity	.\models.py	/^class TempUniversity(db.Model):$/;"	c
+Tikit	.\data\gmu\stuff.html	/^	<a name="Tikit"><\/a>$/;"	a
 University	.\models.py	/^class University(db.Model):$/;"	c
-__init__	.\crawler.py	/^    def __init__(self):$/;"	m	class:ResearchCrawler
+Waba	.\data\gmu\stuff.html	/^	  	<a name="Waba"><\/a>$/;"	a
+WindowsPC	.\data\ucf\~leavens.html	/^My <a name="WindowsPC">Windows PC configuration and initialization$/;"	a
+_Hlk406580758	.\data\ucf\~gqi.html	/^<p class="MsoNormal" style="text-align: center;" align="center"><a name="_Hlk406580758"><\/a><a href="http:\/\/www.cecs.ucf.edu\/"><b><span style="font-size: 14pt; font-family: &quot;Helvetica&quot;,&quot;sans-serif&quot;; color: rgb(255, 204, 51);">College$/;"	a
+__init__	.\crawler.py	/^    def __init__(self, directory_url, example):$/;"	m	class:ResearchCrawler
+__init__	.\crawler.py	/^    def __init__(self, name, index_url):$/;"	m	class:CollegeCrawler
 __init__	.\models.py	/^    def __init__(self, name, degree, major, site_url):$/;"	m	class:TempCollege
 __init__	.\models.py	/^    def __init__(self, name, degree, major, site_url, pname=''):$/;"	m	class:College
 __init__	.\models.py	/^    def __init__(self, name, info):$/;"	m	class:TempUniversity
@@ -72,9 +143,14 @@ __tablename__	.\models.py	/^    __tablename__ = 'temp_college'$/;"	v	class:TempC
 __tablename__	.\models.py	/^    __tablename__ = 'temp_university'$/;"	v	class:TempUniversity
 __tablename__	.\models.py	/^    __tablename__ = 'university'$/;"	v	class:University
 addOneInfo	.\static\js\college.js	/^function addOneInfo(key, item, i) {$/;"	f
+anchor	.\data\ucf\Gong.html	/^        <a name="anchor"><\/a>$/;"	a
 appendButton	.\static\js\college.js	/^function appendButton(item, tr, n, url) {$/;"	f
+appointments	.\data\ucf\~bagci.html	/^<H2 CLASS="section"><A NAME="appointments">Appointments<\/A><\/H2>$/;"	a
 approve	.\static\js\college.js	/^function approve(type, id, n) {$/;"	f
+awards	.\data\ucf\~gqi.html	/^<h4><a name="awards"><span style="font-size: 12pt;">Awards<\/span><\/a><span style="font-size: 12pt;"> <o:p><\/o:p><\/span><\/h4>$/;"	a
 backref	.\models.py	/^        backref=db.backref('Professor', lazy='dynamic'))$/;"	v	class:Professor
+bio	.\data\ucf\~bagci.html	/^<H2 CLASS="section"><A NAME="bio">Short Biography<\/A><\/H2>$/;"	a
+books	.\data\ucf\~deo.html	/^<P><A NAME="books"><\/A><\/P>$/;"	a
 category_name	.\models.py	/^    category_name = db.Column(db.String(50), default='')$/;"	v	class:Interests
 collegeList	.\static\js\college.js	/^var collegeList = null;$/;"	v
 collegeListPage	.\views.py	/^def collegeListPage(pageno = 1):$/;"	f
@@ -82,33 +158,59 @@ college_approve	.\views.py	/^def college_approve():$/;"	f
 college_form	.\views.py	/^def college_form(name):$/;"	f
 college_page	.\views.py	/^def college_page():$/;"	f
 compare	.\static\js\college.js	/^function compare(property, isstring, ininfo) {$/;"	f
-contain_keys	.\crawler.py	/^def contain_keys(href, keys, is_name=False):$/;"	f
+conference	.\data\ucf\~kstanley.html	/^<a name="conference">$/;"	a
+contact	.\data\ucf\~kstanley.html	/^<a name="contact">$/;"	a
+contain_keys	.\crawler.py	/^def contain_keys(href, keys, is_name=False, return_obj=False):$/;"	f
+convertToDict	.\research_interests.py	/^def convertToDict(ele, tags):$/;"	f
 convert_dict	.\views.py	/^def convert_dict(e):$/;"	f
+crawl_bfs	.\crawler.py	/^    def crawl_bfs(self, url_list, force=False):$/;"	m	class:CollegeCrawler
+crawl_directory	.\research_interests.py	/^def crawl_directory(crawl, faculty_list, major, directory_url, count, flag):$/;"	f
 crawl_faculty_list	.\crawler.py	/^    def crawl_faculty_list(self, directory_url, example):$/;"	m	class:ResearchCrawler
-crawl_from_directory	.\crawler.py	/^    def crawl_from_directory(self, directory_url, example, name):$/;"	m	class:ResearchCrawler
-crawler	.\crawler.py	/^    crawler = ResearchCrawler()$/;"	v	class:ResearchCrawler
-data.category	.\static\js\research.js	/^        data = {'name': name, 'zh': zh, 'category': category, 'type': 0};$/;"	p
-data.name	.\static\js\research.js	/^        data = {'name': name, 'type': 1};$/;"	p
-data.name	.\static\js\research.js	/^        data = {'name': name, 'zh': zh, 'category': category, 'type': 0};$/;"	p
-data.type	.\static\js\research.js	/^        data = {'name': name, 'type': 1};$/;"	p
-data.type	.\static\js\research.js	/^        data = {'name': name, 'zh': zh, 'category': category, 'type': 0};$/;"	p
-data.zh	.\static\js\research.js	/^        data = {'name': name, 'zh': zh, 'category': category, 'type': 0};$/;"	p
+crawl_from_directory	.\crawler.py	/^    def crawl_from_directory(self, directory_url, example):$/;"	m	class:ResearchCrawler
+crawler	.\test_crawler.py	/^        crawler = ResearchCrawler(url, examples[urls.index(url)])$/;"	v
+custom_college_step	.\views.py	/^def custom_college_step():$/;"	f
+custom_crawler	.\research_interests.py	/^def custom_crawler():$/;"	f
+custom_crawler_page	.\views.py	/^def custom_crawler_page():$/;"	f
+custom_crawler_step	.\research_interests.py	/^def custom_crawler_step(step):$/;"	f
+data.category	.\static\js\research.js	/^        data = {'id': id, 'name': name, 'zh': zh, 'category': category, 'type': 0};$/;"	p
+data.id	.\static\js\research.js	/^        data = {'id': id, 'name': name, 'type': 1};$/;"	p
+data.id	.\static\js\research.js	/^        data = {'id': id, 'name': name, 'zh': zh, 'category': category, 'type': 0};$/;"	p
+data.name	.\static\js\research.js	/^        data = {'id': id, 'name': name, 'type': 1};$/;"	p
+data.name	.\static\js\research.js	/^        data = {'id': id, 'name': name, 'zh': zh, 'category': category, 'type': 0};$/;"	p
+data.type	.\static\js\research.js	/^        data = {'id': id, 'name': name, 'type': 1};$/;"	p
+data.type	.\static\js\research.js	/^        data = {'id': id, 'name': name, 'zh': zh, 'category': category, 'type': 0};$/;"	p
+data.zh	.\static\js\research.js	/^        data = {'id': id, 'name': name, 'zh': zh, 'category': category, 'type': 0};$/;"	p
 deadline_url	.\models.py	/^    deadline_url = db.Column(db.String(250))$/;"	v	class:College
 deadline_url	.\models.py	/^    deadline_url = db.Column(db.String(250))$/;"	v	class:TempCollege
-debug_level	.\crawler.py	/^debug_level = 0$/;"	v
+debug_level	.\crawler.py	/^debug_level = ""$/;"	v
 degree	.\models.py	/^    degree = db.Column(db.Integer)$/;"	v	class:College
 degree	.\models.py	/^    degree = db.Column(db.Integer)$/;"	v	class:TempCollege
-dive_into_page	.\crawler.py	/^    def dive_into_page(self, faculty_ele):$/;"	m	class:ResearchCrawler
+demos	.\data\ucf\~kstanley.html	/^<a name="demos">$/;"	a
+dive_into_page	.\crawler.py	/^    def dive_into_page(self, faculty_ele, flag):$/;"	m	class:ResearchCrawler
 docum_url	.\models.py	/^    docum_url = db.Column(db.String(250))$/;"	v	class:College
 docum_url	.\models.py	/^    docum_url = db.Column(db.String(250))$/;"	v	class:TempCollege
+dokuwiki__top	.\data\gmu\doku.phpidJML.html	/^                <a href="\/~jmlien\/" name="dokuwiki__top" id="dokuwiki__top" accesskey="h" class="tmpl_header_logo_txt">Jyh-Ming Lien<\/a>$/;"	a
+dokuwiki__top	.\data\gmu\~jmlien.html	/^                <a href="\/~jmlien\/" name="dokuwiki__top" id="dokuwiki__top" accesskey="h" class="tmpl_header_logo_txt">Jyh-Ming Lien<\/a>$/;"	a
+education	.\data\ucf\~bagci.html	/^<H2 CLASS="section"><A NAME="education">Education<\/A><\/H2>$/;"	a
+education	.\data\ucf\~bagci.html	/^<H2 CLASS="section"><A NAME="education">Regular Reviewer for Journals<\/A><\/H2>$/;"	a
 eng_url	.\models.py	/^    eng_url = db.Column(db.String(250))$/;"	v	class:College
 eng_url	.\models.py	/^    eng_url = db.Column(db.String(250))$/;"	v	class:TempCollege
 evalue	.\models.py	/^    evalue = db.Column(db.String(10))$/;"	v	class:College
 evalue	.\models.py	/^    evalue = db.Column(db.String(10))$/;"	v	class:TempCollege
 example	.\models.py	/^    example = db.Column(db.String(150))$/;"	v	class:CrawlTask
 examples	.\crawler.py	/^    examples = ['https:\/\/inside.mines.edu\/CS-Faculty-and-Staff\/TracyCamp',$/;"	v	class:ResearchCrawler
-extract_from_line	.\crawler.py	/^    def extract_from_line(self, line, tags):$/;"	m	class:ResearchCrawler
-extract_from_sibling	.\crawler.py	/^    def extract_from_sibling(self, node, tags):$/;"	m	class:ResearchCrawler
+examples	.\test_crawler.py	/^    examples = ['https:\/\/inside.mines.edu\/CS-Faculty-and-Staff\/TracyCamp',$/;"	v
+expand	.\data\ucf\Borji.html	/^  function expand(param)$/;"	f
+expand	.\data\ucf\Gong.html	/^  function expand(param)$/;"	f
+expand	.\data\ucf\people_index.php.html	/^  function expand(param)$/;"	f
+expand	.\data\ucf\shah.html.html	/^  function expand(param)$/;"	f
+expand	.\data\ucf\~dfan.html	/^  function expand(param)$/;"	f
+expand	.\data\ucf\~ewetz.html	/^  function expand(param)$/;"	f
+expand	.\data\ucf\~mainak.html	/^  function expand(param)$/;"	f
+expand	.\data\ucf\~nedorost.html	/^  function expand(param)$/;"	f
+extract_from_line	.\crawler.py	/^    def extract_from_line(self, line, tags, tag_text):$/;"	m	class:ResearchCrawler
+extract_from_sibling	.\crawler.py	/^    def extract_from_sibling(self, node, tags, tag_text):$/;"	m	class:ResearchCrawler
+extract_name_from_node	.\crawler.py	/^    def extract_name_from_node(self, faculty_ele, person, flag):$/;"	m	class:ResearchCrawler
 fall	.\models.py	/^    fall = db.Column(db.String(20))$/;"	v	class:College
 fall	.\models.py	/^    fall = db.Column(db.String(20))$/;"	v	class:TempCollege
 fillCollegeExtraInfo	.\static\js\college.js	/^function fillCollegeExtraInfo(item, i) {$/;"	f
@@ -120,25 +222,32 @@ fillInformation.degree_map.2	.\static\js\college.js	/^    var degree_map = {'1':
 fillInformation.degree_map.3	.\static\js\college.js	/^    var degree_map = {'1': '本科', '2': '硕士', '3': '博士'},$/;"	p
 fillItemInfo	.\static\js\college.js	/^function fillItemInfo(toggle, item) {$/;"	f
 fillName	.\static\js\college.js	/^function fillName(name) {$/;"	f
-fillResearchInformation	.\static\js\research.js	/^function fillResearchInformation(item) {$/;"	f
+fillResearchInformation	.\static\js\research.js	/^function fillResearchInformation(item, showSchool) {$/;"	f
+fillResearchInformationByGrid	.\static\js\research.js	/^function fillResearchInformationByGrid(no, item) {$/;"	f
+fillSourceInfo	.\static\js\research.js	/^function fillSourceInfo(toggle, item) {$/;"	f
 filterCollege	.\static\js\college.js	/^function filterCollege(l, col, t) {$/;"	f
 filterList	.\static\js\college.js	/^var filterList = null;$/;"	v
 filterProfessorByPosition	.\static\js\research.js	/^function filterProfessorByPosition() {$/;"	f
 filterProfessors	.\static\js\research.js	/^function filterProfessors(col, value) {$/;"	f
 filter_list	.\crawler.py	/^    def filter_list(self, e):$/;"	m	class:ResearchCrawler
-filter_research_interests	.\crawler.py	/^    def filter_research_interests(self, alist):$/;"	m	class:ResearchCrawler
+filter_research_interests	.\crawler.py	/^def filter_research_interests(alist):$/;"	f
+filter_url	.\crawler.py	/^def filter_url(e, index_url, key_words, access_urls):$/;"	f
 finance	.\models.py	/^    finance = db.Column(db.String(10))$/;"	v	class:College
 finance	.\models.py	/^    finance = db.Column(db.String(10))$/;"	v	class:TempCollege
-find_all_anchor	.\crawler.py	/^    def find_all_anchor(self, soup, domain, page_url):$/;"	m	class:ResearchCrawler
-find_example_index	.\crawler.py	/^    def find_example_index(self, l, a):$/;"	m	class:ResearchCrawler
+find_all_anchor	.\crawler.py	/^def find_all_anchor(soup):$/;"	f
+find_example_index	.\crawler.py	/^def find_example_index(l, a, index):$/;"	f
 find_faculty_list	.\crawler.py	/^    def find_faculty_list(self, l, faculty_url):$/;"	m	class:ResearchCrawler
-format_url	.\crawler.py	/^def format_url(href, domain, index=''):$/;"	f
+find_paragraph_interests	.\crawler.py	/^    def find_paragraph_interests(self, result, tags, tag_text, words):$/;"	m	class:ResearchCrawler
+fmter	.\crawler.py	/^fmter = logging.Formatter('%(asctime)s %(levelname)s %(message)s', datefmt='%a, %d %b %Y %H:%M:%S')$/;"	v
+format_url	.\crawler.py	/^def format_url(href, source_url):$/;"	f
 function.filterBy	.\static\js\college.js	/^function filterBy(v, t, col) {$/;"	f
 function.filterByMajor	.\static\js\college.js	/^function filterByMajor(type) {$/;"	f
 function.filterByName	.\static\js\college.js	/^function filterByName(obj, type) {$/;"	f
 function.filterMajorByAll	.\static\js\college.js	/^function filterMajorByAll() {$/;"	f
 function.getProperty	.\static\js\college.js	/^function getProperty() {$/;"	f
 function.pageTemplate	.\static\js\college.js	/^function pageTemplate(data, name, n) {$/;"	f
+function.showCollegeCrawlerResult	.\static\js\college.js	/^function showCollegeCrawlerResult(data) {$/;"	f
+function.showCollegeKeyWords	.\static\js\college.js	/^function showCollegeKeyWords(data) {$/;"	f
 function.sortCollege	.\static\js\college.js	/^function sortCollege(name, col, ininfo) {$/;"	f
 function.submitRedirect	.\static\js\college.js	/^function submitRedirect(obj, type, url) {$/;"	f
 function.submitRedirect.options.dataType	.\static\js\college.js	/^        dataType: 'json',$/;"	p
@@ -151,13 +260,13 @@ getProfessorByInterests	.\static\js\research.js	/^function getProfessorByInteres
 getProfessorsList	.\static\js\research.js	/^function getProfessorsList(col) {$/;"	f
 getProfessorsList.data.position	.\static\js\research.js	/^    var data = {'tag': interest, 'position': position};$/;"	p
 getProfessorsList.data.tag	.\static\js\research.js	/^    var data = {'tag': interest, 'position': position};$/;"	p
-get_and_store_page	.\crawler.py	/^def get_and_store_page(page_url):$/;"	f
+get_and_store_page	.\crawler.py	/^def get_and_store_page(page_url, force=False):$/;"	f
 get_major_interests_list	.\research_interests.py	/^def get_major_interests_list(major):$/;"	f
-get_open_position	.\crawler.py	/^    def get_open_position(self, soup, content):$/;"	m	class:ResearchCrawler
-get_personal_website	.\crawler.py	/^    def get_personal_website(self, l, page_url):$/;"	m	class:ResearchCrawler
+get_open_position	.\crawler.py	/^    def get_open_position(self, soup):$/;"	m	class:ResearchCrawler
+get_personal_website	.\crawler.py	/^    def get_personal_website(self, l, page_url, name):$/;"	m	class:ResearchCrawler
 get_professor_by_interests	.\research_interests.py	/^def get_professor_by_interests(major, interest):$/;"	f
 get_professor_list	.\research_interests.py	/^def get_professor_list(school, major):$/;"	f
-get_research_interests	.\crawler.py	/^    def get_research_interests(self, soup, content, tags, website):$/;"	m	class:ResearchCrawler
+get_research_interests	.\crawler.py	/^    def get_research_interests(self, soup, tags, website, tag_text):$/;"	m	class:ResearchCrawler
 getmd	.\static\js\college.js	/^function getmd() {$/;"	f
 gpa	.\models.py	/^    gpa = db.Column(db.Float)$/;"	v	class:College
 gpa	.\models.py	/^    gpa = db.Column(db.Float)$/;"	v	class:TempCollege
@@ -167,7 +276,12 @@ gre	.\models.py	/^    gre = db.Column(db.String(20))$/;"	v	class:College
 gre	.\models.py	/^    gre = db.Column(db.String(20))$/;"	v	class:TempCollege
 gre_url	.\models.py	/^    gre_url = db.Column(db.String(250))$/;"	v	class:College
 gre_url	.\models.py	/^    gre_url = db.Column(db.String(250))$/;"	v	class:TempCollege
+hdlr	.\crawler.py	/^hdlr = logging.FileHandler(log_file_name, mode='a')$/;"	v
+home	.\data\gmu\scit.html	/^<h3 align=center style='text-align:center'><a name=home><\/a><a href="#home">Home<\/a>$/;"	a
 home_page	.\models.py	/^    home_page = db.Column(db.String(150))$/;"	v	class:Professor
+honors	.\data\ucf\~bagci.html	/^<H2 CLASS="section"><A NAME="honors">Current and Past Students<\/A><\/H2>$/;"	a
+honors	.\data\ucf\~bagci.html	/^<H2 CLASS="section"><A NAME="honors">Invited Talks and Lectures Delivered<\/A><\/H2>$/;"	a
+honors	.\data\ucf\~bagci.html	/^<H2 CLASS="section"><A NAME="honors">Selected Awards and Honors<\/A><\/H2>$/;"	a
 id	.\models.py	/^    id = db.Column('college_id', db.String, primary_key=True, default=uuid_gen)$/;"	v	class:College
 id	.\models.py	/^    id = db.Column('college_id', db.String, primary_key=True, default=uuid_gen)$/;"	v	class:TempCollege
 id	.\models.py	/^    id = db.Column('interests_id', db.String, primary_key=True, default=uuid_gen)$/;"	v	class:Interests
@@ -184,10 +298,16 @@ info	.\models.py	/^    info = db.Column(JSON)$/;"	v	class:University
 int_docum_url	.\models.py	/^    int_docum_url = db.Column(db.String(250))$/;"	v	class:College
 int_docum_url	.\models.py	/^    int_docum_url = db.Column(db.String(250))$/;"	v	class:TempCollege
 interests	.\models.py	/^    interests = db.relationship('Interests', secondary=professor_interests_table,$/;"	v	class:Professor
-interests_modify	.\static\js\research.js	/^function interests_modify(obj, val) {$/;"	f
+interests_modify	.\static\js\research.js	/^function interests_modify(obj, id, val) {$/;"	f
 interests_page	.\research_interests.py	/^def interests_page():$/;"	f
+introduction	.\data\gmu\scit.html	/^<h2><a name=introduction><\/a>Introduction to SCIT<\/h2>$/;"	a
 is_exist_college	.\research_interests.py	/^def is_exist_college(c_list, name):$/;"	f
-load_key	.\crawler.py	/^    def load_key(self):$/;"	m	class:ResearchCrawler
+journal	.\data\ucf\~kstanley.html	/^<a name="journal">$/;"	a
+keyWords	.\static\js\research.js	/^var keyWords = null;$/;"	v
+load_key	.\crawler.py	/^def load_key(config, default='key.json'):$/;"	f
+load_url_list	.\crawler.py	/^def load_url_list(config):$/;"	f
+log_file_name	.\crawler.py	/^log_file_name = os.path.join(os.environ.get('OPENSHIFT_PYTHON_LOG_DIR', '.'),$/;"	v
+logger	.\crawler.py	/^logger = logging.getLogger('crawler')$/;"	v
 major	.\models.py	/^    major = db.Column(db.String(10))$/;"	v	class:College
 major	.\models.py	/^    major = db.Column(db.String(10))$/;"	v	class:TempCollege
 major	.\models.py	/^    major = db.Column(db.String(4))$/;"	v	class:CrawlTask
@@ -197,7 +317,10 @@ majorListPage	.\views.py	/^def majorListPage(pageno = 1):$/;"	f
 major_approve	.\views.py	/^def major_approve():$/;"	f
 major_form	.\views.py	/^def major_form(name):$/;"	f
 major_page	.\views.py	/^def major_page(temp=0):$/;"	f
+meeting	.\data\ucf\~kstanley.html	/^<a name="meeting">$/;"	a
+membership	.\data\ucf\~bagci.html	/^<H2 CLASS="section"><A NAME="membership">Memberships in Societies<\/A><\/H2>$/;"	a
 modify_interests	.\research_interests.py	/^def modify_interests():$/;"	f
+nags	.\data\ucf\~leavens.html	/^<li><a name="nags"><\/a>$/;"	a
 name	.\models.py	/^                      name='_degree_major'),)$/;"	v	class:College
 name	.\models.py	/^                      name='_professor_uniq'),)$/;"	v	class:Professor
 name	.\models.py	/^                      name='_school_major_uniq'),)$/;"	v	class:CrawlTask
@@ -207,44 +330,95 @@ name	.\models.py	/^    name = db.Column(db.String(70))$/;"	v	class:College
 name	.\models.py	/^    name = db.Column(db.String(70))$/;"	v	class:TempCollege
 name	.\models.py	/^    name = db.Column(db.String(70), unique=True)$/;"	v	class:TempUniversity
 name	.\models.py	/^    name = db.Column(db.String(70), unique=True)$/;"	v	class:University
+news	.\data\ucf\~gqi.html	/^<h4><a name="news"><\/a>Recent News:<\/h4>$/;"	a
+news	.\data\ucf\~gqi.html	/^<h4><a name="news"><span style="font-size: 12pt;">News<\/span><\/a><\/h4>$/;"	a
+newsreports	.\data\gmu\scit.html	/^<h2><a name=newsreports><\/a>Media Reports<\/h2>$/;"	a
+newton	.\data\gmu\stuff.html	/^	  <tr><td colspan=2 class="spread"><a name="newton"><\/a>Newton Projects<\/td>$/;"	a
+nextstep	.\data\gmu\stuff.html	/^	  <tr><td colspan=2 class="spread"><a name="nextstep"><\/a>NeXTstep Projects<\/td>$/;"	a
+onlineposts	.\data\gmu\scit.html	/^<h2><a name=onlineposts><\/a>Online Articles<\/h2>$/;"	a
 onsocial	.\crawler.py	/^def onsocial(href):$/;"	f
-open_page	.\crawler.py	/^    def open_page(self, page_url):$/;"	m	class:ResearchCrawler
+open_page	.\crawler.py	/^    def open_page(self, page_url, force=False):$/;"	m	class:ResearchCrawler
+options.error	.\static\js\college.js	/^        error: function(){  $/;"	m
 pageIt	.\static\js\college.js	/^function pageIt(data, name, n) {$/;"	f
+papers	.\data\ucf\~deo.html	/^<P><A NAME="papers"><\/A><\/P>$/;"	a
+params.filterByName	.\static\js\college.js	/^        params = {'filterByName': name};$/;"	p
+params.sortBy	.\static\js\college.js	/^        params = {'sortBy': col};$/;"	p
+patents	.\data\gmu\scit.html	/^<h2><a name=patents><\/a>Patents<\/h2>$/;"	a
+patents	.\data\ucf\~deo.html	/^<P><A NAME="patents"><\/A><\/P>$/;"	a
+personal	.\data\gmu\#personal.html	/^   <a name="personal"><h1>Personal<\/h1><\/a>$/;"	a
+personal	.\data\gmu\~kdobolyi.html	/^   <a name="personal"><h1>Personal<\/h1><\/a>$/;"	a
+phd_students	.\data\ucf\~deo.html	/^<P><A NAME="phd_students"><\/A><\/P>$/;"	a
 position	.\models.py	/^    position = db.Column(db.Boolean)$/;"	v	class:Professor
 process	.\research_interests.py	/^def process():$/;"	f
 professor_interests_table	.\models.py	/^professor_interests_table = db.Table('professor_interests', db.Model.metadata,$/;"	v
 program_name	.\models.py	/^    program_name = db.Column(db.String(70))$/;"	v	class:College
 program_name	.\models.py	/^    program_name = db.Column(db.String(70))$/;"	v	class:TempCollege
+publications	.\data\gmu\scit.html	/^<h2><a name=publications><\/a>Publications, Media Reports and Patents<\/h2>$/;"	a
+publications	.\data\ucf\~kstanley.html	/^<a name="publications">$/;"	a
 query_add_interests	.\research_interests.py	/^def query_add_interests(tag, major):$/;"	f
 query_add_professor	.\research_interests.py	/^def query_add_professor(name, college_name, major):$/;"	f
+query_and_create_task	.\research_interests.py	/^def query_and_create_task(college, major):$/;"	f
+query_position	.\research_interests.py	/^def query_position():$/;"	f
+query_position_status	.\crawler.py	/^    def query_position_status(self, faculty_link, faculty_page):$/;"	m	class:ResearchCrawler
 rankBy	.\static\js\college.js	/^var rankBy = 'Q.S.';$/;"	v
+recrawl	.\static\js\research.js	/^function recrawl(obj, i) {$/;"	f
+recrawl.data.college_name	.\static\js\research.js	/^    var data = {'directory_url': url, 'major': major, 'college_name': college,$/;"	p
+recrawl.data.directory_url	.\static\js\research.js	/^    var data = {'directory_url': url, 'major': major, 'college_name': college,$/;"	p
+recrawl.data.major	.\static\js\research.js	/^    var data = {'directory_url': url, 'major': major, 'college_name': college,$/;"	p
+recrawl.data.no	.\static\js\research.js	/^                'professor_url': prof, 'no': i};$/;"	p
+recrawl.data.professor_url	.\static\js\research.js	/^                'professor_url': prof, 'no': i};$/;"	p
 refresh	.\templates\college_form.html	/^function refresh(obj) {$/;"	f
+refresh	.\templates\custom_college_crawler.html	/^function refresh(obj) {$/;"	f
+refresh	.\templates\custom_crawler.html	/^function refresh(obj) {$/;"	f
 refresh	.\templates\major_form.html	/^function refresh(obj) {$/;"	f
 refresh	.\templates\research_form.html	/^function refresh(obj) {$/;"	f
 removeExtra	.\static\js\college.js	/^function removeExtra(obj) {$/;"	f
+replace_html	.\crawler.py	/^def replace_html(s):$/;"	f
 replace_words	.\crawler.py	/^    def replace_words(self, line):$/;"	m	class:ResearchCrawler
+research	.\data\gmu\#personal.html	/^          <a name="research"><h3>Grants and Awards<\/h3><\/a>$/;"	a
+research	.\data\gmu\#personal.html	/^          <a name="research"><h3>Publications<\/h3><\/a>$/;"	a
+research	.\data\gmu\~kdobolyi.html	/^          <a name="research"><h3>Grants and Awards<\/h3><\/a>$/;"	a
+research	.\data\gmu\~kdobolyi.html	/^          <a name="research"><h3>Publications<\/h3><\/a>$/;"	a
+research	.\data\ucf\~bagci.html	/^<H2 CLASS="section"><A NAME="research">Research Interests<\/A><\/H2>$/;"	a
+research	.\data\ucf\~gqi.html	/^<h4><a name="research"><span style="font-size: 12pt;">Research Interests<\/span><\/a><span style="font-size: 12pt;"> <o:p><\/o:p><\/span><\/h4>$/;"	a
+research	.\data\ucf\~kstanley.html	/^<a name="research">$/;"	a
 research_form	.\research_interests.py	/^def research_form():$/;"	f
 research_index	.\research_interests.py	/^def research_index():$/;"	f
 research_list_page	.\research_interests.py	/^def research_list_page():$/;"	f
 research_page	.\research_interests.py	/^research_page = Blueprint('research_page', __name__,$/;"	v
 rl	.\models.py	/^    rl = db.Column(db.String(10))$/;"	v	class:College
 rl	.\models.py	/^    rl = db.Column(db.String(10))$/;"	v	class:TempCollege
+rocket	.\data\ucf\~kstanley.html	/^<a name="rocket">$/;"	a
+save_key	.\crawler.py	/^    def save_key(self):$/;"	m	class:ResearchCrawler
 school	.\models.py	/^    school = db.Column(db.String(60))$/;"	v	class:Professor
 school	.\models.py	/^    school = db.Column(db.String(70))$/;"	v	class:CrawlTask
 school_url	.\models.py	/^    school_url = db.Column(db.String(150))$/;"	v	class:CrawlTask
 school_url	.\models.py	/^    school_url = db.Column(db.String(150))$/;"	v	class:Professor
+scribblings	.\data\gmu\stuff.html	/^	  	  <tr><td colspan=2 class="spread" style="padding-top: 0; margin-top: 0;"><a name="scribblings"><\/a>Scribblings<\/td>$/;"	a
+section-home	.\data\jonbell\jonbell.net.html	/^<a class="ut-offset-anchor" id="section-home" name="section-home">home<\/a>$/;"	a
+section-research	.\data\jonbell\jonbell.net.html	/^<a class="ut-offset-anchor" id="section-research" name="section-research">research<\/a>$/;"	a
+section-teaching	.\data\jonbell\jonbell.net.html	/^<a class="ut-offset-anchor" id="section-teaching" name="section-teaching">teaching<\/a>$/;"	a
 select_line_part	.\crawler.py	/^    def select_line_part(self, line):$/;"	m	class:ResearchCrawler
+service	.\data\ucf\~kstanley.html	/^<a name="service">$/;"	a
+services	.\data\ucf\~bagci.html	/^<H2 CLASS="section"><A NAME="services">Services-Conferences, Workshops, and Editorial<\/A><\/H2>$/;"	a
 set	.\models.py	/^    def set(self, college):$/;"	m	class:College
+showDiv	.\data\ucf\~xinwenfu.html	/^    function showDiv() {$/;"	f
+showKeyWords	.\static\js\research.js	/^function showKeyWords(data, step) {$/;"	f
+showKeyWordsList	.\static\js\research.js	/^function showKeyWordsList(data, showTags) {$/;"	f
 single_major	.\views.py	/^def single_major(cid):$/;"	f
 site_url	.\models.py	/^    site_url = db.Column(db.String(250))$/;"	v	class:College
 site_url	.\models.py	/^    site_url = db.Column(db.String(250))$/;"	v	class:TempCollege
+software	.\data\ucf\~kstanley.html	/^<a name="software">$/;"	a
 spring	.\models.py	/^    spring = db.Column(db.String(20))$/;"	v	class:College
 spring	.\models.py	/^    spring = db.Column(db.String(20))$/;"	v	class:TempCollege
 static_folder	.\research_interests.py	/^                          static_folder="static")$/;"	v
 static_folder	.\views.py	/^                         static_folder="static")$/;"	v
+submit_professors	.\research_interests.py	/^def submit_professors(college_name, major, directory_url):$/;"	f
 submitted_college	.\views.py	/^def submitted_college():$/;"	f
 submitted_major	.\views.py	/^def submitted_major():$/;"	f
 submitted_research	.\research_interests.py	/^def submitted_research():$/;"	f
+teaching	.\data\ucf\~kstanley.html	/^<a name="teaching">$/;"	a
+team	.\data\gmu\scit.html	/^<h2><a name=team><\/a>SCIT Researchers<\/h2>$/;"	a
 temp_college_list	.\views.py	/^def temp_college_list():$/;"	f
 temp_college_page	.\views.py	/^def temp_college_page():$/;"	f
 temp_major_list	.\views.py	/^def temp_major_list():$/;"	f
@@ -254,13 +428,29 @@ term	.\models.py	/^    term = db.Column(db.String(20))$/;"	v	class:Professor
 timerId	.\static\js\research.js	/^var timerId;$/;"	v
 toefl	.\models.py	/^    toefl = db.Column(db.Integer)$/;"	v	class:College
 toefl	.\models.py	/^    toefl = db.Column(db.Integer)$/;"	v	class:TempCollege
+togglePosition	.\static\js\research.js	/^function togglePosition(obj, pid) {$/;"	f
+top	.\data\ucf\homepage.html.html	/^ <h1><a name="top">Gary T. Leavens's Home Page<\/a><\/h1>$/;"	a
+top	.\data\ucf\~gqi.html	/^<p><a name="top">&nbsp;<\/a> <o:p><\/o:p><\/p>$/;"	a
+top	.\data\ucf\~leavens.html	/^ <h1><a name="top">Index of Gary T. Leavens's WWW Pages<\/a><\/h1>$/;"	a
 tuition	.\models.py	/^    tuition = db.Column(db.Float)$/;"	v	class:College
 tuition	.\models.py	/^    tuition = db.Column(db.Float)$/;"	v	class:TempCollege
 tuition_url	.\models.py	/^    tuition_url = db.Column(db.String(250))$/;"	v	class:College
 tuition_url	.\models.py	/^    tuition_url = db.Column(db.String(250))$/;"	v	class:TempCollege
 uni_major_page	.\views.py	/^uni_major_page = Blueprint('uni_major_page', __name__,$/;"	v
 university	.\views.py	/^def university(cid):$/;"	f
+update_key_words	.\research_interests.py	/^def update_key_words(form, crawl):$/;"	f
 url_check	.\crawler.py	/^    url_check = {'http:\/\/cs.mines.edu\/CS-Faculty': 15,$/;"	v	class:ResearchCrawler
+url_check	.\test_crawler.py	/^    url_check = {'http:\/\/cs.mines.edu\/CS-Faculty': 15,$/;"	v
 urls	.\crawler.py	/^    urls = ['http:\/\/cs.mines.edu\/CS-Faculty',$/;"	v	class:ResearchCrawler
+urls	.\test_crawler.py	/^    urls = ['http:\/\/cs.mines.edu\/CS-Faculty',$/;"	v
+users	.\data\ucf\~kstanley.html	/^<a name="users">$/;"	a
+validate_and_extract	.\research_interests.py	/^def validate_and_extract(form):$/;"	f
+validate_and_extract	.\views.py	/^def validate_and_extract(form):$/;"	f
 validate_deadline	.\static\js\college.js	/^function validate_deadline(obj) {$/;"	f
+var.head.link	.\static\js\research.js	/^        var head = {'name': '名字', 'link': '学校页', 'website': '个人页', $/;"	p
+var.head.name	.\static\js\research.js	/^        var head = {'name': '名字', 'link': '学校页', 'website': '个人页', $/;"	p
+var.head.position	.\static\js\research.js	/^                    'tags': '研究方向', 'position': '招生意向', 'term': '招生期'}$/;"	p
+var.head.tags	.\static\js\research.js	/^                    'tags': '研究方向', 'position': '招生意向', 'term': '招生期'}$/;"	p
+var.head.term	.\static\js\research.js	/^                    'tags': '研究方向', 'position': '招生意向', 'term': '招生期'}$/;"	p
+var.head.website	.\static\js\research.js	/^        var head = {'name': '名字', 'link': '学校页', 'website': '个人页', $/;"	p
 zh_name	.\models.py	/^    zh_name = db.Column(db.String(20), unique=True)$/;"	v	class:Interests
