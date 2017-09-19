@@ -417,7 +417,7 @@ class ResearchCrawler:
                                            re.findall("([A-Z]*[a-z]+)", self.url)
                                            )
                           ]
-        if debug_level.find("website") > 0: print('potential name: ' + str(potential_name))
+        # if debug_level.find("website") > 0: print('potential name: ' + str(potential_name))
 
         faculty_page = ''
         page_name = ''
@@ -428,11 +428,11 @@ class ResearchCrawler:
             if not href or len(href) < 5:
                 continue
             href = urllib2.unquote(href)
-            if debug_level.find("website") > 0: print(' href: ' + str(href))
+            # if debug_level.find("website") > 0: print(' href: ' + str(href))
 
             suffix = href.split('.')[-1]
             if len(suffix) < 5 and contain_keys(suffix, self.key_words[u'文件而不是网页']):
-                if debug_level.find("website") > 0: print(' is a file')
+                # if debug_level.find("website") > 0: print(' is a file')
                 continue
 
             if faculty_page and mail:
@@ -459,7 +459,7 @@ class ResearchCrawler:
                     faculty_page = href
                     page_name = a.get_text()
 
-        if debug_level.find("website") > 0: print(' final link: ' + faculty_page)
+        # if debug_level.find("website") > 0: print(' final link: ' + faculty_page)
         return faculty_page, mail, page_name
 
     def find_faculty_list(self, l, faculty_url):
@@ -510,7 +510,7 @@ class ResearchCrawler:
         line = re.sub("\s+", " ", line)
         line = line.replace("(", "").replace(")", "")
         for x in self.key_words[u'非研究兴趣的词'] + nltk.corpus.stopwords.words('english'):
-            line = re.sub(r'\b%s\b' % x, ',', line)
+            line = re.sub(r'\b%s\b' % x + '(?i)', ',', line, re.I)
         return line
 
     def get_open_position(self, soup):

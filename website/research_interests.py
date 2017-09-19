@@ -87,7 +87,9 @@ def get_professor_by_interests(major, interest):
 @research_page.route('/getMajorInterestsList/<major>')
 def get_major_interests_list(major):
     research_set = []
-    results = Interests.query.filter_by(major=major).order_by(asc(Interests.name)).all()
+    rule = or_(Interests.major == major, Interests.major.like("%s-%%" % major))
+    results = Interests.query.filter(rule).order_by(asc(Interests.name)).all()
+    # results = Interests.query.filter_by(major=major)
     for ele in results:
         research_set.append({'id': ele.id, 'name': ele.name, 'zh': ele.zh_name, 
                             'category_name': ele.category_name})
