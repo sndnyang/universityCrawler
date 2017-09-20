@@ -223,7 +223,12 @@ function interests_modify(obj, id, val) {
             name = $($(tr.children("td")[0]).children("input")).val();
     if (val == 1) {
         // 删除
+        var r = confirm("确认删除？");
+        if (r == false) {
+            return;
+        }
         data = {'id': id, 'name': name, 'type': 1};
+
     } else {
         var zh = $($(tr.children("td")[1]).children("input")).val(),
             category = $($(tr.children("td")[2]).children("input")).val();
@@ -296,7 +301,10 @@ function getMajorInterestsList() {
                 }
             } else {
                 for (var i in data.list) {
-                
+                    if (data.list[i].category_name != '' && 
+                        data.list[i].name != data.list[i].category_name) {
+                        continue;
+                    }
                     if (data.list[i].zh) 
                         $("#researchName").append('<option value="{0}">{1}</option>'.format(
                             data.list[i].name, data.list[i].zh));

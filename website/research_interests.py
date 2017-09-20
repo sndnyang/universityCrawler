@@ -59,7 +59,8 @@ def get_professor_list(school, major):
     tag = request.json.get("tag", None)
     position = request.json.get("position", None)
     if tag:
-        results = Professor.query.filter(Professor.interests.any(name=tag))
+        rule = or_(Professor.interests.any(name=tag), Professor.interests.any(category_name=tag))
+        results = Professor.query.filter(rule)
     else:
         rule = or_(Professor.major == major, Professor.major.like("%s-%%" % major))
         results = Professor.query.filter(rule)
@@ -77,7 +78,8 @@ def get_professor_list(school, major):
 @research_page.route('/getProfessorByInterests/<major>/<interest>')
 def get_professor_by_interests(major, interest):
     research_set = []
-    results = Professor.query.filter(Professor.interests.any(name=interest)).filter_by(major=major).all()
+    rule = or_(Professor.interests.any(name=interest), Professor.interests.any(category_name=interest))
+    results = Professor.query.filter(rule).filter_by(major=major).all()
     for ele in results:        
         tags = [tag.name for tag in ele.interests]
         research_set.append(convertToDict(ele, tags))
