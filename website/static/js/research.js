@@ -255,6 +255,7 @@ function interests_modify(obj, id, val) {
     });   
 }
 function getMajorInterestsList() {
+    $("#collegeList").html("");
     var major = parseInt($("#majorName").val());
     if (major == 0) {
         $("#researchName").html("<option value=''>不限</option>");
@@ -303,6 +304,10 @@ function getMajorInterestsList() {
                 for (var i in data.list) {
                     if (data.list[i].category_name != '' && 
                         data.list[i].name != data.list[i].category_name) {
+                        continue;
+                    }
+                    if (i > 0 && data.list[i].name == data.list[i-1].name &&
+                        data.list[i].category_name == data.list[i-1].category_name) {
                         continue;
                     }
                     if (data.list[i].zh) 
@@ -406,10 +411,8 @@ function fillResearchInformationByGrid(no, item) {
         temp = '';
         for (var i in parts) {
             if (i == 0 || i == parts.length-1) {
-                if (parts[i].length > 10)
+                if (parts[i].length > 6)
                     parts[i] = parts[i].substring(0, 5);
-            } else if (parts[i].length > 4) {
-                parts[i] = parts[i].substring(0, 2) + '.';
             }
             temp += parts[i] + ' ';
         }
@@ -442,7 +445,7 @@ function fillResearchInformationByGrid(no, item) {
 }
 
 function fillSourceInfo(toggle, item) {
-    var side = $("<div class='col-xs-1 col-md-1 col-lg-1'></div>"),
+    var side = $("<div class='col-xs-2 col-md-2 col-lg-2'></div>"),
         main = $("<div class='col-xs-10 col-md-10 col-lg-10'></div>"),
         key = ['source_name/目录页链接名字', 'source_name/链接URL',
         'source_website/个人主页名字', 'source_website/个人主页链接URL',

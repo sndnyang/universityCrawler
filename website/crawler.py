@@ -5,6 +5,7 @@ import re
 import json
 import logging
 import urllib2
+import urlparse
 import HTMLParser
 
 import requests
@@ -23,7 +24,12 @@ log_file_name = os.path.join(os.environ.get('OPENSHIFT_PYTHON_LOG_DIR', '.'),
 hdlr = logging.FileHandler(log_file_name, mode='a')
 hdlr.setLevel(logging.INFO)
 hdlr.setFormatter(fmter)
+
+# ch = logging.StreamHandler()
+# ch.setLevel(logging.INFO)
+# ch.setFormatter(fmter)
 logger.addHandler(hdlr)
+# logger.addHandler(ch)
 logger.setLevel(logging.INFO)
 
 
@@ -52,6 +58,7 @@ def contain_keys(href, keys, is_name=False, return_obj=False):
             if return_obj:
                 return r
             return True
+    # if debug_level.find("contain") > 0: print words
     r = re.search(r'\b%s\b' % words, href, re.I)
     if r:
         if return_obj:
@@ -70,59 +77,35 @@ def contain_keys(href, keys, is_name=False, return_obj=False):
     return False
 
 
-def format_url(href, source_url):
-    base = '/'.join(source_url.split('/')[:3])
-    domain = source_url.split('/')[2]
-
-    if not href:
-        return source_url
-
-    if href.startswith('http'):
-        full_url = href
-    elif href.startswith('//'):
-        full_url = 'http:' + href
-    elif href[0] == '/' and (len(href) == 1 or href[1] != '/'):
-        full_url = base + href
-    elif href.find(domain) > -1:
-        full_url = 'http://' + href
-    else:
-        last = source_url.split('/')[-1]
-        if '.' in last:
-            full_url = '/'.join(source_url.split('/')[:-1]) + '/' + href
-        elif last == '':
-            full_url = source_url + href
-        else:
-            full_url = source_url + '/' + href
-    return full_url
+def extract_name_from_url(page_url, dir_name):
+    fname = page_url.split('/')[-1]
+    if fname == '':
+        fname = page_url.split('/')[-2]
+    if fname.find("index") > -1:
+        fname = '_'.join(page_url.split('/')[3:])
+    if len(fname) > 20:
+        fname = fname[:20]
+    file_name = re.sub("[?%=]", "", dir_name + '/' + fname + '.html')
+    return file_name
 
 
-def get_and_store_page(page_url, force=False):
+def get_and_store_page(page_url, university, major='1-1',force=False, 
+                       name=''):
     """
 
     :rtype: string
     """
     # if debug_level.find("open") > 0: print("now open page url %s" % page_url)
-    try:
-        parts = page_url.split("/")[2].split(".")
-        university_name = parts[-2]
-    except IndexError:
-        return "Error at %s " % page_url
-
-    dir_name = os.path.join(os.environ.get('OPENSHIFT_PYTHON_LOG_DIR', '.'), 'data', university_name)
+    dir_name = os.path.join(os.environ.get('OPENSHIFT_PYTHON_LOG_DIR', '.'), 'data', university, major)
     if not os.path.isdir(dir_name):
-        os.mkdir(dir_name)
+        os.makedirs(dir_name)
 
-    fname = page_url.split('/')[-1]
-    if fname == '':
-        fname = page_url.split('/')[-2]
+    if name:
+        file_name = extract_name_from_url(name, dir_name)
+    else:
+        file_name = extract_name_from_url(page_url, dir_name)
 
-    if fname.find("index") > -1:
-        fname = '_'.join(page_url.split('/')[3:])
-
-    if len(fname) > 20:
-        fname = fname[:20]
-
-    file_name = re.sub("[?%=]", "", dir_name + '/' + fname + '.html')
+    # if debug_level.find("open") > 0: print("now save it to %s" % file_name)
 
     # if debug_level.find("open") > 0: print("now open page url %s" % file_name)
     if os.path.isfile(file_name) and not force:
@@ -143,6 +126,8 @@ def get_and_store_page(page_url, force=False):
                 params = {}
                 for e in query.split("&"):
                     parts = e.split("=")
+                    if len(parts) < 2:
+                        continue
                     params[parts[0]] = parts[1]
                 r = requests.get(page_url, params=params, verify=False)
             else:
@@ -160,7 +145,7 @@ def get_and_store_page(page_url, force=False):
 
 
 def onsocial(href):
-    for e in ['facebook', 'twitter', 'google', 'youtube', 'calendar', 'linkedin']:
+    for e in ['facebook', 'twitter', 'youtube', 'calendar', 'linkedin']:
         if e in href:
             return True
     return False
@@ -177,15 +162,16 @@ def find_all_anchor(soup):
 def find_example_index(l, a, index):
     logger.info("diff '%s'    with" % a)
     # if debug_level.find("list") > 0: print a
-    a = a.strip()
+    a = a.strip().replace(" ", "%20")
     for i in range(len(l)):
         href = l[i].get("href")
         if not href:
             continue
-        href = format_url(l[i].get("href"), index)
+        href = urlparse.urljoin(index, l[i].get("href")).replace(" ", "%20")
         logger.info("diff '%s' " % href)
         # if debug_level.find("list") > 0: print href
         if href.strip() == a:
+            # if debug_level.find("list") > 0: print ("find %s at %d" % (href, i))
             logger.info("find %s at %d" % (href, i))
             return i
     logger.info("find it at %d" % i)
@@ -219,7 +205,7 @@ def save_json_file(fpath, data):
         return u"Error at 爬虫关键词文件路径错误"
     try:
         with open(fpath, 'w') as fp:
-            json.dump(data, fp)
+            json.dump(data, fp, ensure_ascii=False, indent=2)
     except:
         return "Error at 写入定制关键词失败"
     return None
@@ -244,7 +230,7 @@ def filter_url(e, index_url, key_words, access_urls):
     if href.find("javascript:void") > -1:
         return False
     # if debug_level.find("filter") > 0: print("filter %s" % href)
-    href = format_url(href, index_url)
+    href = urlparse.urljoin(index_url, href)
     # if debug_level.find("filter") > 0: print("format to %s" % href)
     if href in access_urls['target']:
         return False
@@ -279,7 +265,8 @@ class CollegeCrawler:
     def crawl_bfs(self, url_list, force=False):
         final_list = []
         for url in url_list:
-            html = get_and_store_page(url, force)
+            html = get_and_store_page(url, force=force,
+                                      university=self.university_name)
             if html.startswith("Error at "):
                 return "Error to load %s " % url
             soup = BeautifulSoup(html, 'html.parser')
@@ -298,65 +285,102 @@ class CollegeCrawler:
         return save_json_file(self.access_file, self.access_url)
 
 
+def select_line_part(line, flags):
+    pos = 0
+    for flag in flags:
+        obj = re.search("(%s)" % flag, line, re.I)
+        if not obj:
+            continue
+        new_pos = obj.span(1)
+        if new_pos[0] > pos:
+            pos = new_pos[0] + len(flag)
+    return line[pos:]
+
+
 class ResearchCrawler:
     """
     从院系的Faculty目录中爬取有内容的教授信息
     如研究兴趣、招生机会
     """
 
-    def __init__(self, directory_url, example):
+    def __init__(self, directory_url, example, major='1-1'):
         self.example = example
         self.url = directory_url
         self.university_name = re.search('(\w+).edu', self.url).group(1)
         self.domain = '/'.join(directory_url.split("/")[:3])
-        dir_path = os.path.join(os.path.dirname(__file__), 'crawler', self.university_name)
+        dir_path = os.path.join(os.path.dirname(__file__), 'crawler', self.university_name, major)
         if not os.path.isdir(dir_path):
             os.makedirs(dir_path)
         self.config = os.path.join(dir_path, 'key.json')
 
         self.key_words = load_key(self.config)
 
-    def open_page(self, page_url, force=False):
+    def open_page(self, page_url, force=False, major='1-1'):
         """
 
         """
         # if debug_level.find("debug") > 0: print "open url", page_url
-        html = get_and_store_page(page_url, force)
+        html = get_and_store_page(page_url, force=force, major=major,
+                                  university=self.university_name)
         if html.startswith("Error at "):
             return "Error to load %s " % html, None
         soup = BeautifulSoup(html, 'html.parser')
         redirect = soup.find(attrs={"http-equiv": "refresh"})
-        if redirect:
+        e = None
+        iframes = soup.find_all("iframe")
+        for e in iframes:
+            if e.parent.name != 'noscript':
+                break
+        else:
+            e = None
+        if redirect and not contain_keys(redirect['content'].split("=")[1],
+                                         ['your', 'browser'], True):
             redir = redirect['content'].split("=")[1]
-            page_url = format_url(redir, page_url)
+            origin_url = page_url
+            page_url = urlparse.urljoin(page_url, redir)
+            name = ''
+            if self.university_name+'.edu' not in page_url.split("?")[0]:
+                name = origin_url.split("?")[0][:-1] + '-2'
             # if debug_level.find("open") > 0: print("now refres %s" % page_url)
-            html = get_and_store_page(page_url, force)
-            # if debug_level.find("debug") > 0: print "open url", page_url
+            html = get_and_store_page(page_url, force=force, major=major, 
+                                      university=self.university_name,
+                                      name=name)
             soup = BeautifulSoup(html, 'html.parser')
-        elif soup.find("frameset") and not soup.find("body"):
+        elif soup.find("frameset"):
             frames = soup.find_all("frame")
+            # if debug_level.find("frame") > 0: print("frame get %d", len(frames))
             for e in frames[1:]:
+                # if debug_level.find("frame") > 0: print("frame get ", e.get("src"))
                 if contain_keys(e.get("src"), self.key_words["frameset_pass"]):
                     continue
                 # if debug_level.find("debug") > 0: print("frame import ", e.get("src"))
-                page_url = format_url(e.get("src"), page_url)
+                origin_url = page_url
+                page_url = urlparse.urljoin(page_url, e.get("src"))
+                name = ''
+                if self.university_name+'.edu' not in page_url.split("?")[0]:
+                    name = origin_url.split("?")[0][:-1] + '-2'
                 # if debug_level.find("open") > 0: print("now frameset %s" % page_url)
-                html = get_and_store_page(page_url)
-                # if debug_level.find("debug") > 0: print "open url", page_url
+                html = get_and_store_page(page_url, force=force, major=major,
+                                          university=self.university_name,
+                                          name=name)
                 soup = BeautifulSoup(html, 'html.parser')
-        elif soup.find("iframe") and (not soup.find("body") or
-                                              len([e for e in soup.body.contents
-                                                   if e and str(e).strip()]) == 1):
-            e = soup.find("iframe")
-            page_url = format_url(e.get("src"), page_url)
-            # if debug_level.find("open") > 0: print("i frame %s" % page_url)
-            html = get_and_store_page(page_url)
+        elif e:
+            origin_url = page_url
+            # if debug_level.find("open") > 0: print(" origin %s " % page_url)
+            page_url = urlparse.urljoin(page_url, e.get("src"))
+            name = ''
+            if self.university_name+'.edu' not in page_url.split("?")[0]:
+                name = origin_url.split("?")[0][:-1] + '-2'
+            # if debug_level.find("open") > 0: print("i frame %s and %s" % (page_url, name))
+            html = get_and_store_page(page_url, force=force, major=major,
+                                      university=self.university_name,
+                                      name=name)
             soup = BeautifulSoup(html, 'html.parser')
         return html, soup
 
-    def crawl_faculty_list(self, directory_url, example):
+    def crawl_faculty_list(self, directory_url, example, major='1-1'):
 
-        content, soup = self.open_page(directory_url)
+        content, soup = self.open_page(directory_url, major=major)
         if content.startswith("Error at "):
             return 0, "Error to load %s " % content
         anchors = find_all_anchor(soup)
@@ -389,6 +413,7 @@ class ResearchCrawler:
         href = e.get('href')
         if not href or len(href) < 5:
             return True
+        # if debug_level.find("list") > 0: print href
         if href:
             if href.startswith('mailto:'):
                 return True
@@ -402,10 +427,16 @@ class ResearchCrawler:
         return False
 
     def get_personal_website(self, l, page_url, name):
+        if debug_level.find("website") > 0: print('page_url: ' + page_url)
+
         potential_name = []
         if name:
-            potential_name += [e[:5] for e in name.split()]
-            potential_name += [e for e in name.split()]
+            p = name.split()
+            potential_name += [e[:5] for e in p]
+            potential_name += [e for e in p]
+            if len(p) == 2:
+                potential_name.append(p[0][0]+p[1])
+                potential_name.append(p[0]+p[1][0])
         key_words = self.key_words
         potential_name += key_words[u'个人主页URL可能包含']
 
@@ -427,8 +458,8 @@ class ResearchCrawler:
             href = a.get('href')
             if not href or len(href) < 5:
                 continue
-            href = urllib2.unquote(href)
-            # if debug_level.find("website") > 0: print(' href: ' + str(href))
+            href = urlparse.urljoin(page_url, urllib2.unquote(href.strip()))
+            if debug_level.find("website") > 0: print(' href: ' + str(href))
 
             suffix = href.split('.')[-1]
             if len(suffix) < 5 and contain_keys(suffix, self.key_words[u'文件而不是网页']):
@@ -437,8 +468,8 @@ class ResearchCrawler:
 
             if faculty_page and mail:
                 break
-
-            if href in page_url or onsocial(href):
+            
+            if href in page_url or page_url in href or onsocial(href):
                 # if debug_level.find("website") > 0: print(' is social network')
                 continue
 
@@ -447,16 +478,18 @@ class ResearchCrawler:
                 continue
 
             if contain_keys(href, potential_name, True) or \
-                    contain_keys(a.get_text(), potential_name, True):
-                # if debug_level.find("website") > 0: print(' search it ok : ' + href)
-                if href.find('@') > -1 or href.find("mailto") > 0:
+                    contain_keys(a.get_text(), potential_name + 
+                                 self.key_words[u'教授个人主页可能显示为'],
+                                 True):
+                if debug_level.find("website") > 0: print(' search it ok : ' + href)
+                if href.find('@') > -1 or href.find("mailto") > -1:
                     mail = href
                     if '.' not in mail:
                         mail = re.sub("DOT", ".", mail)
                     if '@' not in mail:
                         mail = re.sub("AT", "@", mail)
                 else:
-                    faculty_page = href
+                    faculty_page = href.strip()
                     page_name = a.get_text()
 
         # if debug_level.find("website") > 0: print(' final link: ' + faculty_page)
@@ -474,9 +507,9 @@ class ResearchCrawler:
         for e in l:
             if self.filter_list(e):
                 continue
-
             href = e.get('href').strip()
-            faculty_link = format_url(href, self.url)
+            faculty_link = urlparse.urljoin(self.url, href)
+            # if debug_level.find("list") > 0: print faculty_link
 
             if faculty_link == faculty_url:
                 continue
@@ -497,14 +530,6 @@ class ResearchCrawler:
             faculty_list.append(e)
             count += 1
         return count, faculty_list
-
-    def select_line_part(self, line):
-        pos = 0
-        for flag in self.key_words[u'一段研究兴趣的起始词']:
-            new_pos = line.find(flag)
-            if new_pos > pos:
-                pos = new_pos + len(flag)
-        return line[pos:]
 
     def replace_words(self, line):
         line = re.sub("\s+", " ", line)
@@ -544,7 +569,7 @@ class ResearchCrawler:
             temp_sent += sent + "<br>"
             if contain_keys(sent, self.key_words[u'该句开始不再是研究兴趣'], True):
                 break
-            sent = replace_html(self.select_line_part(re.sub("\s+", " ", sent)))
+            sent = replace_html(re.sub("\s+", " ", sent))
             sent = self.replace_words(sent)
             # if debug_level.find("extract") > 0: print("convert to %s" % sent)
             for x in re.split("[,:;?!]", sent):
@@ -554,7 +579,7 @@ class ResearchCrawler:
                 tag = re.sub(r"[+.*#_]", ' ', tag)
                 tag = re.sub(r"[{}\[\]%&'=\"]", ',', tag)
                 tag = re.sub(r"[-]", ' ', tag)
-                tag = re.sub(r"[/\\|]", ' ', tag)
+                tag = re.sub(r"[/\\|]", ' and ', tag)
                 tag = re.sub(r"(\s+)", " ", tag)
                 and_tags = [e.strip() for e in re.sub(r"\band\b", ",", tag).split(",") if e]
                 for i in range(1, len(and_tags)):
@@ -579,34 +604,53 @@ class ResearchCrawler:
             tag_text.append(temp_sent)
         return tags
 
-    def extract_from_sibling(self, node, tags, tag_text):
+    def extract_from_sibling(self, node, tags, tag_text, words):
 
-        slog = node.string.strip()
+        slog = replace_html(node.string.strip())
         node = node.parent
-        while node.get_text().strip() == slog:
+        pnode_text = replace_html(node.get_text()).strip()
+        while pnode_text.endswith(slog):
             node = node.parent
+            pnode_text = replace_html(node.get_text()).strip()
 
         # if debug_level.find("sibling") > 0: print("%s' '%s" % (node.get_text(), slog))
+        # if debug_level.find("sibling") > 0: print("%s' '%s" % (node.get_text(), slog))
 
-        text = re.sub("[\n\r]", ".", unicode(node.get_text(".", strip=True)))
+        text = re.sub("[\n\r]+", " ", unicode(node.get_text(".", strip=True)))
+        if words == "interest":
+            text = select_line_part(text, ["research\*interest"] + 
+                                    self.key_words[u'一段研究兴趣的起始词'])
+        else: 
+            text = select_line_part(text, self.key_words[words] + 
+                                    self.key_words[u'一段研究兴趣的起始词'])
+
         # text = re.sub("(</?\w+[^>]*>)+", ".", unicode(node).strip(), re.M)
         # if debug_level.find("sibling") > 0: print(" now text is " + text)
 
-        line = text[text.find(slog) + len(slog):]
-        # if debug_level.find("sibling") > 0: print(" now line is " + line)
-        # if debug_level.find("interests") > 0: print(" now line is " + line)
+        # if debug_level.find("interests") > 0: print(" now line is " + text)
 
-        tags = self.extract_from_line(line, tags, tag_text)
+        tags = self.extract_from_line(text, tags, tag_text)
         # if debug_level.find("interests") > 0: print(" now tags is " + str(tags))
 
         return tags
 
     def find_paragraph_interests(self, result, tags, tag_text, words):
+        key_words = self.key_words[u'一段研究兴趣的起始词'][:]
+        if words == 'interest':
+            pos_words = "(interest)"
+            key_words += ["research\*interest"]
+        else:
+            pos_words = "(%s)" % '|'.join(e for e in self.key_words[words])
+            key_words += self.key_words[words]
+
         if len(result) == 1:
             # if debug_level.find('interests') > 0: print('search the words %s ' % words)
-            r = re.search(words, result[0], re.I).group(1).lower()
-            if len(result[0]) > result[0].lower().find(r) + len(r) + 15:
-                line = self.select_line_part(re.sub("\n", ".", result[0]))
+            r = re.search(pos_words, result[0], re.I).group(1).lower()
+            # if debug_level.find('interests') > 0: print(' r %s ' % r)
+            if len(result[0]) > result[0].lower().find(r) + len(r) + 35:
+                line = select_line_part(re.sub("\n", ".", result[0]),
+                                        key_words
+                                        )
                 # if debug_level.find('interests') > 0: print('from the line %s ' % line)
                 tags = self.extract_from_line(line, tags, tag_text)
                 # if debug_level.find('interests') > 0: print("line %d ge" % len(tags))
@@ -614,7 +658,7 @@ class ResearchCrawler:
                     return tags, tag_text
             node = result[0]
             # if debug_level.find('interests') > 0: print(' to find sibling %s ' % str(node))
-            tags = self.extract_from_sibling(node, tags, tag_text)
+            tags = self.extract_from_sibling(node, tags, tag_text, words)
             return tags, tag_text
         elif len(result) > 1:
             # 多个的情况太复杂，不处理了
@@ -625,12 +669,13 @@ class ResearchCrawler:
                         or isinstance(node.parent, Comment):
                     continue
                 if len(node) > 30:
-                    node = self.select_line_part(re.sub("\n", ".", node))
+                    node = select_line_part(re.sub("\n", ".", node), 
+                                            key_words)
                     # if debug_level.find("debug") > 0: print(" extract from line %s " % node)
                     tags = self.extract_from_line(node, tags, tag_text)
                     # if debug_level.find("debug") > 0: print(" extract from line %d  ge " % len(tags))
                     return tags, tag_text
-                tags = self.extract_from_sibling(node, tags, tag_text)
+                tags = self.extract_from_sibling(node, tags, tag_text, words)
                 # if debug_level.find("debug") > 0: print("extract from sibling %d  ge " % len(tags), tags)
                 return tags, tag_text
         return tags, tag_text
@@ -642,7 +687,8 @@ class ResearchCrawler:
         # 先用 完整的 research interest 找
         result = soup.find_all(string=re.compile("research\s+interest", re.I))
         # if debug_level.find('interests') > 0: print("re in has %d at %s" % (len(result), website))
-        tags, tag_text = self.find_paragraph_interests(result, tags, tag_text, "(interest)")
+        # logger.info("re in has %d at %s" % (len(result), website))
+        tags, tag_text = self.find_paragraph_interests(result, tags, tag_text, "interest")
         if result and tags:
             return tags, tag_text
 
@@ -651,7 +697,7 @@ class ResearchCrawler:
         result = soup.find_all(string=re.compile(words, re.I))
         # if debug_level.find('interests') > 0: print("other has %d at %s" % (len(result), website))
         # logger.info("other has %d at %s" % (len(result), website))
-        tags, tag_text = self.find_paragraph_interests(result, tags, tag_text, words)
+        tags, tag_text = self.find_paragraph_interests(result, tags, tag_text, u'其他可能的研究兴趣短语')
         # if debug_level.find('interests') > 0: print("get tags %s" % str(tags))
         if result and tags:
             return tags, tag_text
@@ -671,7 +717,7 @@ class ResearchCrawler:
                     return research_tags, tag_text
 
             # if debug_level.find("debug") > 0: print(' ' * 2 * debug_level + "need to sibling")
-            tags = self.extract_from_sibling(nodes[0], tags, tag_text)
+            tags = self.extract_from_sibling(nodes[0], tags, tag_text, u'其他可能的研究兴趣单词')
             return tags, tag_text
         elif len(nodes) < 5:
             if website == '':
@@ -684,12 +730,12 @@ class ResearchCrawler:
                         # if debug_level.find("debug") > 0: print (" from the line " + node)
                         tags = self.extract_from_line(node, tags, tag_text)
                         continue
-                    tags = self.extract_from_sibling(node, tags, tag_text)
+                    tags = self.extract_from_sibling(node, tags, tag_text, u'其他可能的研究兴趣单词')
             elif website:
                 for node in nodes:
                     if node.parent.name != "a":
                         continue
-                    research_link = format_url(node.parent.get("href"), website)
+                    research_link = urlparse.urljoin(website, node.parent.get("href"))
                     if research_link == website:
                         continue
                     re_content, re_soup = self.open_page(research_link)
@@ -787,7 +833,7 @@ class ResearchCrawler:
 
         if faculty_page:
             # if debug_level.find("website") > 0: print 'website page url: ',faculty_page
-            faculty_page = format_url(faculty_page, faculty_link)
+            faculty_page = urlparse.urljoin(faculty_link, faculty_page)
             # if debug_level.find("website") > 0: print 'website page url: ',faculty_page
             page_c, page_soup = self.open_page(faculty_page)
             if page_c.startswith('Error to load'):
@@ -799,6 +845,7 @@ class ResearchCrawler:
                 if tags:
                     person[u'研究方向部分原文'] = tag_text
 
+                # if debug_level.find("website") > 0: print 'website page open position',faculty_page
                 position, term, position_text = self.get_open_position(page_soup)
                 if position:
                     person['position'] = position
@@ -880,7 +927,6 @@ if __name__ == "__main__":
     import cProfile
 
     for url in urls[14:15]:
-        print url
 
         crawler = ResearchCrawler(url, examples[urls.index(url)])
         cProfile.run("crawler.crawl_from_directory(url, examples[urls.index(url)])", "prof.log")

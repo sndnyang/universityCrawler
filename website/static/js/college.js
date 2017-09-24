@@ -728,6 +728,33 @@ $(document).ready(function () {
         }
     });
 
+    $("#directoryUrl").on("paste", function(){
+        setTimeout(function() {
+            var url = $("#directoryUrl").val();
+            console.log(url);
+            var parts = url.split("/")[2].split(".");
+            for (var i in parts) {
+                var p = parts[i], flag = false;
+                if (p == 'edu' || p == 'www')
+                    continue;
+                var re = new RegExp("\\b" + p + ".edu\\b","i");
+                for (var j in collegeList) {
+                    var univ = collegeList[j];
+                    if ('info' in univ && 'webpage' in univ.info) {
+                        if (univ.info.webpage.match(re)) {
+                            console.log(p+ ' contains in ' + univ.name);
+                            $("#collegeName").val(univ.name);
+                            flag = true;
+                            break;
+                        }
+                    }
+                }
+                if (flag)
+                    break;
+            }
+        });
+    });
+
     $("#collegeName").keyup(function (event) {
         var text = $("#collegeName").val().toLowerCase();
         if (text.length == 3 || (text.length == 2 &&

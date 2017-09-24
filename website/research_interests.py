@@ -122,7 +122,7 @@ def process():
 
 def query_add_interests(tag, major):
     try:
-        result = Interests.query.filter_by(name=tag, major=major).one_or_none()
+        result = Interests.query.filter_by(name=tag, major=major.split('-')[0]).one_or_none()
         if result is None and len(tag) < 50:
             result = Interests(tag, major)
             db.session.add(result)
@@ -159,8 +159,18 @@ def is_exist_college(c_list, name):
     return False
 
 
+@research_page.route('/research_task.html')
+def research_task():
+    meta = {'title': u'学者研究兴趣 知维图 -- 互联网学习实验室',
+            'description': u'学者研究兴趣信息库，主要就是学校、主页、研究方向、招生与否',
+            'keywords': u'zhimind 美国 大学 CS 研究方向 research interests 招生'}
+    tasks = CrawlTask.query.all()
+    return render_template('research_task.html', meta=meta, tasks=tasks)
+
+
+@research_page.route('/custom_crawler.html/<task_id>')
 @research_page.route('/custom_crawler.html')
-def custom_crawler():
+def custom_crawler(task_id=None):
     verification_code = StringField(u'验证码', 
                                     validators=[validators.DataRequired(),
                                                 validators.Length
@@ -168,8 +178,11 @@ def custom_crawler():
     meta = {'title': u'学者研究兴趣 知维图 -- 互联网学习实验室',
             'description': u'学者研究兴趣信息库，主要就是学校、主页、研究方向、招生与否',
             'keywords': u'zhimind 美国 大学 CS 研究方向 research interests 招生'}
+    task = {'school': '', 'example': '', 'school': '', 'major': '0'}
+    if task_id:
+        task = CrawlTask.query.get(task_id)
     return render_template('custom_crawler.html', meta=meta, temp=0,
-                           veri=verification_code, types="research")
+                           veri=verification_code, types="research", task=task)
 
 
 def validate_and_extract(form):
@@ -202,14 +215,13 @@ def query_and_create_task(college, major):
             college_set = getCollegeRedis()
             app.redis.set('college', college_set)
             flag = is_exist_college(entity, college_set)
+
         if not flag:
             return u'Error at 数据有误，不存在该学校，请确认校名或联系开发者'
-        task = CrawlTask.query.filter_by(school=college, major=major).one_or_none()
-        if task:
-            return u'Error at 该校该专业爬取任务已存在，数据错误问题请联系开发者'
+        return CrawlTask.query.filter_by(school=college, major=major).one_or_none()
+        
     except MultipleResultsFound:
         return u'Error at 数据有误，存在多所同名学校，请联系开发者'
-    return task
 
 
 def crawl_directory(crawl, faculty_list, major, directory_url, count, flag):
@@ -217,10 +229,15 @@ def crawl_directory(crawl, faculty_list, major, directory_url, count, flag):
     i = 0
     link_list = []
     for link in faculty_list:
-        link_list.append(crawl.dive_into_page(link, flag))
-        i += 1
-        # app.redis.set('process of %s %s' % (directory_url, major), "%d,%d" % (count, i))
-        app.logger.info('process of %s %s' % (directory_url, major) + " %d,%d" % (count, i))
+        try:
+            link_list.append(crawl.dive_into_page(link, flag))
+            i += 1
+            # app.redis.set('process of %s %s' % (directory_url, major), "%d,%d" % (count, i))
+            app.logger.info('process of %s %s' % (directory_url, major) + " %d,%d" % (count, i))
+        except:
+            app.logger.info(traceback.print_exc())
+            app.logger.info('process of %s %s fail' % (directory_url, major) + " %d,%d" % (count, i))
+            break
     app.logger.info('research process %s %s ' % (directory_url, major) + "  finish")
     app.redis.set('%s-%s' % (directory_url, major), link_list)
     return link_list
@@ -289,14 +306,22 @@ def custom_crawler_step(step):
     if major is None:
         return json.dumps({'error': college}, ensure_ascii=False)
     task = query_and_create_task(college, major)
-    crawl = ResearchCrawler(directory_url, prof_url)
+    if isinstance(task, unicode) and task.startswith("Error at"):
+        return json.dumps({'error': task}, ensure_ascii=False)
+
+    crawl = ResearchCrawler(directory_url, prof_url, major)
     flag = update_key_words(request.form, crawl)
     if flag:
         return json.dumps({'error': flag}, ensure_ascii=False)
 
-    count, faculty_list = crawl.crawl_faculty_list(directory_url, prof_url)
+    count, faculty_list = crawl.crawl_faculty_list(directory_url, prof_url, major=major)
 
     if step == 1:
+        if task is None:
+            task = CrawlTask(college, major, directory_url, prof_url)
+            db.session.add(task)
+            db.session.commit()
+
         link_list = []
         for link in faculty_list:
             link_list.append(link.get("href") + "|" + str(link.get_text()))
@@ -309,9 +334,10 @@ def custom_crawler_step(step):
         return json.dumps({'info': u'成功', "list": link_list, 'keywords': crawl.key_words},
                           ensure_ascii=False)
     elif step == 3:
-        if task is None:
-            task = CrawlTask(college, major, directory_url, prof_url)
-            db.session.add(task)
+        if task and (task.school_url != directory_url or task.example != prof_url):
+            task.school_url = directory_url
+            task.example = prof_url
+            db.session.commit()
         result = submit_professors(college, major, directory_url)
         if result.startswith("Error"):
             return json.dumps({'error': result}, ensure_ascii=False)
@@ -341,7 +367,7 @@ def submitted_research():
             return json.dumps({'error': result}, ensure_ascii=False)
         return json.dumps({'info': u'成功'}, ensure_ascii=False)
 
-    crawl = ResearchCrawler(directory_url, prof_url)
+    crawl = ResearchCrawler(directory_url, prof_url, major)
     count, faculty_list = crawl.crawl_faculty_list(directory_url, prof_url)
     link_list = crawl_directory(crawl, faculty_list, major,  directory_url, count, False)
     return json.dumps({'info': u'成功', "list": link_list}, ensure_ascii=False)
@@ -377,7 +403,7 @@ def modify_interests():
 
     try:
         old_interest = Interests.query.get(tid)
-        new_interest = Interests.query.filter_by(name=name).one_or_none()
+        new_interest = Interests.query.filter_by(name=name, major=old_interest.major).one_or_none()
         if action == "1":
             if old_interest is None:
                 return json.dumps({'error': 'not find id %s name %s'%(tid,name)}, ensure_ascii=False)
