@@ -169,7 +169,8 @@ def generate_stem(w, stem_shortest):
     words = []
     for e in re.split("(\w+)", w):
         if e.strip():
-            if e not in ['P2P', 'K12', '3D', '2D', '1D', '4G', '5G']:
+            if e not in ['P2P', 'K12', '3D', '2D', '1D', '4G', '5G', 'IC', 'IP', 
+                         'RNA', 'RNAs', 'DNA', 'DNAs']:
                 e = str(s.stem(e.strip()))
 
             if e not in stem_shortest:
