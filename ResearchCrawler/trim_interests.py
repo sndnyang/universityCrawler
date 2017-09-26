@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys
 
-reload(sys)
-sys.setdefaultencoding('utf-8')
 import re
 import json
 import traceback
@@ -23,7 +21,8 @@ def get_shortest_stem():
 
 
 def update_shortest_stem(tag_set, stem_shortest):
-    for w in tag_set:
+    for tag in tag_set:
+        w = tag["name"]
         if re.search("\d+", w) and not re.search("3D", w, re.I):
             continue
         for e in re.split("(\w+)", w):
@@ -43,7 +42,7 @@ def gen_tag_set():
     tag_set = []
     results = Interests.query.all()
     for e in results:
-        tag_set.append(e.name)
+        tag_set.append({'name': e.name, 'up': e.category_name, 'zh': e.zh_name})
     print len(tag_set)
     return tag_set
         
@@ -69,20 +68,21 @@ def merge_word_id(old_id, new_id):
     return new_tag
     
 
+def delete_tag_in_relation(ele, tid):
+    cursor = db.session.query(professor_interests_table)\
+               .filter(professor_interests_table.c.professor_id==ele.id,
+                       professor_interests_table.c.interests_id==tid)
+    es = cursor.all()
+    print "%s professor_id = '%s' and interests_id = '%s'" % (ele.name, ele.id, tid)
+    cursor.delete(synchronize_session=False)
+
+
 def delete_tag_by_id(tid):
     old_tag = Interests.query.get(tid)
     results = Professor.query.filter(Professor.interests.any(id=tid)).all()
     try:
         for ele in results:
-            cursor = db.session.query(professor_interests_table).filter(professor_interests_table.c.professor_id==ele.id,
-                  professor_interests_table.c.interests_id==tid)
-            es = cursor.all()
-
-            for e in es:
-                print e.professor_id, e.interests_id
-            print "%s professor_id = '%s' and interests_id = '%s'" % (ele.name, ele.id, tid)
-            cursor.delete(synchronize_session=False)
-            # ele.interests.remove(old_tag)
+            delete_tag_in_relation(ele, tid)
         db.session.delete(old_tag)
         db.session.commit()
     except InvalidRequestError:
@@ -98,10 +98,16 @@ def delete_tag_by_name(name):
 
 def delete_tag_by_pattern(tag_set, pattern, d=0):
     for t in tag_set:
-        if re.search(r"\b%s" % pattern, t):
-            print t
-        if d:
-            delete_tag_by_name(t)
+        if re.search(r"%s" % pattern, t["name"]):
+            print t["name"]
+            if d:
+                a = raw_input("do you want to delete %s ?(y/n)[n]" % t["name"])
+                if a != 'y':
+                    continue
+                delete_tag_by_name(t["name"])
+                tag_set.remove(t)
+        # else:
+        #     query_name(t)
     
 
 def merge_word_all_major(old, old_tag, new_word):
@@ -126,17 +132,14 @@ def merge_word_all_major(old, old_tag, new_word):
     print len(results)
     try:
         for ele in results:
-            try:
-                ele.interests.remove(old_tag)
-            except ValueError:
-                continue
+            delete_tag_in_relation(ele, old_tag.id)
             ele.interests.append(new_tag)
 
         db.session.delete(old_tag)
         db.session.commit()
-    except Exception,e:
+    except Exception, e:
         traceback.print_exc()
-        print old, old_tag.name
+        print old, old_tag["name"]
 
 
 def merge_word(old, new_word):
@@ -183,7 +186,8 @@ def generate_stem(w, stem_shortest):
     return stems
 
 def convert_stem(tag_set, stem_shortest):
-    for w in tag_set:
+    for tag in tag_set:
+        w = tag["name"]
         if re.search(r"\d+", w) and not re.search("[1-3]\s*d", w, re.I)\
             and not re.search(r"\bp2p\b", w, re.I) and not re.search("k\s*12 ", w, re.I):
             a = raw_input("do you want to delete %s ?(y/n)[n]" % w)
@@ -240,7 +244,7 @@ def merge_major():
     tag_set = []
     results = Interests.query.all()
     for e in results:
-        tag_set.append({'name': e.name, 'major': e.major})
+        tag_set.append({'name': e["name"], 'major': e.major})
     for e in tag_set:
         if '-' not in e['major']:
             continue
@@ -248,12 +252,43 @@ def merge_major():
         update_to_category_major(e)
 
 
-
 def process():
     tag_set = gen_tag_set()
     stem_shortest = get_shortest_stem()
     update_shortest_stem(tag_set, stem_shortest)
     convert_stem(tag_set, stem_shortest)
+
+
+def query_name(tag_set, name):
+
+    # tags = Interests.query.filter_by(name=name).all()
+    for tag in tag_set:
+        if name != tag['name']:
+            continue
+        print(u"研究方向 %s " % name)
+        ps = Professor.query.filter(Professor.interests.any(name=tag['name'])).all()
+        print u"有 %d 位教授在研究， 他们分别是" % len(ps)
+        for p in ps:
+            print("   %s  %s %s" % (p.name, p.school, p.major))
+            print(u"  有 %d 个研究方向" % len(p.interests))
+            for t in p.interests:
+                print(t.name)
+
+
+def set_same_name_by_name(name, zh, up):
+    tags = Interests.query.filter_by(name=name).all()
+    print(u"研究方向 %s " % name)
+    
+    for tag in tags:
+        flag = False
+        if tag.zh_name != zh:
+            tag.zh_name = zh
+            flag = True
+        if tag.category_name != up:
+            tag.category_name = up
+            flag = True
+        if flag:
+            db.session.commit()
 
 
 if __name__ == '__main__':
