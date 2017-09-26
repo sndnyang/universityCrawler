@@ -61,3 +61,7 @@ data/
 output*
 
 test_case/
+
+*test*
+
+*.cfg
