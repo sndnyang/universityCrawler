@@ -391,6 +391,15 @@ def query_position():
     return json.dumps({'status': True}, ensure_ascii=False)
 
 
+def delete_tag_in_relation(ele, tid):
+    cursor = db.session.query(professor_interests_table)\
+               .filter(professor_interests_table.c.professor_id==ele.id,
+                       professor_interests_table.c.interests_id==tid)
+    es = cursor.all()
+    # print "%s professor_id = '%s' and interests_id = '%s'" % (ele.name, ele.id, tid)
+    cursor.delete(synchronize_session=False)
+
+
 @research_page.route('/modifyInterests', methods=['POST'])
 def modify_interests():
 
@@ -409,7 +418,8 @@ def modify_interests():
                 return json.dumps({'error': 'not find id %s name %s'%(tid,name)}, ensure_ascii=False)
             results = Professor.query.filter(Professor.interests.any(name=old_interest.name)).all()
             for ele in results:
-                ele.interests.remove(old_interest)
+                delete_tag_in_relation(ele, tid)
+
             db.session.delete(old_interest)
         else:
             if old_interest is None:
@@ -427,7 +437,7 @@ def modify_interests():
             elif old_interest.name != name and new_interest is not None:
                 results = Professor.query.filter(Professor.interests.any(name=old_interest.name)).all()
                 for ele in results:
-                    ele.interests.remove(old_interest)
+                    delete_tag_in_relation(ele, tid)
                     if not Professor.query.filter(Professor.interests.any(name=name))\
                        .filter_by(id=ele.id).one_or_none():
                         ele.interests.append(new_interest)

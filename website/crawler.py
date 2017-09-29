@@ -211,7 +211,7 @@ def save_json_file(fpath, data):
     return None
 
 def load_url_list(config):
-    access_urls = {"target": []}
+    access_urls = {"access": [], "adm": [], "dir": []}
     if os.path.isfile(config):
         with open(config) as fp:
             access_urls = json.loads(fp.read(), strict=False)
@@ -222,28 +222,40 @@ def load_url_list(config):
 
 def filter_url(e, index_url, key_words, access_urls):
     href = e.get("href")
-    domain = re.search('(\w+).edu', index_url).group(1)
-    if not href:
+    if not href or href == index_url:
         return False
+    domain = re.search('(\w+).edu', index_url).group(1)
+    href = href.strip()
     if href.find("mailto") > -1 or href.find("#") > -1:
         return False
     if href.find("javascript:void") > -1:
         return False
     # if debug_level.find("filter") > 0: print("filter %s" % href)
-    href = urlparse.urljoin(index_url, href)
+    href = urlparse.urljoin(index_url, href).strip()
+    # logger.info(href)
     # if debug_level.find("filter") > 0: print("format to %s" % href)
-    if href in access_urls['target']:
-        return False
-    if contain_keys(href, key_words[u'招生录取URL不可能包含'] + key_words[
-                    u'院系教员URL不可能包含']):
+    if href in access_urls:
         return False
     if href.find(domain) == -1:
         return False
-    # if not contain_keys(href, key_words[u'招生录取URL可能包含'] + key_words[
-    #                 u'院系教员URL可能包含'], True):
-    #     return False
+
     e['href'] = href
     return True
+
+
+def classify_url(e, key_words):
+    href = e.get("href")
+    if contain_keys(href, key_words[u'院系教员目录URL可能包含']):
+        return 2 
+    if contain_keys(href, key_words[u'招生录取URL可能包含']):
+        return 3
+    if contain_keys(href, key_words[u'有用URL不可能包含']):
+        return 4
+    text = e.get("text")
+    if contain_keys(text, key_words[u'有用URL文本不可能包含']):
+        return 4
+    return 1
+
 
 class CollegeCrawler:
     """
@@ -259,29 +271,55 @@ class CollegeCrawler:
         self.key_words = load_key(self.config, 'college_key.json')
         self.access_file = os.path.join(dir_path, 'access_url.json')
         self.access_url = load_url_list(self.access_file)
-        if len(self.access_url['target']) == 0:
-            self.access_url['target'] = [index_url]
+        self.access_url["0"] = [index_url]
 
-    def crawl_bfs(self, url_list, force=False):
-        final_list = []
-        for url in url_list:
+    def filter_urls(self, url_list, cstep):
+        access_url = []
+        for i in range(cstep):
+            access_url += self.access_url[str(i)]
+        a_list = filter(lambda e: filter_url(e, self.index_url, 
+                                             self.key_words, access_url
+                                             ), url_list)
+        for e in a_list:
+            e['class'] = classify_url(e, self.key_words)
+        return a_list
+
+    def crawl_bfs(self, url_list, cstep, force=False):
+        temp_list = []
+        for e in url_list:
+            url = e.get("href")
+            logger.info("%s to pass" % url)
             html = get_and_store_page(url, force=force,
                                       university=self.university_name)
             if html.startswith("Error at "):
-                return "Error to load %s " % url
+                continue
             soup = BeautifulSoup(html, 'html.parser')
             a_list = find_all_anchor(soup)
-            print len(a_list)
-            final_list += filter(lambda e: filter_url(e, self.index_url, 
-                                                      self.key_words, 
-                                                      self.access_url), a_list)
+            for e in a_list:
+                e['text'] = str(e.get_text()).strip()
+            a_list = self.filter_urls(a_list, cstep)
+            logger.info("%s has %d url to pass" % (url, len(a_list)))
+            temp_list += a_list
+
+        urls = []
+        final_list = []
+        for e in temp_list:
+            if e['href'] not in urls:
+                urls.append(e['href'])
+                final_list.append(e)
+
+        for e in final_list:
+            e['class'] = classify_url(e, self.key_words)
+
+        self.access_url[str(cstep)] = urls
+        self.save_url()
 
         return final_list
 
     def save_key(self):
         return save_json_file(self.config, self.key_words)
 
-    def save_url(self, config):
+    def save_url(self):
         return save_json_file(self.access_file, self.access_url)
 
 
@@ -319,7 +357,7 @@ class ResearchCrawler:
         """
 
         """
-        # if debug_level.find("debug") > 0: print "open url", page_url
+        # if debug_level.find("open") > 0: print "open url", page_url
         html = get_and_store_page(page_url, force=force, major=major,
                                   university=self.university_name)
         if html.startswith("Error at "):
@@ -427,7 +465,7 @@ class ResearchCrawler:
         return False
 
     def get_personal_website(self, l, page_url, name):
-        if debug_level.find("website") > 0: print('page_url: ' + page_url)
+        # if debug_level.find("website") > 0: print('page_url: ' + page_url)
 
         potential_name = []
         if name:
@@ -438,7 +476,7 @@ class ResearchCrawler:
                 potential_name.append(p[0][0]+p[1])
                 potential_name.append(p[0]+p[1][0])
         key_words = self.key_words
-        potential_name += key_words[u'个人主页URL可能包含']
+        potential_name += key_words[u"个人主页URL可能包含"]
 
         potential_name = [e for e in potential_name if len(e) > 2 and
                           not contain_keys(e, key_words[u'教员URL可能包含'] +
@@ -459,7 +497,7 @@ class ResearchCrawler:
             if not href or len(href) < 5:
                 continue
             href = urlparse.urljoin(page_url, urllib2.unquote(href.strip()))
-            if debug_level.find("website") > 0: print(' href: ' + str(href))
+            # if debug_level.find("website") > 0: print(' href: ' + str(href))
 
             suffix = href.split('.')[-1]
             if len(suffix) < 5 and contain_keys(suffix, self.key_words[u'文件而不是网页']):
@@ -477,11 +515,12 @@ class ResearchCrawler:
                 # if debug_level.find("website") > 0: print(' wont contain')
                 continue
 
+            # if debug_level.find("website") > 0: print(' href: ' + str(href))
             if contain_keys(href, potential_name, True) or \
                     contain_keys(a.get_text(), potential_name + 
                                  self.key_words[u'教授个人主页可能显示为'],
                                  True):
-                if debug_level.find("website") > 0: print(' search it ok : ' + href)
+                # if debug_level.find("website") > 0: print(' search it ok : ' + href)
                 if href.find('@') > -1 or href.find("mailto") > -1:
                     mail = href
                     if '.' not in mail:
@@ -637,8 +676,8 @@ class ResearchCrawler:
     def find_paragraph_interests(self, result, tags, tag_text, words):
         key_words = self.key_words[u'一段研究兴趣的起始词'][:]
         if words == 'interest':
-            pos_words = "(interest)"
-            key_words += ["research\*interest"]
+            pos_words = "(interests?)"
+            key_words += ["research\*interests?"]
         else:
             pos_words = "(%s)" % '|'.join(e for e in self.key_words[words])
             key_words += self.key_words[words]
@@ -779,6 +818,15 @@ class ResearchCrawler:
                             if not contain_keys(e, self.key_words[u'人名不可能是']+
                                                 [self.university_name]))
             # if debug_level.find('name') > 0: print(' name is ' + name)
+        if not name:
+            name = faculty_link
+            name = re.sub("(Ph\.?D|M\.?S)", "", name, re.I)
+            name = re.sub("([0-9]+)", "", name, re.I)
+            name = ' '.join(e.capitalize() for e in re.findall('(\w+)', name)
+                            if not contain_keys(e, self.key_words[u'人名不可能是']+
+                                                [self.university_name]))
+
+        if name:
             person['name'] = name
 
         return person

@@ -230,6 +230,7 @@ function interests_modify(obj, id, val) {
         data = {'id': id, 'name': name, 'type': 1};
 
     } else {
+        $(obj).html("更新中");
         var zh = $($(tr.children("td")[1]).children("input")).val(),
             category = $($(tr.children("td")[2]).children("input")).val();
         data = {'id': id, 'name': name, 'zh': zh, 'category': category, 'type': 0};
@@ -247,9 +248,12 @@ function interests_modify(obj, id, val) {
                 alert(data.error);
                 return;
             }
-            alert('success');
+            
             if (val == 1) {
                 tr.remove();
+            } else {
+                $(obj).html("更新成功");
+                setTimeout(function() {$(obj).html("更新");}, 1000);
             }
         }
     });   

@@ -12,7 +12,6 @@ from ..validation import *
 from mindmap import app, db
 
 from models import College, TempCollege, University, TempUniversity
-from crawler import CollegeCrawler
 
 
 uni_major_page = Blueprint('uni_major_page', __name__,
@@ -30,73 +29,6 @@ def college_page():
     return render_template('universityList.html', meta=meta, temp=0,
                            cloudjs=random.random()
                            if os.environ.get("LOAD_JS_CLOUD", 0) else 0)
-
-
-@uni_major_page.route('/custom_college_crawler.html')
-def custom_crawler_page():
-    verification_code = StringField(u'验证码', 
-                                    validators=[validators.DataRequired(),
-                                                validators.Length
-                                                (4, 4, message=u'填写4位验证码')])
-    meta = {'title': u'美国大学库 知维图 -- 互联网学习实验室',
-            'description': u'美国大学申请信息库，包括GPA、英语成绩、截止日期、学费等',
-            'keywords': u'zhimind 美国 大学 CS 学费 截止日期'}
-    return render_template('custom_college_crawler.html', meta=meta, temp=0,
-                           veri=verification_code, types="college")
-
-
-def validate_and_extract(form):
-    if not (g.user and g.user.is_authenticated and 
-            g.user.get_name() == 'sndnyang'):
-        verification_code = form['verification_code']
-        code_text = session['code_text']
-        if verification_code != code_text:
-            return u'Error at 验证码错误', None
-
-
-    college_name = form.get('college_name', "")
-    index_url = form.get('index_url', "")
-    
-    if not college_name.strip() or not index_url.strip():
-        return u'Error at 信息不全', None
-
-    return college_name, index_url
-
-
-def update_key_words(form, crawl):
-    key_words = crawl.key_words
-    flag = False
-    for k in key_words:
-        if k not in form:
-            continue
-        if form[k].strip() and form[k].strip()[-1] == ',':
-            return u"Error at %s 的最后一个符号是逗号" % k
-        if ','.join(key_words[k]) == form[k]:
-            continue
-        key_words[k] = form[k].split(',')
-        flag = True
-
-    if flag:
-        crawl.key_words = key_words
-        temp = crawl.save_key()
-        if temp and temp.startswith("Error"):
-            return temp
-    return None
-
-
-@uni_major_page.route('/college_crawler', methods=['POST'])
-def custom_college_step():
-    college, index_url = validate_and_extract(request.form)
-    if index_url is None:
-        return json.dumps({'error': college}, ensure_ascii=False)
-    crawler = CollegeCrawler(college, index_url)
-    flag = update_key_words(request.form, crawler)
-    a_list = crawler.crawl_bfs([index_url])
-    link_list = []
-    for link in a_list:
-        link_list.append(link.get("href") + "|" + str(link.get_text()))
-    return json.dumps({'info': u'成功', "list": link_list, 'keywords': crawler.key_words},
-                      ensure_ascii=False)
 
 
 @uni_major_page.route('/tempcollege.html')

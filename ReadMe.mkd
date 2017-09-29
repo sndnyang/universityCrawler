@@ -13,14 +13,14 @@ https://yocket.in/  [yocket](https://yocket.in/)
 
 自己弄的网站
 
-[网址](https://www.zhimind.com/oversea/college.html)
+[专业库址](https://www.zhimind.com/oversea/college.html)
 
 因为爬虫搞不出来~~~手工填太麻烦， 申请方是爬虫爬的数据？ 厉害了。
 
 
 # 大学库
 
-收集了 若干大学信息（其实也就是部分排名和名字而已）, 在 [大学库](https://www.zhimind.com/oversea/college.html)
+收集了 若干大学信息（其实也就是部分排名和名字而已，而且还是直接爬了别人的，而不是爬了USNEWS）, 在 [大学库](https://www.zhimind.com/oversea/college.html)
 
 # 专业招生信息库
 
@@ -35,7 +35,25 @@ https://yocket.in/  [yocket](https://yocket.in/)
 但研究方向(research interests)的匹配上还非常困难，不仅很容易把多余信息搞进来， 也很难正确处理到位。 比如  image and video processing 和 machine learning and artificial intelligence 的AND 就难搞了， 目前我采取的是替换所有的 and， 然后分开， image 这种单词丢掉。
 
 
+# TODO
+
+1. 更准确的专业分类，我想前期难免会漏一些专业， 每次都写 html文件和 JS里的变量可不好。所以又是一项参数
+2. 计算机研究方向整理， 之后用研究方向匹配。
+
+
 # 更新记录
+
+## 20170929
+
+自己终于有点好消息， 庆祝！
+
+可以安心来把这块做更好了。首先就是考虑是否把它单独弄成一个网站（不花钱买新域名，只是在服务器上另起一个 flask程序）， 不过想想，算了~~~就是调试时程序比较臃肿一点、启动慢一点而已。
+
+不过那个测试肯定还是需要的，不然， 自己改动后，哪里出错都不知道， 需要拿原数据来做测试，另外 JS怎么测？用 sele什么来着， 另外怎么多线程加快速度， 都是问题， 现在是有 gevent自动异步了， 但我开发是在windows下，用不了gevent， 所以是 虚拟机里用 Ubuntu? 不然Ubuntu看着眼睛不太舒服。 单测 Python后端的话，是不是用 scrapy？
+
+还想写通用爬虫， 更难了。
+
+先把专业分清楚吧， 现在这个缺漏太多了。
 
 ## 20170918
 
