@@ -129,9 +129,9 @@ def get_and_store_page(page_url, university, major='1-1',force=False,
                     if len(parts) < 2:
                         continue
                     params[parts[0]] = parts[1]
-                r = requests.get(page_url, params=params, verify=False)
+                r = requests.get(page_url, params=params, verify=False, timeout=30)
             else:
-                r = requests.get(page_url, verify=False)
+                r = requests.get(page_url, verify=False, timeout=30)
             html = r.content
         except (ConnectionError, HTTPError):
             html = "Error at " + page_url
@@ -803,6 +803,7 @@ class ResearchCrawler:
         # if debug_level.find('name') > 0: print(' name is ' + name)
         if name:
             name = re.sub("(Ph\.?D|M\.?S)", "", name, re.I)
+            name = re.sub("(\([^)]*\))", "", name, re.I)
             name = ' '.join(e.capitalize() for e in re.findall('(\w+)', name)
                             if not contain_keys(e, self.key_words[u'人名不可能是']+
                                                 [self.university_name]))
@@ -814,6 +815,7 @@ class ResearchCrawler:
         # if debug_level.find('name') > 0: print(' name is ' + name)
         if name:
             name = re.sub("(Ph\.?D|M\.?S)", "", name, re.I)
+            name = re.sub("(\([^)]*\))", "", name, re.I)
             name = ' '.join(e.capitalize() for e in re.findall('(\w+)', name)
                             if not contain_keys(e, self.key_words[u'人名不可能是']+
                                                 [self.university_name]))

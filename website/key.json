@@ -12,7 +12,7 @@
     "长期招生关键词": ["regularly", "always"],
     "招生意向关键词": ["Prospective students","positions? [a-zA-Z- \\.]*available", "available [a-zA-Z- \\.]*for", "looking [a-zA-Z- \\.]*students", "Interested PhD", "recruiting [a-zA-Z- \\.]*students", "accepting [a-zA-Z- \\.]*students"],
     "文件而不是网页": ["pdf", "ps", "zip", "rar"],
-    "有些方向的前缀": ["bio", "geo", "algorithm", "database", "cyber","visual", "test", "debug","gene", "genom", "optim", "compil","parall", "OpenMP","heteroge","robot","complexi","Multi","automa"],
+    "有些方向的前缀": ["bio", "geo", "algorithm", "database", "cyber","visual", "test", "debug","gene", "genom", "optim", "compil","parall", "OpenMP","heteroge","robot","complexi","Multi","automa","crypto"],
     "其他可能的研究兴趣短语": ["focuses on", "(research|Interests?) Areas", "Areas? of (research|interests?)"],
     "其他可能的研究兴趣单词": ["research", "Expertise"]
 }
