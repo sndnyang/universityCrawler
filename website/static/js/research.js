@@ -37,63 +37,6 @@ function filterProfessorByPosition() {
     pageIt(newList, "research", 0);
 }
 
-function fillResearchInformation(item, showSchool) {
-    var temp, tr = $("<tr></tr>"),
-        select = $("<select></select>"),
-        option_tmp = "<option>{0}</option>";
-
-    for (var j in item.tags) {
-        select.append($(option_tmp.format(item.tags[j])));
-    }
-    temp = item.name.trim();
-    if (temp.length > 16) {
-        var parts = temp.split(/\W/g);
-        temp = '';
-        for (var i in parts) {
-            if (i == 0 || i == parts.length-1) {
-                if (parts[i].length > 10)
-                    parts[i] = parts[i].substring(0, 5);
-            } else if (parts[i].length > 4) {
-                parts[i] = parts[i].substring(0, 2) + '.';
-            }
-            temp += parts[i] + ' ';
-        }
-    }
-    tr.append($("<td>{0}</td>".format(temp)));
-    if (showSchool) {
-        temp = item.school;
-        if (temp && temp.indexOf("(") > -1)
-            temp = temp.substring(temp.indexOf('(')+1, temp.indexOf(')'));
-        tr.append($("<td>{0}</td>".format(temp)));
-        tr.append($("<td>{0}</td>".format(item.major)));
-    }
-    tr.append($("<td><a href='{0}' target='_blank'>主页</a></td>".format(item.link)));
-    if (item.website)
-        tr.append($("<td><a href='{0}' target='_blank'>个人页</a></td>".format(item.website)));
-    else {
-        tr.append($("<td></td>"));
-        
-    }
-    var td = $("<td></td>").append(select)
-    tr.append(td);
-    temp = item.position;
-    var btn = $('<a class="btn btn-success"></a>');
-    btn.attr("onclick", "togglePosition(this, '{0}')");
-    if (temp) {
-        temp = "在招";
-        btn.html("招满");
-    }
-    else {
-        temp = "";
-        btn.html("来招");
-    }
-
-    tr.append($("<td>{0}</td>".format(temp)));
-    tr.append($("<td>{0}</td>".format(item.term || "")));
-    // tr.append($("<td></td>").append(btn));
-    return tr;
-}
-
 function togglePosition(obj, pid) {
     $.ajax({  
         type: "post", //请求方式  

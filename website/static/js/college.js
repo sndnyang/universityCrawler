@@ -1,6 +1,8 @@
 var rankBy = 'Q.S.';
 var filterList = null;
 var collegeList = null;
+var major_map = null;
+var detail_major = null;
 
 function filterCollege(l, col, t) {
     var data = [], prefix = t+'-';
@@ -91,6 +93,72 @@ function fillName(name) {
     return $('<td>{0}</td>'.format(temp || ''));
 }
 
+function fillResearchInformation(item, showSchool) {
+    var temp, tr = $("<tr></tr>"),
+        select = $("<select></select>"),
+        option_tmp = "<option>{0}</option>";
+
+    for (var j in item.tags) {
+        select.append($(option_tmp.format(item.tags[j])));
+    }
+    temp = item.name.trim();
+    if (temp.length > 16) {
+        var parts = temp.split(/\W/g);
+        temp = '';
+        for (var i in parts) {
+            if (i == 0 || i == parts.length-1) {
+                if (parts[i].length > 10)
+                    parts[i] = parts[i].substring(0, 5);
+            } else if (parts[i].length > 4) {
+                parts[i] = parts[i].substring(0, 2) + '.';
+            }
+            temp += parts[i] + ' ';
+        }
+    }
+    tr.append($("<td>{0}</td>".format(temp)));
+    if (showSchool) {
+        temp = item.school;
+        if (temp && temp.indexOf("(") > -1)
+            temp = temp.substring(temp.indexOf('(')+1, temp.indexOf(')'));
+        tr.append($("<td>{0}</td>".format(temp)));
+        if (item.major in detail_major)
+            temp = detail_major[item.major];
+        else
+            temp = item.major;
+        if (screen.width < 767) {
+            var index = temp.indexOf('(');
+            if (index >= 0) {
+                temp = temp.substring(temp.indexOf('(')+1, temp.indexOf(')'));
+            }
+        }
+        tr.append($("<td>{0}</td>".format(temp)));
+    }
+    tr.append($("<td><a href='{0}' target='_blank'>主页</a></td>".format(item.link)));
+    if (item.website)
+        tr.append($("<td><a href='{0}' target='_blank'>个人页</a></td>".format(item.website)));
+    else {
+        tr.append($("<td></td>"));
+        
+    }
+    var td = $("<td></td>").append(select)
+    tr.append(td);
+    temp = item.position;
+    var btn = $('<a class="btn btn-success"></a>');
+    btn.attr("onclick", "togglePosition(this, '{0}')");
+    if (temp) {
+        temp = "在招";
+        btn.html("招满");
+    }
+    else {
+        temp = "";
+        btn.html("来招");
+    }
+
+    tr.append($("<td>{0}</td>".format(temp)));
+    tr.append($("<td>{0}</td>".format(item.term || "")));
+    // tr.append($("<td></td>").append(btn));
+    return tr;
+}
 
 function fillCollegeInformation(item, i, n, backend) {
     var name, temp, expand, tr = $('<tr></tr>');
@@ -124,45 +192,7 @@ function fillInformation(item, i, n, backend) {
         temp, expand, edit, tr = $('<tr></tr>');
     name = fillName(item.name);
 
-    var degree_map = {'1': '本科', '2': '硕士', '3': '博士'},
-        major_map = {"1-1": "计算机科学(CS)",
-                      "1-2": "计算机工程(CE)", 
-                      "1-3": "软件工程(SE)", 
-                      "1-4": "信息技术(IT)",
-                      "2": "航空航天",
-                      "3": "Chemical/Petroleum",
-                      "4": "Civil/Construction/Structural",
-                      "5": "Electrical/Electronics/Telecomm",
-                      "6": "Industrial/Operations",
-                      "7": "Mechanical/Automobile",
-                      "8": "Biomedical/Biotechnical",
-                      "9": "Management Information System (MIS)",
-                      "10": "Biological/Agricultural",
-                      "11": "Engineering Management (MEM)",
-                      "12": "Environmental/Mining",
-                      "13": "Financial Engineering",
-                      "14": "Material Science and Engineering",
-                      "15": "Analytics",
-                      "16": "Nano/Nuclear/Power",
-                      "17": "Healthcare",
-                      "18": "Nursing",
-                      "19": "Dental",
-                      "20": "Veterinary Science",
-                      "21": "Pharmacy",
-                      "22": "Commerce/Finance/Actuarial",
-                      "23": "Government/Administrative",
-                      "24": "Pure Sciences",
-                      "25": "Arts/Media",
-                      "26": "Education/Languages/Counselling",
-                      "27": "Humanities/Journalism",
-                      "28": "Management",
-                      "29": "Finance",
-                      "30": "Marketing",
-                      "31": "Human Resources",
-                      "32": "International Management",
-                      "33": "General Law",
-                      "34": "International Law",
-                      "35": "Architecture"}
+    var degree_map = {'1': '本科', '2': '硕士', '3': '博士'};
 
     temp = degree_map[item.degree] || '';
     if (screen.width < 767) {
@@ -385,7 +415,7 @@ function getDataList(name, n) {
             filterList = result;
             pageIt(data, name, n);
         }
-    });   
+    });
 }
 
 function validate_deadline(obj) {
@@ -707,6 +737,10 @@ function submitRedirect(obj, type, url) {
         
         // 呈现loading效果
         $(".container-fluid").append(loadingDiv);
+        setTimeout(function() {
+            if (typeof($("#loadingDiv")) != "undefined")
+                $("#loadingDiv").remove();
+        }, 18000);
     }
 
     $(obj).ajaxSubmit(options);
@@ -720,18 +754,31 @@ $(document).ready(function () {
 
     $.ajax({
         method: "get",
-        url : '/static/data/college.json',
+        url : "/oversea/collegeList",
         contentType: 'application/json',
         dataType: "json",
         success : function (result){
-            collegeList = result.sort(compare('name', true, false));
+            result.sort(compare('name', true, false));
+            collegeList = result;
+            var param = unescape(document.URL.split('/')[5]);
+            if (param == "new") {
+                var data = collegeList;
+                for (var i in data) {
+                    var item = data[i].name, 
+                        option = $('<option value="{0}">{1}</option>'.format(item, item));
+
+                    if (param === item) {
+                        option.attr("selected", true); 
+                    }
+                    $('#collegeName').append(option);
+                }
+            }
         }
     });
 
     $("#directoryUrl").on("paste", function(){
         setTimeout(function() {
             var url = $("#directoryUrl").val();
-            console.log(url);
             var parts = url.split("/")[2].split(".");
             for (var i in parts) {
                 var p = parts[i], flag = false;
@@ -785,7 +832,28 @@ $(document).ready(function () {
     });
 });
 
-function getProperty() {
+function sortMajorIndex(a, b) {
+    var temp = 0;
+    if (a == "") a = temp;
+    if (b == "") b = temp;
+    if (typeof(a) == "string") {
+        temp = parseInt(a.split("-")[0]);
+        if (a.split("-").length == 2) {
+            temp += parseInt(a.split("-")[1]) * 0.1;
+        }
+        a = temp;
+    }
+    if (typeof(b) == "string") {
+        temp = parseInt(b.split("-")[0]);
+        if (b.split("-").length == 2) {
+            temp += parseInt(b.split("-")[1]) * 0.1;
+        }
+        b = temp;
+    }
+    return a-b;
+}
+
+function getProperty(type) {
     var url = '/qnfile/zcollege-college.txt';
     $.ajax({
         method: "get",
@@ -795,12 +863,26 @@ function getProperty() {
         success : function (data) {
             var t = '<option value="{0}">{1}</option>';
             for (var i in data.nation) {
-                var nation = data.nation[i]
+                var nation = data.nation[i];
                 $("#degreeName").append($(t.format(nation, nation))); 
             }
             for (var i in data['sort']) {
-                var rank = data['sort'][i]
+                var rank = data['sort'][i];
                 $("#sortName").append($(t.format(rank, rank))); 
+            }
+            detail_major = data["detail_major"];
+            if (type != "") {
+                major_map = data[type];
+
+                var keys = [];
+                for (var i in major_map) {
+                    keys.push(i);
+                }
+                keys.sort(sortMajorIndex);
+                for (var i in keys) {
+                    var option = t.format(keys[i], major_map[keys[i]]);
+                    $("#majorName").append(option);
+                }
             }
         }
     });
