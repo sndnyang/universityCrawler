@@ -47,7 +47,8 @@ Temporary Items
 .apdisk
 
 
-*.html
+data/
+crawl/
 
 .ipynb_checkpoints/
 

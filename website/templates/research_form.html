@@ -1,0 +1,93 @@
+{% extends "layout.html" %}
+{% block body %}
+{% from "major_detail.html" import render_major %}
+<script src="//cdn.bootcss.com/jquery.form/4.2.1/jquery.form.min.js"></script>
+<link href="/static/css/loader.css" rel="stylesheet" media="screen" type="text/css"/>
+<script type="text/javascript" src="{{url_for('research_page.static', filename='js/research.js')}}"></script>
+<script src="{{url_for('uni_major_page.static', filename='js/college.js')}}"></script>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="col-md-10 col-md-offset-1">
+    <div class="pagetitle">
+        <h1>提交学校专业信息</h1>
+        <a href="custom_crawler.html" class="btn btn-info">返回定制爬虫</a>
+        <a href="research.html" class="btn btn-info">退出</a>
+    </div>
+    <div id="main">
+        <form method="post" action="{{ url_for('research_page.submitted_research') }}" id="research">
+            <input type="hidden" name="id">
+            <label for="college_name">学校:</label>
+            <input id="collegeName" name="college_name" list="collegeNameList" class="form-control"/>
+            <datalist id="collegeNameList"></datalist>
+            <label for="major">专业:</label>
+            {{ render_major() }}
+            <hr>
+            <label for="directory_url">教授目录主页</label>
+            <input type="url" id="directoryUrl" name="directory_url" class="form-control">
+            <label for="professor_url">请提供第一个有个人主页的学者的链接</label>
+            <input type="url" id="professorUrl" name="professor_url" class="form-control">
+
+            <p>示例</p>
+            <div>伊利诺伊理工学院IIT计算机系教授目录页:
+                <span>
+                <a href="http://science.iit.edu/computer-science/people/faculty">
+                    http://science.iit.edu/computer-science/people/faculty
+                </a>
+                </span>
+            </div>
+            <div>第一位有个人主页的学者（Eunice Santos, Ph.D.）的主页链接:
+                <span>
+                <a href="http://science.iit.edu/people/faculty/eunice-santos">
+                    http://science.iit.edu/people/faculty/eunice-santos
+                </a>
+                </span>
+            </div>
+            <hr>    
+            <div id="crawlResult">
+            </div>
+            <div id="pagination-container"></div>
+            </div>
+            <input id="approveIt" name="approve" type="hidden" value="0">
+            <hr>
+            <div class="form-group">
+                <label for="verification_code">验证码
+                    <a href="javascript:void(0)">
+                        <img id="vericode" onclick="refresh(this)" src="/verifycode" title="点击重新获取" />
+                    </a>
+                </label>
+                <input id="verification_code" name="verification_code" type="text" value="">
+                {% if veri.errors %}
+                <ul class=errors>
+                    {% for error in veri.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div> 
+            <button class="btn btn-info" type="submit" id="researchSubmit">提交</button>
+            <a href="javascript:void(0)" class="btn btn-warning" id="resetSubmit">重置</a>
+        </form>
+    </div>
+</div>
+</div>
+</div>
+<script>
+var wait = 60;
+function refresh(obj) {
+    obj.setAttribute('src','/verifycode?random='+Math.random());
+}
+</script>
+<script>
+$(document).ready(function(){
+    $("#research").submit(function() {
+        return submitRedirect(this, "research", "{{url_for('research_page.research_index')}}");
+    });
+    $("#resetSubmit").click(function() {
+        $("#approveIt").val(0);
+        $("#crawlResult").html("");
+        $("#researchSubmit").html("重新提交");
+    });
+});
+getProperty("detail_major");
+</script>
+{% endblock %}

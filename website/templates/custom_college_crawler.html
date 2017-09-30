@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+{% block body %}
+<script src="//cdn.bootcss.com/jquery.form/4.2.1/jquery.form.min.js"></script>
+<link href="/static/css/loader.css" rel="stylesheet" media="screen" type="text/css"/>
+<script type="text/javascript" src="{{url_for('research_page.static', filename='js/research.js')}}"></script>
+<script src="{{url_for('uni_major_page.static', filename='js/college.js')}}"></script>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="pagetitle">
+                <h1>提交学校目录信息</h1>
+                <a href="college.html" class="btn btn-info">退出</a>
+            </div>
+            <div id="main">
+                <form method="post" action="/oversea/college_crawler" id="college">
+                    <input type="hidden" name="id">
+                    <label for="college_name">学校:</label>
+                    <input id="collegeName" name="college_name" list="collegeNameList" class="form-control"/>
+                    <datalist id="collegeNameList"></datalist>
+                    <label for="index_url">学校主页</label>
+                    <input type="url" id="indexUrl" name="index_url" class="form-control">
+                    <hr>
+                    <div id="keyWords">
+                    </div>
+                    <hr>
+                    <div class="form-group">
+                        <label for="verification_code">验证码
+                            <a href="javascript:void(0)">
+                                <img id="vericode" onclick="refresh(this)" src="/verifycode" title="点击重新获取"/>
+                            </a>
+                        </label>
+                        <input id="verification_code" name="verification_code" type="text" value="">
+                        {% if veri.errors %}
+                        <ul class=errors>
+                            {% for error in veri.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    <button class="btn btn-info" type="submit" id="collegeSubmit">提交</button>
+                    <a class="btn btn-warning" href="javascript:void(0)" id="resetSubmit">重置</a>
+                </form>
+                <hr>
+                <div id="crawlResult">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+var wait = 60;
+function refresh(obj) {
+    obj.setAttribute('src','/verifycode?random='+Math.random());
+}
+
+
+</script>
+<script>
+$(document).ready(function(){
+    $("#college").submit(function() {
+        return submitRedirect(this, "college", "{{url_for('uni_major_page.college_page')}}");
+    });
+    $("#resetSubmit").click(function() {
+        $("#approveIt").val(0);
+        $("#keyWords").html("");
+        $("#crawlResult").html("");
+        $("#researchSubmit").html("重新提交");
+    });
+});
+
+
+</script>
+{% endblock %}

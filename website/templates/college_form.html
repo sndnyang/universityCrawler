@@ -1,0 +1,97 @@
+{% extends "layout.html" %}
+{% block body %}
+{% from "major_detail.html" import render_major %}
+<script src="//cdn.bootcss.com/jquery.form/4.2.1/jquery.form.min.js"></script>
+<script src="{{url_for('uni_major_page.static', filename='js/college.js')}}"></script>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="col-md-10 col-md-offset-1">
+    <div class="pagetitle">
+        <h1>提交学校专业信息</h1>
+        <a href="/oversea/college.html" class="btn btn-info">退出</a>
+    </div>
+    <div id="main">
+        <form method="post" action="{{ url_for('uni_major_page.submitted_college')}}" id="college">
+            <label for="name">学校名:</label>
+            <div class="form-group name-div">
+                <select id="collegeName" name="name" class="form-control">
+                </select>
+            </div>
+            <div class="container">
+                添加任何想添加的信息 :), 如国家、省州、城市、气温
+                <div class="info">
+                    <div class="info-item">
+                        <label for="nationlabel">信息名称:</label>
+                        <input type="text" name="citylabel" value="城市" readOnly="true">
+                        <label for="nationinput">内容:</label>
+                        <input type="text" name="cityinput">
+                    </div>                   
+                </div>
+                <button id="addInfo" class="btn-info" onclick="addOneInfo('', '', -1)">添加新内容</button>
+            </div>
+            <div class="form-group">
+                <label for="verification_code">验证码
+                    <a href="javascript:void(0)">
+                        <img id="vericode" onclick="refresh(this)" src="/verifycode" title="点击重新获取" />
+                    </a>
+                </label>
+                <input id="verification_code" name="verification_code" type="text" value="">
+                {% if veri.errors %}
+                <ul class=errors>
+                    {% for error in veri.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div> 
+            <input type="submit" id="collegeSubmit">
+        </form>
+    </div>
+</div>
+</div>
+</div>
+<script>
+var wait = 60;
+function refresh(obj) {
+    obj.setAttribute('src','/verifycode?random='+Math.random());
+}
+</script>
+<script>
+$(document).ready(function(){
+    var param = unescape(document.URL.split('/')[5]);
+    if (param.indexOf("(") < 0 && param !== "new") {
+        $.ajax({
+            method: "get",
+            url : '/oversea/college/' + param,
+            contentType: 'application/json',
+            dataType: "json",
+            success : function (result) {
+                if (result.error) {
+                    alert(result.error);
+                }
+                var option = $('<option value="{0}">{1}</option>'.format(result.name, result.name));
+                $("select[name='name']").append(option);
+
+                $('input[name="nationinput"]').val(result.info.nation);
+
+                var item = result.info;
+                var l = Math.floor(Object.keys(item).length / 2);
+                for (var i = 0; i < l; i++) {
+                    addOneInfo(item['label'+(i+1)], item['input'+(i+1)], i+1);
+                }
+            }
+        });
+    } else {
+        var p = $('<input type="text" name="name" class="form-control">');
+        if (param != "new") {
+            p.val(param);
+        }
+        $(".name-div").html(p);
+    }
+    $("#college").submit(function() {
+        return submitRedirect(this, "university", "{{url_for('uni_major_page.college_page')}}");
+    });
+});
+getProperty("detail_major");
+</script>
+{% endblock %}

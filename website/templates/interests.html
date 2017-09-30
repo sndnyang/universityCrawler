@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block body %}
+{% from "major_filter.html" import render_major %}
+<script src="//cdn.bootcss.com/paginationjs/2.0.8/pagination.min.js"></script>
+<link href="//cdn.bootcss.com/paginationjs/2.0.8/pagination.css" rel="stylesheet">
+<link href="/static/css/ListTabMenu.css" rel="stylesheet">
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="pagetitle">
+                <h1>修正研究方向信息（没错手工）</h1>
+                <a href="research.html" class="btn btn-info">退出</a>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <h4>专业</h4>
+                    {{ render_major(types) }}
+                </div>
+            </div>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>研究方向名</th>
+                    <th>中文名</th>
+                    <th>所属大方向</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody id="collegeList">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
+<script type="text/javascript" src="{{url_for('research_page.static', filename='js/research.js')}}"></script>
+<script type="text/javascript" src="{{url_for('research_page.static', filename='js/college.js')}}"></script>
+<script>
+getProperty("catego_major");
+</script>
+
+{% endblock %}
+

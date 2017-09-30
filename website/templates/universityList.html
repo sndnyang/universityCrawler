@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+{% block body %}
+<script src="//cdn.bootcss.com/paginationjs/2.0.8/pagination.min.js"></script>
+<link href="//cdn.bootcss.com/paginationjs/2.0.8/pagination.css" rel="stylesheet">
+<link href="/static/css/ListTabMenu.css" rel="stylesheet">
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="pagetitle">
+                <h1>学校专业信息</h1>
+                <a href="{{ url_for('uni_major_page.major_page') }}.html" class="btn btn-primary">专业信息汇总</a>
+                <a href="{{ url_for('research_page.research_index') }}.html" class="btn btn-primary">研究方向汇总</a>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <h4>国家</h4>
+                    <select id="degreeName" name="degree" onchange='filterBy(this.options[this.options.selectedIndex].value, true, "国家", "{{ url_for('uni_major_page.college_page') }}")' class="form-control">
+                        <option value="">不限</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <h4>排名</h4>
+                    <select id="sortName" onchange='sortCollege("{{ url_for('uni_major_page.college_page') }}", this.options[this.options.selectedIndex].value, true)' class="form-control">
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-1">
+                <div class="form-group">
+                    <h4><br></h4>
+                    <a href="{{ url_for('uni_major_page.college_form', name='new') }}" target="_blank" class="btn btn-primary">添加</a>
+                </div>
+            </div>
+            <div class="col-sm-10">
+                <div class="input-group">
+                  <span class="input-group-btn">
+                      <button class="btn btn-default" type="button">Go!</button>
+                  </span>
+                  <input type="text" class="form-control" 
+                  placeholder="Search for..."
+                  onkeyup="filterByName(this, 'college')">
+                </div>
+            </div>
+            <table class="table table-striped">
+<thead>
+<tr>
+<th><a href="javascript:void(0)" onclick=sortCollege("{{ url_for('uni_major_page.college_page') }}", 'name', false)>校名</a></th>
+<th>国家</th>
+<th id="rankName">QS排名</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody id="collegeList">
+</tbody>
+</table>
+        <div id="pagination-container"></div>
+        </div>
+    </div>
+</div>
+<script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
+{% if cloudjs %}
+<script type="text/javascript" src="//7xt8es.com1.z0.glb.clouddn.com/zhimind/js/college.js?{{ cloudjs }}"></script> 
+{% else %}
+<script type="text/javascript" src="{{url_for('uni_major_page.static', filename='js/college.js')}}"></script>
+{% endif %}
+<script>
+    getProperty("");
+    getDataList("{{ url_for('uni_major_page.college_page') }}", {{ temp }});
+</script>
+
+{% endblock %}
+

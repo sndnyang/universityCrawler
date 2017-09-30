@@ -1,0 +1,191 @@
+{% extends "layout.html" %}
+{% block body %}
+{% from "major_detail.html" import render_major %}
+<script src="//cdn.bootcss.com/jquery.form/4.2.1/jquery.form.min.js"></script>
+<script src="{{url_for('uni_major_page.static', filename='js/college.js')}}"></script>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="col-md-10 col-md-offset-1">
+    <div class="pagetitle">
+        <h1>提交学校专业信息</h1>
+        <a href="/oversea/major.html" class="btn btn-info">退出</a>
+    </div>
+    <div id="main">
+        <form method="post" action="{{ url_for('uni_major_page.submitted_major') }}" id="majors">
+            <input type="hidden" name="id">
+            <label for="name">学校名:</label>
+            <select id="collegeName" name="name" class="form-control">
+            </select>
+            <label for="degree">学位:</label>
+            <select id="degreeName" name="degree" class="form-control">
+                <option value="1">本科</option>
+                <option value="2">硕士</option>
+                <option value="3">博士</option>
+            </select>
+            <label for="major">专业名:</label>
+            {{ render_major() }}
+            <label for="program_name">项目名(默认空):</label>
+            <input type="text" name="program_name"><hr />
+            <label for="site_url">学校主页:</label>
+            <input type="url" name="site_url" id="directoryUrl"><hr />
+            <label for="gpa">GPA要求:
+            <input type="text" name="gpa">
+            <label for="gpa_url">GPA页面:</label>
+            <input type="url" name="gpa_url">
+            </label><hr />
+            <label for="tuition">学费:
+            <input type="text" name="tuition">
+            <label for="tuition_url">学费页面:</label>
+            </label>
+            <input type="url" name="tuition_url"><hr />
+            <label for="fall">秋季截止日期(如有申奖日期写在小括号内):</label>
+            <input type="text" onchange="validate_deadline(this)" name="fall"
+            placeholder="MM.DD(MM.DD)"><br/>
+            <label for="spring">春季(1月)截止日期:</label>
+            <input type="text" onchange="validate_deadline(this)" name="spring"
+            placeholder="MM.DD(MM.DD)"><br/>
+            <label for="deadline_url">截止日期页面:</label>
+            <input type="url" name="deadline_url">
+            <hr>
+
+            <div>
+            <label for="toefl">托福:</label>
+            <input type="text" name="toefl">
+            <label for="ielts">雅思:</label>
+            <input type="text" name="ielts">
+            <label for="eng_url">英语要求页面:</label>
+            <input type="url" name="eng_url">
+            </div><hr />
+
+            <label for="gre">GRE要求:
+            <input type="text" name="gre">
+            <label for="gre_url">GRE要求页面:</label>
+            <input type="url" name="gre_url">
+            </label><hr>
+
+            <label for="rl">推荐信:</label>
+            <select name="rl">
+                <option value="-1">可选</option>
+                <option value="1">1封</option>
+                <option value="2">2封</option>
+                <option value="3">3封</option>
+                <option value="4">4封</option>
+            </select>
+            <label for="evalue">成绩评估(WES):</label>
+            <select name="evalue">
+                <option value="no">不需要</option>
+                <option value="yes">需要</option>
+            </select>
+            <label for="finance">存款证明:</label>
+            <select name="finance">
+                <option value="no">不需要</option>
+                <option value="yes">申请时需要</option>
+                <option value="after">录取后需要</option>
+            </select><br />
+            <label for="docum_url">申请材料页面:</label>
+            <input type="url" name="docum_url"><hr />
+            <label for="int_docum_url">国际生申请材料页面:</label>
+            <input type="url" name="int_docum_url"><hr />
+
+            <div class="container">
+                添加任何想添加的信息 :), 如录取率、小分、申请方式
+                <div class="info">
+                    <div class="info-item">
+                        <label for="label0">信息名称:</label>
+                        <input type="text" name="label0" value="录取前是否要邮寄密封成绩单" style="width: 250px" readonly="true">
+                        <label for="input0">内容:</label>
+                        <select name="input0">
+                            <option value="">不知道(将不显示)</option>
+                            <option value="no">不需要(将不显示)</option>
+                            <option value="yes">需要寄</option>
+                        </select>
+                    </div> 
+                </div>
+                <a id="addInfo" class="btn btn-info" onclick="addOneInfo('', '', -1)"
+                    href="javascript:void(0)">添加新内容</a>
+            </div>
+            <div class="form-group">
+                <label for="verification_code">验证码
+                    <a href="javascript:void(0)">
+                        <img id="vericode" onclick="refresh(this)" src="/verifycode" title="点击重新获取" />
+                    </a>
+                </label>
+                <input id="verification_code" name="verification_code" type="text" value="">
+                {% if veri.errors %}
+                <ul class=errors>
+                    {% for error in veri.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div> 
+            <button type="submit" id="collegeSubmit" class="btn btn-info">提交</button>
+        </form>
+    </div>
+</div>
+</div>
+</div>
+<script>
+var wait = 60;
+function refresh(obj) {
+    obj.setAttribute('src','/verifycode?random='+Math.random());
+}
+</script>
+<script>
+$(document).ready(function(){
+    var param = unescape(document.URL.split('/')[5]);
+    if (param.indexOf("(") < 0 && param !== "new") {
+        $.ajax({
+            method: "get",
+            url : '/oversea/major/' + param,
+            contentType: 'application/json',
+            dataType: "json",
+            success : function (result) {
+                if (result.error) {
+                    alert(result.error);
+                }
+                var option = $('<option value="{0}">{1}</option>'.format(result.name, result.name));
+                $("select[name='name']").append(option);
+                $("#degreeName").find("option[value='{0}']".format(result.degree)).attr("selected",true);
+                $("#majorName").find("option[value='{0}']".format(result.major)).attr("selected",true);
+                $("input[name='id']").val(result.id);
+                $("input[name='program_name']").val(result.program_name);
+                $("input[name='site_url']").val(result.site_url);
+                $("input[name='gpa']").val(result.gpa);
+                $("input[name='gpa_url']").val(result.gpa_url);
+                $("input[name='tuition']").val(result.tuition);
+                $("input[name='tuition_url']").val(result.tuition_url);
+                $("input[name='fall']").val(result.fall);
+                $("input[name='spring']").val(result.spring);
+                $("input[name='deadline_url']").val(result.deadline_url);
+                $("input[name='toefl']").val(result.toefl);
+                $("input[name='ielts']").val(result.ielts);
+                $("input[name='eng_url']").val(result.eng_url);
+                $("input[name='gre']").val(result.gre);
+                $("input[name='gre_url']").val(result.gre_url);
+                if (result.rl == 0) result.rl = -1;
+                $("select[name='rl']").val(result.rl);
+                $("select[name='evalue']").val(result.evalue);
+                $("select[name='finance']").val(result.finance);
+                $("input[name='docum_url']").val(result.docum_url);
+                $("input[name='int_docum_url']").val(result.int_docum_url);
+                var item = result.info;
+                var l = Math.floor(Object.keys(item).length / 2);
+                if (item['label0']) {
+                    $("input[name='label0']".format(i+1)).val(item['label0']);
+                    $("select[name='input0']".format(i+1)).val(item['input0']);
+                }
+                for (var i = 1; i < l; i++) {
+                    addOneInfo(item['label'+i], item['input'+i], i);
+                }
+            }
+        });   
+    }
+    
+    $("#majors").submit(function() {
+        return submitRedirect(this, "major", "{{url_for('uni_major_page.major_page')}}");
+    });
+});
+getProperty("detail_major");
+</script>
+{% endblock %}

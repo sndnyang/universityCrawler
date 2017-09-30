@@ -1,0 +1,99 @@
+{% extends "layout.html" %}
+{% block body %}
+{% from "major_filter.html" import render_major %}
+<script src="//cdn.bootcss.com/paginationjs/2.0.8/pagination.min.js"></script>
+<link href="//cdn.bootcss.com/paginationjs/2.0.8/pagination.css" rel="stylesheet">
+<link href="/static/css/ListTabMenu.css" rel="stylesheet">
+<a href="https://github.com/sndnyang/universityCrawler"><img style="position: absolute; top: 50px; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="pagetitle">
+                <h1>研究方向招生信息汇总</h1>
+                <a href="{{ url_for('uni_major_page.major_page') }}.html" class="btn btn-primary">专业信息汇总</a>
+                <a href="{{ url_for('uni_major_page.college_page') }}.html" class="btn btn-primary">学校信息汇总</a>
+                
+                <a href="{{ url_for('research_page.research_task') }}" class="btn btn-primary">已爬取院系</a>
+                    
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <h4>专业</h4>
+                    {{ render_major(types) }}
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <h4>研究方向</h4>
+                    <select id="researchName" name="research" onchange="getProfessorsList('interest')" class="form-control">
+                        <option value="">不限</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <h4>招生意向</h4>
+                    <select id="positionName" name="position" onchange="getProfessorsList('position')"
+                            class="form-control">
+                        <option value="">不限</option>
+                        <option value="always">长期</option>
+                        <option value="true">在招</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <h4><br></h4>
+                    <a href="{{ url_for('research_page.custom_crawler', name='new') }}" target="_blank"
+                       class="btn btn-primary">添加学者名录</a>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <h4><br></h4>
+                    <a href="{{ url_for('research_page.interests_page')}}" target="_blank" class="btn btn-primary">研究方向修正</a>
+                </div>
+            </div>
+            <div class="col-sm-10">
+                <div class="input-group">
+                  <span class="input-group-btn">
+                      <button class="btn btn-default" type="button" onclick="getProfessorsList('school')">点击查询!</button>
+                  </span>
+                    <input type="text" class="form-control" id="collegeName"
+                           list="collegeNameList"
+                           placeholder="Search by University(not faculty), then enter回车查询">
+                    <datalist id="collegeNameList"></datalist>
+                </div>
+            </div>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>学者</th>
+                    <th>学校</th>
+                    <th>专业</th>
+                    <th>主页</th>
+                    <th>个人页</th>
+                    <th>研究方向</th>
+                    <th>招生意愿</th>
+                    <th>学期</th>
+                    <!--<th>变更</th>-->
+                </tr>
+                </thead>
+                <tbody id="collegeList">
+                </tbody>
+            </table>
+            <div id="pagination-container"></div>
+        </div>
+    </div>
+    <script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
+    <script type="text/javascript" src="{{url_for('research_page.static', filename='js/research.js')}}"></script>
+    <script type="text/javascript" src="{{url_for('research_page.static', filename='js/college.js')}}"></script>
+    <script>
+        getProperty("catego_major");
+        setTimeout(function() {
+            getDataList("{{ url_for('research_page.research_index') }}", {{ temp }});
+        }, 500);
+    </script>
+</div>
+{% endblock %}
+

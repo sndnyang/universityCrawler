@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+{% block body %}
+{% from "major_filter.html" import render_major %}
+<script src="//cdn.bootcss.com/paginationjs/2.0.8/pagination.min.js"></script>
+<link href="//cdn.bootcss.com/paginationjs/2.0.8/pagination.css" rel="stylesheet">
+<link href="/static/css/ListTabMenu.css" rel="stylesheet">
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="pagetitle">
+                <h1>研究方向爬取任务列表</h1>
+                <a href="{{ url_for('research_page.research_index') }}.html" class="btn btn-primary">研究方向汇总</a>
+            </div>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    {% if g %}
+                    {% if g.user.is_authenticated and g.user.get_name() == "sndnyang" %}
+                    <th></th>
+                    {% endif %}
+                        {% endif %}
+                    <th>学校</th>
+                    <th>专业</th>
+                    {% if g %}
+                            {% if g.user.is_authenticated %}
+                    <th>主页</th>
+                    <th>首例</th>
+                    {% endif %}
+                        {% endif %}
+                </tr>
+                </thead>
+                <tbody id="collegeList">
+                    {% for task in tasks %}
+                    <tr>
+                        {% if g %}
+                            {% if g.user.is_authenticated and g.user.get_name() == "sndnyang" %}
+                        <td><a class="btn btn-success" href="{{url_for('research_page.custom_crawler', task_id=task.id)}}" target="_blank">重爬</a></td>
+                            {% endif %}
+                        {% endif %}
+                        <td>{{ task.school }}</td>
+                        <td>{{ task.major }}</td>
+                        {% if g %}
+                            {% if g.user.is_authenticated %}
+                        <td><a href="{{ task.school_url }}">主页</a></td>
+                        <td><a href="{{ task.example }}">首位教授</a></td>
+                        {% endif %}
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script type="text/javascript" src="{{url_for('research_page.static', filename='js/research.js')}}"></script>
+    <script type="text/javascript" src="{{url_for('research_page.static', filename='js/college.js')}}"></script>
+
+
+</div>
+{% endblock %}
+

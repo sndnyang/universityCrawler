@@ -1,0 +1,113 @@
+{% extends "layout.html" %}
+{% block body %}
+{% from "major_detail.html" import render_major %}
+<script src="//cdn.bootcss.com/jquery.form/4.2.1/jquery.form.min.js"></script>
+<link href="/static/css/loader.css" rel="stylesheet" media="screen" type="text/css"/>
+<script type="text/javascript" src="{{url_for('research_page.static', filename='js/research.js')}}"></script>
+<script src="{{url_for('uni_major_page.static', filename='js/college.js')}}"></script>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="pagetitle">
+                <h1>提交学校目录信息</h1>
+                <a href="{{ url_for('research_page.research_form') }}" class="btn btn-info">使用默认爬虫</a>
+                <a href="{{ url_for('research_page.research_index') }}.html" class="btn btn-info">退出</a>
+            </div>
+            <div id="main">
+                <form method="post" action="{{ url_for('research_page.custom_crawler') }}" id="research">
+                    <input type="hidden" name="id">
+                    <label for="college_name">学校:</label>
+                    <input id="collegeName" name="college_name" list="collegeNameList" class="form-control" value="{{ task.school }}"/>
+                    <datalist id="collegeNameList"></datalist>
+                    <label for="major">专业:</label>
+                    {{ render_major() }}
+                    <hr>
+                    <div class="container-fluid">
+                        <div class="col-md-12 col-lg-7">
+                            <label for="directory_url">教授目录主页</label>
+                            <input type="url" id="directoryUrl" name="directory_url" class="form-control" value="{{ task.school_url }}">
+                            <label for="professor_url">请提供第一个有个人主页的学者的链接</label>
+                            <input type="url" id="professorUrl" name="professor_url" class="form-control" value="{{ task.example }}">
+                        </div>
+                        <div class="col-md-12 col-lg-5">
+                            <p>示例</p>
+                            <div>伊利诺伊理工学院IIT计算机系教授目录页:
+                                <span>
+                                    <a href="http://science.iit.edu/computer-science/people/faculty">
+                                        http://science.iit.edu/computer-science/people/faculty
+                                    </a>
+                                </span>
+                            </div>
+                            <div>第一位有个人主页的学者（Eunice Santos）的主页链接:
+                                <span>
+                                <a href="http://science.iit.edu/people/faculty/eunice-santos">
+                                    http://science.iit.edu/people/faculty/eunice-santos
+                                </a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div id="keyWords">
+                    </div>
+                    <hr>
+                    <div class="form-group">
+                        <label for="verification_code">验证码
+                            <a href="javascript:void(0)">
+                                <img id="vericode" onclick="refresh(this)" src="/verifycode" title="点击重新获取"/>
+                            </a>
+                        </label>
+                        <input id="verification_code" name="verification_code" type="text" value="">
+                        {% if veri.errors %}
+                        <ul class=errors>
+                            {% for error in veri.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    <a href="javascript:void(0)" class="btn btn-primary" id="step1">1.爬列表</a>
+                    <a href="javascript:void(0)" class="btn btn-info" id="step2">2.爬网页</a>
+                    <a href="javascript:void(0)" class="btn btn-success" id="step3">3.存数据</a>
+
+                    <a class="btn btn-warning" href="javascript:void(0)" id="resetSubmit">重置</a>
+                </form>
+                <hr>
+                <div id="crawlResult">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+var wait = 60;
+function refresh(obj) {
+    obj.setAttribute('src','/verifycode?random='+Math.random());
+}
+</script>
+<script>
+$(document).ready(function(){
+    $("#step1").click(function() {
+        $("#research").attr("action", "/oversea/custom_crawler/1");
+        submitRedirect($("#research"), "crawler-1", "{{url_for('research_page.research_index')}}");
+    });
+    $("#step2").click(function() {
+        $("#research").attr("action", "/oversea/custom_crawler/2");
+        submitRedirect($("#research"), "crawler-2", "{{url_for('research_page.research_index')}}");
+    });
+    $("#step3").click(function() {
+        $("#research").attr("action", "/oversea/custom_crawler/3");
+        submitRedirect($("#research"), "crawler-3", "{{url_for('research_page.research_index')}}");
+    });
+    $("#resetSubmit").click(function() {
+        $("#approveIt").val(0);
+        $("#keyWords").html("");
+        $("#crawlResult").html("");
+        $("#researchSubmit").html("重新提交");
+    });
+
+    $("#majorName").val('{{task.major}}');
+});
+getProperty("detail_major");
+</script>
+{% endblock %}
