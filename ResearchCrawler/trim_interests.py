@@ -165,6 +165,16 @@ def merge_word(old, new_word):
             merge_word_all_major(old, old_tag, new_word)
     
 
+def abbre_exist(parts):
+    t = ''.join(e[0] for e in parts[1:])
+    if t.lower() == parts[0].lower():
+        return parts[1:]
+    t = ''.join(e[0] for e in parts[:-1])
+    if t.lower() == parts[-1].lower():
+        return parts[:-1]
+    return parts
+
+
 def generate_stem(w, stem_shortest):
     words = []
     for e in re.split("(\w+)", w):
