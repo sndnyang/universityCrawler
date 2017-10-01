@@ -2,7 +2,7 @@
 {% block body %}
 {% from "major_detail.html" import render_major %}
 <script src="//cdn.bootcss.com/jquery.form/4.2.1/jquery.form.min.js"></script>
-<script src="{{url_for('uni_major_page.static', filename='js/college.js')}}"></script>
+<script src="{{url_for('uni_major_page.static', filename='js/college.js')}}?v={{ version }}"></script>
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="col-md-10 col-md-offset-1">
@@ -92,6 +92,6 @@ $(document).ready(function(){
         return submitRedirect(this, "university", "{{url_for('uni_major_page.college_page')}}");
     });
 });
-getProperty("detail_major");
+getProperty("detail_major", function(){});
 </script>
 {% endblock %}

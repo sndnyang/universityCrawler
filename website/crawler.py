@@ -168,7 +168,7 @@ def find_example_index(l, a, index):
         if not href:
             continue
         href = urlparse.urljoin(index, l[i].get("href")).replace(" ", "%20")
-        logger.info("diff '%s' " % href)
+        # logger.info("diff '%s' " % href)
         # if debug_level.find("list") > 0: print href
         if href.strip() == a:
             # if debug_level.find("list") > 0: print ("find %s at %d" % (href, i))
@@ -416,9 +416,9 @@ class ResearchCrawler:
             soup = BeautifulSoup(html, 'html.parser')
         return html, soup
 
-    def crawl_faculty_list(self, directory_url, example, major='1-1'):
+    def crawl_faculty_list(self, directory_url, example, force=False, major='1-1'):
 
-        content, soup = self.open_page(directory_url, major=major)
+        content, soup = self.open_page(directory_url, force=force, major=major)
         if content.startswith("Error at "):
             return 0, "Error to load %s " % content
         anchors = find_all_anchor(soup)

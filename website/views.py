@@ -19,6 +19,7 @@ uni_major_page = Blueprint('uni_major_page', __name__,
                              os.path.dirname(__file__), 'templates'),
                          static_folder="static")
 
+version = 1
 
 @uni_major_page.route('/college.html')
 @uni_major_page.route('/college')
@@ -27,8 +28,7 @@ def college_page():
             'description': u'美国大学申请信息库，包括GPA、英语成绩、截止日期、学费等',
             'keywords': u'zhimind 美国 大学 CS 学费 截止日期'}
     return render_template('universityList.html', meta=meta, temp=0,
-                           cloudjs=random.random()
-                           if os.environ.get("LOAD_JS_CLOUD", 0) else 0)
+                           version=version)
 
 
 @uni_major_page.route('/tempcollege.html')
@@ -40,8 +40,7 @@ def temp_college_page():
             'description': u'美国大学申请信息库，包括GPA、英语成绩、截止日期、学费等',
             'keywords': u'zhimind 美国 大学 CS 学费 截止日期'}
     return render_template('universityList.html', meta=meta, temp=1,
-                           cloudjs=random.random()
-                           if os.environ.get("LOAD_JS_CLOUD", 0) else 0)
+                           version=version)
 
 
 @uni_major_page.route('/major.html')
@@ -58,9 +57,7 @@ def major_page(temp=0):
     if temp != 1:
         temp = 0
     return render_template('majorList.html', meta=meta, temp=temp,
-                           cloudjs=random.random()
-                           if os.environ.get("LOAD_JS_CLOUD", 0) else 0,
-                           types="major")
+                           version=version, types="major")
 
 
 def convert_dict(e):

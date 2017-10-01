@@ -51,10 +51,8 @@
             </table>
         </div>
     </div>
-    <script type="text/javascript" src="{{url_for('research_page.static', filename='js/research.js')}}"></script>
-    <script type="text/javascript" src="{{url_for('research_page.static', filename='js/college.js')}}"></script>
-
-
+    <script type="text/javascript" src="{{url_for('research_page.static', filename='js/research.js')}}?v={{ version }}"></script>
+    <script type="text/javascript" src="{{url_for('research_page.static', filename='js/college.js')}}?v={{ version }}"></script>
 </div>
 {% endblock %}
 

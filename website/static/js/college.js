@@ -853,7 +853,7 @@ function sortMajorIndex(a, b) {
     return a-b;
 }
 
-function getProperty(type) {
+function getProperty(type, callback) {
     var url = '/qnfile/zcollege-college.txt';
     $.ajax({
         method: "get",
@@ -884,6 +884,7 @@ function getProperty(type) {
                     $("#majorName").append(option);
                 }
             }
+            callback();
         }
     });
 }

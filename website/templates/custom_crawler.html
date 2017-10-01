@@ -3,8 +3,8 @@
 {% from "major_detail.html" import render_major %}
 <script src="//cdn.bootcss.com/jquery.form/4.2.1/jquery.form.min.js"></script>
 <link href="/static/css/loader.css" rel="stylesheet" media="screen" type="text/css"/>
-<script type="text/javascript" src="{{url_for('research_page.static', filename='js/research.js')}}"></script>
-<script src="{{url_for('uni_major_page.static', filename='js/college.js')}}"></script>
+<script type="text/javascript" src="{{url_for('research_page.static', filename='js/research.js')}}?v={{ version }}"></script>
+<script src="{{url_for('uni_major_page.static', filename='js/college.js')}}?v={{ version }}"></script>
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="col-md-10 col-md-offset-1">
@@ -108,6 +108,6 @@ $(document).ready(function(){
 
     $("#majorName").val('{{task.major}}');
 });
-getProperty("detail_major");
+getProperty("detail_major", function(){});
 </script>
 {% endblock %}

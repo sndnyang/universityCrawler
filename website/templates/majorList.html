@@ -100,16 +100,11 @@
     </div>
 </div>
 <script src="//cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
-{% if cloudjs %}
-<script type="text/javascript" src="//7xt8es.com1.z0.glb.clouddn.com/zhimind/js/college.js?{{ cloudjs }}"></script> 
-{% else %}
-<script type="text/javascript" src="{{url_for('uni_major_page.static', filename='js/college.js')}}"></script>
-{% endif %}
+<script type="text/javascript" src="{{url_for('uni_major_page.static', filename='js/college.js')}}?v={{ version }}"></script>
 <script>
-getProperty("detail_major");
-setTimeout(function() {
+getProperty("detail_major", function() {
     getDataList("{{ url_for('uni_major_page.major_page') }}", {{ temp }});
-}, 500);
+});
 </script>
 
 {% endblock %}
