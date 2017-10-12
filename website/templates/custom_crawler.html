@@ -9,11 +9,14 @@
     <div class="row-fluid">
         <div class="col-md-10 col-md-offset-1">
             <div class="pagetitle">
-                <h1>提交学校目录信息</h1>
-                <a href="{{ url_for('research_page.research_form') }}" class="btn btn-info">使用默认爬虫</a>
+                <h1>爬取院系教员faculty目录</h1>
                 <a href="{{ url_for('research_page.research_index') }}.html" class="btn btn-info">退出</a>
             </div>
             <div id="main">
+                <p>如需添加新的学校和专业，欢迎通过邮件或微博联系我</p>
+                <p>自己有意向院校的话，建议找到该校该专业faculty目录页，自己爬取试试，如果爬取失败可以把目录的网址发给我，我可以查查BUG随便就爬好</p>
+                <p>没我什么事的名校和专业，我肯定不会去收集相关信息，也没有这么通用加智能的爬虫能自动搜完所有学校，虽然有想过~~~</p>
+
                 <form method="post" action="{{ url_for('research_page.custom_crawler') }}" id="research">
                     <input type="hidden" name="id">
                     <label for="college_name">学校:</label>

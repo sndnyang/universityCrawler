@@ -737,10 +737,10 @@ function submitRedirect(obj, type, url) {
         
         // 呈现loading效果
         $(".container-fluid").append(loadingDiv);
-        setTimeout(function() {
+        /* setTimeout(function() {
             if (typeof($("#loadingDiv")) != "undefined")
                 $("#loadingDiv").remove();
-        }, 18000);
+        }, 18000);*/
     }
 
     $(obj).ajaxSubmit(options);

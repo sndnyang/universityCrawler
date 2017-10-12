@@ -23,7 +23,7 @@ research_page = Blueprint('research_page', __name__,
                           template_folder=os.path.join(
                              os.path.dirname(__file__), 'templates'),
                           static_folder="static")
-version = 1
+version = 2
 
 @research_page.route('/research.html')
 @research_page.route('/research')

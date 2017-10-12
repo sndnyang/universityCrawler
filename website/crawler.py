@@ -476,7 +476,6 @@ class ResearchCrawler:
                 potential_name.append(p[0][0]+p[1])
                 potential_name.append(p[0]+p[1][0])
         key_words = self.key_words
-        potential_name += key_words[u"个人主页URL可能包含"]
 
         potential_name = [e for e in potential_name if len(e) > 2 and
                           not contain_keys(e, key_words[u'教员URL可能包含'] +
@@ -486,6 +485,7 @@ class ResearchCrawler:
                                            re.findall("([A-Z]*[a-z]+)", self.url)
                                            )
                           ]
+        potential_name += key_words[u"个人主页URL可能包含"]
         # if debug_level.find("website") > 0: print('potential name: ' + str(potential_name))
 
         faculty_page = ''
@@ -657,7 +657,7 @@ class ResearchCrawler:
 
         text = re.sub("[\n\r]+", " ", unicode(node.get_text(".", strip=True)))
         if words == "interest":
-            text = select_line_part(text, ["research\*interest"] + 
+            text = select_line_part(text, ["research\s*interest"] + 
                                     self.key_words[u'一段研究兴趣的起始词'])
         else: 
             text = select_line_part(text, self.key_words[words] + 
@@ -677,7 +677,7 @@ class ResearchCrawler:
         key_words = self.key_words[u'一段研究兴趣的起始词'][:]
         if words == 'interest':
             pos_words = "(interests?)"
-            key_words += ["research\*interests?"]
+            key_words += ["research\s*interests?"]
         else:
             pos_words = "(%s)" % '|'.join(e for e in self.key_words[words])
             key_words += self.key_words[words]
