@@ -3,6 +3,7 @@
 import os
 import re
 import json
+import string
 import logging
 import urllib2
 import urlparse
@@ -83,9 +84,9 @@ def extract_name_from_url(page_url, dir_name):
         fname = page_url.split('/')[-2]
     if fname.find("index") > -1:
         fname = '_'.join(page_url.split('/')[3:])
-    if len(fname) > 20:
-        fname = fname[:20]
     file_name = re.sub("[?%=]", "", dir_name + '/' + fname + '.html')
+    if len(fname) > 30:
+        fname = fname[:30]
     return file_name
 
 
@@ -572,9 +573,15 @@ class ResearchCrawler:
 
     def replace_words(self, line):
         line = re.sub("\s+", " ", line)
+
         line = line.replace("(", "").replace(")", "")
-        for x in self.key_words[u'非研究兴趣的词'] + nltk.corpus.stopwords.words('english'):
+        for x in nltk.corpus.stopwords.words('english'):
             line = re.sub(r'\b%s\b' % x + '(?i)', ',', line, re.I)
+        for x in self.key_words[u'非研究兴趣的词']:
+            if x.isalnum() and len(x) > 1:
+                line = re.sub(r'\b%s\b' % x + '(?i)', ',', line, re.I)
+            else:
+                line = re.sub(unicode(x), "", line)
         return line
 
     def get_open_position(self, soup):
