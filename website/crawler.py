@@ -136,6 +136,8 @@ def get_and_store_page(page_url, university, major='1-1',force=False,
             html = r.content
         except (ConnectionError, HTTPError):
             html = "Error at " + page_url
+        except requests.exceptions.InvalidSchema:
+            html = "Error at " + page_url
 
         try:
             with open(file_name, 'w') as fp:
@@ -519,8 +521,7 @@ class ResearchCrawler:
             # if debug_level.find("website") > 0: print(' href: ' + str(href))
             if contain_keys(href, potential_name, True) or \
                     contain_keys(a.get_text(), potential_name + 
-                                 self.key_words[u'教授个人主页可能显示为'],
-                                 True):
+                                 self.key_words[u'教授个人主页可能显示为']):
                 # if debug_level.find("website") > 0: print(' search it ok : ' + href)
                 if href.find('@') > -1 or href.find("mailto") > -1:
                     mail = href
@@ -841,17 +842,22 @@ class ResearchCrawler:
         return person
 
     def query_position_status(self, faculty_link, faculty_page):
-        content, soup = self.open_page(faculty_link, True)
-        if content.startswith('Error to load'):
-            # print "Error!!!!!! at the link", faculty_link
-            return "Error %s " % content
-        position, term, position_text = self.get_open_position(soup)
-        if not position:
+        position = None
+        term = ""
+        position_text = ""
+        if faculty_page:
             page_c, page_soup = self.open_page(faculty_page, True)
-            if page_c.startswith('Error to load'):
-                return "Error %s " % page_c
-            position, term, position_text = self.get_open_position(page_soup)
-        return position
+            if not page_c.startswith('Error to'):
+                position, term, position_text = self.get_open_position(page_soup)
+
+        if not position:
+            content, soup = self.open_page(faculty_link, True)
+            if content.startswith('Error to load'):
+                # print "Error!!!!!! at the link", faculty_link
+                return None, term, "Error %s " % content
+            position, term, position_text = self.get_open_position(soup)
+
+        return position, term, position_text
 
     def dive_into_page(self, faculty_ele, flag):
         faculty_link = faculty_ele.get("href")
