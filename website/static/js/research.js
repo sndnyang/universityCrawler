@@ -38,32 +38,45 @@ function filterProfessorByPosition() {
 }
 
 function togglePosition(obj, pid) {
+    var url = "", tr = $(obj).parent().parent(), webtd = $(tr.children()[4]);
+    console.log(webtd.html());
+    if (!webtd.html().trim()) {
+        url = prompt("添加个人页？留空则不添加");
+    }
     $.ajax({  
         type: "post", //请求方式  
         url: "togglePosition", //发送请求地址  
         timeout: 30000,//超时时间：30秒
         contentType: 'application/json',
         dataType: "json",
-        data: JSON.stringify({"pid": pid}),
+        data: JSON.stringify({"pid": pid, "url": url}),
         //请求成功后的回调函数 data为json格式  
         success:function(data){
             if (data.error) {
-                window.clearInterval(timerId);
                 alert(data.error);
                 return;
             }
+            console.log(data.position);
             if (data.status) {
-                var text = $($(obj).parent().parent().children()[6]).html().trim();
-                if (text == "招生中") {
+                var text = $(tr.children()[6]).html().trim();
+                if (text == "招生中" && !data.position) {
                     text = "";
                     $(obj).html("来招");
-                } else {
+                    $(tr.children()[6]).html(text);
+                } else if (text == "" && data.position){
                     text = "招生中";
                     $(obj).html("招满");
+                    $(tr.children()[6]).html(text);
+                } else {
+                    alert("主页招生状态与请求不一致");
                 }
-                $($(obj).parent().parent().children()[6]).html(text);
+                
             } else {
-                alert("未能在教授的两个页面上搜到招生关键字");
+                alert("没道理，请联系开发者");
+            }
+            if (url) {
+                var a = $('<a href="{0}">个人页</a>'.format(url));
+                webtd.append(a);
             }
         },  
         //请求出错的处理  
@@ -386,7 +399,11 @@ function fillResearchInformationByGrid(no, item) {
     if (temp) temp = "在招";
     else temp = "";
     tr.append($(td_tmp.format(1, temp)));
-    tr.append($(td_tmp.format(1, item.term || "")));
+
+    temp = item.term;
+    if (temp) temp = "Y";
+    else temp = "";
+    tr.append($(td_tmp.format(1,  temp)));
 
     return tr;
 }

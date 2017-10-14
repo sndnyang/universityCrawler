@@ -144,19 +144,22 @@ function fillResearchInformation(item, showSchool) {
     tr.append(td);
     temp = item.position;
     var btn = $('<a class="btn btn-success"></a>');
-    btn.attr("onclick", "togglePosition(this, '{0}')");
+    btn.attr("onclick", "togglePosition(this, '{0}')".format(item.id));
     if (temp) {
         temp = "在招";
-        btn.html("招满");
+        btn.html("已招满");
     }
     else {
         temp = "";
-        btn.html("来招");
+        btn.html("招生中");
     }
 
     tr.append($("<td>{0}</td>".format(temp)));
-    tr.append($("<td>{0}</td>".format(item.term || "")));
-    // tr.append($("<td></td>").append(btn));
+    temp = item.term;
+    if (temp) temp = "Y";
+    else temp = "";
+    tr.append($("<td>{0}</td>".format(temp)));
+    tr.append($("<td></td>").append(btn));
     return tr;
 }
 
