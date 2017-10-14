@@ -72,6 +72,7 @@ def get_professor_list(school, major):
     for ele in results:        
         tags = [tag.name for tag in ele.interests]
         research_set.append(convertToDict(ele, tags))
+    research_set.sort(key=lambda x:x['name'])
     return json.dumps({"list": research_set}, ensure_ascii=False)
 
 
@@ -228,18 +229,19 @@ def query_and_create_task(college, major):
 
 def crawl_directory(crawl, faculty_list, major, directory_url, count, flag):
     # app.redis.set('process of %s %s' % (directory_url, major), "%d,0" % count)
+    app.logger.info('process of %s %s' % (directory_url, major))
     i = 0
     link_list = []
     for link in faculty_list:
         try:
             link_list.append(crawl.dive_into_page(link, flag))
-            i += 1
             # app.redis.set('process of %s %s' % (directory_url, major), "%d,%d" % (count, i))
-            app.logger.info('process of %s %s' % (directory_url, major) + " %d,%d" % (count, i))
+            app.logger.info('process of %s %s' % (link, major) + " %d,%d" % (count, i))
         except:
             app.logger.info(traceback.print_exc())
-            app.logger.info('process of %s %s fail' % (directory_url, major) + " %d,%d" % (count, i))
-            break
+            app.logger.info('process of %s %s fail' % (link, major) + " %d,%d" % (count, i))
+        i += 1
+
     app.logger.info('research process %s %s ' % (directory_url, major) + "  finish")
     app.redis.set('%s-%s' % (directory_url, major), link_list)
     return link_list
@@ -257,7 +259,8 @@ def submit_professors(college_name, major, directory_url):
                     professor.position = ele.get("position")
                     professor.term = ele.get("term")
                     professor.school_url = ele.get("link", "")
-                    professor.home_page = ele.get("website", "")
+                    if ele.get("website", ""):
+                        professor.home_page = ele.get("website", "")
                     db.session.commit()
             if ele.get('tags'):
                 for tag in ele.get('tags', []):
@@ -395,9 +398,42 @@ def interests_page():
 def query_position():
     pid = request.json.get("pid")
     if not pid:
-        return json.dumps({'error': 'pid %s not right' % (pid)}, ensure_ascii=False)
+        return json.dumps({'error': 'pid %s not right' % pid}, ensure_ascii=False)
 
-    return json.dumps({'status': True}, ensure_ascii=False)
+    p = None
+    t = ""
+    text = ""
+    try:
+        prof = Professor.query.get(pid)
+        school = prof.school
+        major = prof.major
+
+        task = CrawlTask.query.filter_by(school=school, major=major).one_or_none()
+
+        if not task:
+            return json.dumps({'error': 'school %s, major %s find multiple, email me!'
+                                % (school, major)}, ensure_ascii=False)
+
+        url = request.json.get("url")
+        if url:
+            prof.home_page = url if url.startswith("http") else "http://" + url
+            db.session.commit()
+
+        crawler = ResearchCrawler(prof.school_url, "", major)
+        p, t, text = crawler.query_position_status(prof.school_url, 
+                                                   prof.home_page)
+        
+        if p is None and text.startswith('Error'):
+            return json.dumps({'error': '%s and %s not open' % 
+                               (prof.school_url, prof.home_page)}, 
+                               ensure_ascii=False)
+
+    except MultipleResultsFound:
+        return json.dumps({'error': 'school %s, major %s find multiple, email me!'
+                            % (school, major)}, ensure_ascii=False)
+
+    return json.dumps({'status': True, "position": p, "term": t, "text": text}, 
+                      ensure_ascii=False)
 
 
 def delete_tag_in_relation(ele, tid):
