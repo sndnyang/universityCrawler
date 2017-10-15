@@ -19,7 +19,7 @@ uni_major_page = Blueprint('uni_major_page', __name__,
                              os.path.dirname(__file__), 'templates'),
                          static_folder="static")
 
-version = 2
+version = 10
 
 @uni_major_page.route('/college.html')
 @uni_major_page.route('/college')
@@ -96,7 +96,7 @@ def getCollegeRedis():
     name_list = []
 
     try:
-        data = json.load(open(fname))
+        # data = json.load(open(fname))
         # uni_major_page = University.query.paginate(int(pageno), 25).items
         uni_major_page = University.query.all()
         for e in uni_major_page:
@@ -107,16 +107,39 @@ def getCollegeRedis():
     return college_set
 
 
+def get_simple_college_data(college_set):
+    temp = []
+    for e in college_set:
+        info = {}
+        if 'webpage' in e['info']:
+            info['webpage'] = e['info']['webpage']
+        if 'cn' in e['info']:
+            info['cn'] = e['info']['cn']
+        for t in e['info']:
+            if t.startswith("label") and (e['info'][t] == 'cn' or
+                                          e['info'][t] == 'webpage'):
+                c = t.replace("label", "input")
+                info[e['info'][t]] = e['info'][c]
+        temp.append({'name': e['name'], 'info': info})
+    return temp
+
+
 @uni_major_page.route('/collegeList')
 @uni_major_page.route('/collegeList/<int:pageno>')
 def collegeListPage(pageno = 1):
     entity = app.redis.get('college')
+
+    simple = request.args.get('type', None)
     if entity and eval(entity):
         entity = eval(entity)
+        if simple:
+            entity = get_simple_college_data(entity)
         return json.dumps(entity, ensure_ascii=False)
 
     college_set = getCollegeRedis()
     app.redis.set('college', college_set)
+    if simple:
+        college_set = get_simple_college_data(college_set)
 
     return json.dumps(college_set, ensure_ascii=False)
 
@@ -226,12 +249,14 @@ def submitted_college():
     session['code_text'] = code_string
     try:
         name = request.form['name']
+        app.logger.info(request.form.keys())
         info = {u'city': request.form.get('cityinput', '')}
-        for i in range(len(request.form.keys())/2):
+        for i in range(len(request.form.keys())):
             if 'label%d' % (i+1) not in request.form:
-                break
+                continue
             info['label%d' % (i+1)] = request.form['label%d' % (i+1)]
             info['input%d' % (i+1)] = request.form['input%d' % (i+1)]
+            # info[request.form['label%d' % (i+1)]] = request.form['input%d' % (i+1)] 
 
         if not name:
             return json.dumps({'error': u'校名缺失'}, ensure_ascii=False)

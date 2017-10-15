@@ -91,15 +91,20 @@ $(document).ready(function(){
                 $("select[name='name']").append(option);
                 var item = result.info;
                 for (var k in item) {
-                    if (k.substr(0, 5) == "label" || k.substr(0, 5) == "input") {
+                    if (k.substr(0, 5) == "input") {
                         continue;
                     }
                     if (k.substr(0, 4) == "city") {
                         continue;
                     }
-                    $(".info").append("<p>{0} : {1}</p>".format(k, item[k]))
-                    if (k == "国家" || k == "webpage" || k == "cn")
-                    $("#info-"+k).remove();
+                    if (k == "国家" || k == "webpage" || k == "cn") {
+                        $("#info-"+k).remove();
+                    }
+                    if (item[k] == "国家" || item[k] == "webpage" || item[k] == "cn") {
+                        $("#info-"+item[k]).remove();
+                    } else {
+                        $(".info").append("<p>{0} : {1}</p>".format(k, item[k]));
+                    }
                 }
 
                 $('input[name="cityinput"]').val(result.info.city);

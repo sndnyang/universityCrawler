@@ -1,4 +1,4 @@
-var rankBy = 'name';
+var rankBy = 'Q.S.';
 var filterList = null;
 var collegeList = JSON.parse(localStorage.getItem("CollegeList"));
 var major_map = null;
@@ -293,8 +293,13 @@ function fillItemInfo(toggle, item) {
                 if (temp == 'yes')
                     temp = '需要';
             }
-            toggle.append($('<p>{0} : {1}</p>'.format(item['label' + j], 
-                        temp)));
+            if (item['label' + j] != "webpage") {
+                toggle.append($('<p>{0} : {1}</p>'.format(item['label' + j], 
+                            temp)));
+            } else {
+                toggle.append($('<p>{0} : {1}</p>'.format(item['label' + j], 
+                              '<a href="{0}">链接</a>'.format(temp))));
+            }
         }
         else {
             var key = e, value = item[e];
@@ -479,9 +484,13 @@ function sortCollege(name, col, ininfo) {
     var ranks = $("#sortName option").map(function() {return this.value;}).get();
     if (ranks.indexOf(col) > -1) {
         rankBy = col;
+        if (col == "name") {
+            rankBy = "Q.S.";
+        }
         $("#rankName").html(rankBy.replace(/\./g, '') + '排名');
     }
     if (col == 'fall') col = 'deadline';
+    if (col == 'name') ininfo = false;
     data.sort(compare(col, false, ininfo));
     var params = getSharpParam();
     if (params)
@@ -757,10 +766,6 @@ $(document).ready(function () {
         return false;
     });
 
-    if (storedCollegeFile) {
-       updateCollegeConfig(storedCollegeFile);
-    }
-
     if (document.URL.indexOf("college") == -1) {
         $.ajax({
             method: "get",
@@ -769,6 +774,11 @@ $(document).ready(function () {
             dataType: "json",
             success : function (result){
                 result.sort(compare('name', true, false));
+                if (!result || result.length < 800) {
+                    alert("同步学校列表失败，使用本地缓存数据，一直没有则请翻墙？或将www换成http://proxy试试?");
+                    return;
+                }
+
                 collegeList = result;
                 localStorage.setItem("CollegeList", JSON.stringify(result));
                 var param = unescape(document.URL.split('/')[5]);
@@ -817,14 +827,15 @@ $(document).ready(function () {
     $("#collegeName").keyup(function (event) {
         var text = $("#collegeName").val().toLowerCase();
         $("#collegeNameList").html("");
-        for (var i in collegeList) {
-            if (!('cn' in collegeList[i].info))
-                continue;
-            var item = collegeList[i].info.cn, name = collegeList[i].name;
-            if (item.indexOf(text) > -1 ) {
-                console.log(collegeList[i]);
-                var option = $('<option value="{0}">{1}</option>'.format(name, item));
-                $("#collegeNameList").append(option);
+        if (text.length == 1 && !(/[0-9a-z]/i.test(text))) {
+            for (var i in collegeList) {
+                if (!('cn' in collegeList[i].info))
+                    continue;
+                var item = collegeList[i].info.cn, name = collegeList[i].name;
+                if (item.indexOf(text) > -1 ) {
+                    var option = $('<option value="{0}">{1}</option>'.format(name, item));
+                    $("#collegeNameList").append(option);
+                }
             }
         }
 
@@ -881,19 +892,19 @@ function updateCollegeConfig(data, type) {
     $("#degreeName").html("");
     for (var i in data.nation) {
         var nation = data.nation[i];
-        $("#degreeName").append($(t.format(nation, nation))); 
+        $("#degreeName").append($(t.format(nation != "不限"?nation: "", nation))); 
     }
     $("#sortName").html("");
     for (var i in data['sort']) {
         var rank = data['sort'][i];
-        $("#sortName").append($(t.format(rank, rank))); 
+        $("#sortName").append($(t.format(rank != "校名"?rank: "name", rank))); 
     }
 
     detail_major = data["detail_major"];
-    $("#majorName").html("");
-    if (type != "") {
-        major_map = data[type];
 
+    if (type && type != "") {
+        $("#majorName").html("");
+        major_map = data[type];
         var keys = [];
         for (var i in major_map) {
             keys.push(i);
@@ -907,6 +918,11 @@ function updateCollegeConfig(data, type) {
 }
 
 function getProperty(type, callback) {
+
+    if (storedCollegeFile && 'sort' in storedCollegeFile) {
+        updateCollegeConfig(storedCollegeFile, type);
+    }
+
     var url = '/qnfile/zcollege-college.txt';
     $.ajax({
         method: "get",
@@ -914,8 +930,13 @@ function getProperty(type, callback) {
         contentType: 'application/json',
         dataType: "json",
         success : function (data) {
-            localStorage.setItem("CollegeFile", JSON.stringify(data));
-            updateCollegeConfig(data, type);            
+            if (data && 'sort' in data) {
+                localStorage.setItem("CollegeFile", JSON.stringify(data));
+                updateCollegeConfig(data, type);
+            } else {
+                alert("同步参数文件，使用本地缓存数据，一直没有则请翻墙？或将www换成http://proxy试试?");
+            }
+
             callback();
         }
     });
