@@ -21,11 +21,29 @@
                 添加任何想添加的信息 :), 如国家、省州、城市、气温
                 <div class="info">
                     <div class="info-item">
-                        <label for="nationlabel">信息名称:</label>
+                        <label for="citylabel">信息名称:</label>
                         <input type="text" name="citylabel" value="城市" readOnly="true">
-                        <label for="nationinput">内容:</label>
+                        <label for="cityinput">内容:</label>
                         <input type="text" name="cityinput">
-                    </div>                   
+                    </div>
+                    <div class="info-item" id="info-国家">
+                        <label for="label1">国家:</label>
+                        <input type="text" name="label1" value="国家" readOnly="true">
+                        <label for="input1">内容:</label>
+                        <input type="text" name="input1">
+                    </div>
+                    <div class="info-item" id="info-webpage">
+                        <label for="label2">学校主页:</label>
+                        <input type="text" name="label2" value="webpage" readOnly="true">
+                        <label for="input2">内容:</label>
+                        <input type="text" name="input2">
+                    </div>
+                    <div class="info-item" id="info-cn">
+                        <label for="label3">学校中文名:</label>
+                        <input type="text" name="label3" value="cn" readOnly="true">
+                        <label for="input3">内容:</label>
+                        <input type="text" name="input3">
+                    </div>
                 </div>
                 <button id="addInfo" class="btn-info" onclick="addOneInfo('', '', -1)">添加新内容</button>
             </div>
@@ -71,12 +89,25 @@ $(document).ready(function(){
                 }
                 var option = $('<option value="{0}">{1}</option>'.format(result.name, result.name));
                 $("select[name='name']").append(option);
-
-                $('input[name="nationinput"]').val(result.info.nation);
-
                 var item = result.info;
+                for (var k in item) {
+                    if (k.substr(0, 5) == "label" || k.substr(0, 5) == "input") {
+                        continue;
+                    }
+                    if (k.substr(0, 4) == "city") {
+                        continue;
+                    }
+                    $(".info").append("<p>{0} : {1}</p>".format(k, item[k]))
+                    if (k == "国家" || k == "webpage" || k == "cn")
+                    $("#info-"+k).remove();
+                }
+
+                $('input[name="cityinput"]').val(result.info.city);
+                
                 var l = Math.floor(Object.keys(item).length / 2);
                 for (var i = 0; i < l; i++) {
+                    if (!('label'+(i+1) in item))
+                        continue;
                     addOneInfo(item['label'+(i+1)], item['input'+(i+1)], i+1);
                 }
             }

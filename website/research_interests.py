@@ -23,7 +23,7 @@ research_page = Blueprint('research_page', __name__,
                           template_folder=os.path.join(
                              os.path.dirname(__file__), 'templates'),
                           static_folder="static")
-version = 2
+version = 5
 
 @research_page.route('/research.html')
 @research_page.route('/research')
@@ -56,6 +56,9 @@ def research_list_page():
 @research_page.route('/getProfessorsList/<school>/<major>', methods=['POST'])
 def get_professor_list(school, major):
     research_set = []
+    if major == "NaN":
+        return json.dumps({'error': u"请选择专业"}, ensure_ascii=False)
+
     tag = request.json.get("tag", None)
     position = request.json.get("position", None)
     if tag:
@@ -236,10 +239,10 @@ def crawl_directory(crawl, faculty_list, major, directory_url, count, flag):
         try:
             link_list.append(crawl.dive_into_page(link, flag))
             # app.redis.set('process of %s %s' % (directory_url, major), "%d,%d" % (count, i))
-            app.logger.info('process of %s %s' % (link, major) + " %d,%d" % (count, i))
+            app.logger.info('process of %s %s' % (link.get("href"), major) + " %d,%d" % (count, i))
         except:
             app.logger.info(traceback.print_exc())
-            app.logger.info('process of %s %s fail' % (link, major) + " %d,%d" % (count, i))
+            app.logger.info('process of %s %s fail' % (link.get("href"), major) + " %d,%d" % (count, i))
         i += 1
 
     app.logger.info('research process %s %s ' % (directory_url, major) + "  finish")
@@ -427,6 +430,9 @@ def query_position():
             return json.dumps({'error': '%s and %s not open' % 
                                (prof.school_url, prof.home_page)}, 
                                ensure_ascii=False)
+        prof.position = p
+        prof.term = t
+        db.session.commit()
 
     except MultipleResultsFound:
         return json.dumps({'error': 'school %s, major %s find multiple, email me!'

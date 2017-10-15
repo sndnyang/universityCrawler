@@ -61,11 +61,11 @@ function togglePosition(obj, pid) {
                 var text = $(tr.children()[6]).html().trim();
                 if (text == "招生中" && !data.position) {
                     text = "";
-                    $(obj).html("来招");
+                    $(obj).html("招生中");
                     $(tr.children()[6]).html(text);
                 } else if (text == "" && data.position){
                     text = "招生中";
-                    $(obj).html("招满");
+                    $(obj).html("已招满");
                     $(tr.children()[6]).html(text);
                 } else {
                     alert("主页招生状态与请求不一致");
@@ -102,7 +102,7 @@ function getProfessorsList(col) {
         filterProfessors('school', '');
         return;
     }
-    if (major == '0') {
+    if (major == '0' || major == '') {
         alert("起码先选择专业");
         return;
     }
