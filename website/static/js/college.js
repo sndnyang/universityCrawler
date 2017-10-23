@@ -1,3 +1,4 @@
+var timeId = null;
 var rankBy = 'Q.S.';
 var filterList = null;
 var collegeList = JSON.parse(localStorage.getItem("CollegeList"));
@@ -409,6 +410,19 @@ function compare(property, isstring, ininfo) {
     }
 }
 
+function convertKV(list) {
+    for (var i in list) {
+        var info = list[i].info;
+        for (var j in info) {
+            if (j.startsWith("label")) {
+                var t = j.substring(5, j.length);
+                list[i].info[info[j]] = list[i].info["input" + t];
+            }
+        }
+    }
+    return list;
+}
+
 function getDataList(name, n) {
     if (n == 0) n = ''; 
     $.ajax({
@@ -419,10 +433,10 @@ function getDataList(name, n) {
         success : function (result){
             // var data = result.sort(sortName);
             var data = result.sort(compare('name', true, false));
-            if (name === "college")
-                data = data.sort(compare('Q.S.', false, true));
+            if (name.indexOf("college") > -1)
+                data = convertKV(data);
             // collegeList = result;
-            filterList = result;
+            filterList = data;
             pageIt(data, name, n);
         }
     });
@@ -567,37 +581,43 @@ function filterByName(obj, type) {
 }
 
 function filterMajorByAll() {
-    var degree = parseInt($("#degreeName").val()), 
-        major = parseInt($("#majorName").val()),
+    var nation = $("#nationName").val(), 
+        degree = parseInt($("#degreeName").val()), 
+        major = $("#majorName").val(),
         evalue = $("#evalueName").val(),
         transcript = $("#transcriptName").val(),
         rl = parseInt($("#rlName").val());
 
     var params = getSharpParam() || {};
-    if (degree != "") {
+    var newList = filterList;
+    if (nation && nation != "") {
+        params["国家"] = nation;
+        newList = filterCollege(newList, '国家', nation);
+    }
+    if (degree && degree != "") {
         params["学历"] = degree;
+        newList = filterCollege(newList, 'degree', degree);
     }
-    if (major != 0) {
+    if (major && major != 0) {
         params["专业"] = major;
+        newList = filterCollege(newList, 'major', major);
     }
-    if (evalue != "") {
+    if (evalue && evalue != "") {
         params["成绩单认证"] = degree;
+        newList = filterCollege(newList, 'evalue', evalue);
     }
-    if (rl != "0") {
+    if (rl && rl != "0") {
         params["推荐信"] = degree;
+        newList = filterCollege(newList, 'rl', rl);
+    }
+    if (transcript && transcript != "") {
+        params["成绩单邮寄"] = nation;
+        newList = filterCollege(newList, 'input0', transcript);
     }
 
     var temp = "{0}#{1}".format(document.URL.split("#")[0], jsonToSharpParam(params));
     window.location.href = temp;
 
-    var newList = filterCollege(filterCollege(
-        filterCollege(
-            filterCollege(
-                filterCollege(filterList, 'evalue', evalue),
-                 'input0', transcript),
-            'degree', degree),
-        'major',major),
-    'rl', rl);
     return newList;
 }
 function filterByMajor(type) {
@@ -680,11 +700,38 @@ function showCollegeCrawlerResult(data) {
     $("#crawlResult").append(table);
 }
 
+function validateForm(formData, jqForm, options, type) {
+    var checkStatus = jqForm.valid();
+    if (checkStatus) {
+        if ($("#approveIt").val() == 0 || type.indexOf("crawler") > -1) {
+            $("#crawlResult").html("");
+            // timeId = window.setInterval(getProcess, 2000);  
+            
+            // var loadingDiv = createLoadingDiv('总共{0}位可能学者，正在爬取第{0}位')
+            var loadingDiv = createLoadingDiv('正在处理中，估计需要几分钟~~~没开发进度监视');
+            
+            // 呈现loading效果
+            $(".container-fluid").append(loadingDiv);
+            timeId = setTimeout(function() {
+                if (typeof($("#loadingDiv")) != "undefined") {
+                    alert("三分钟仍然没结束，太慢了~~~");
+                    $("#loadingDiv").remove();
+                }
+            }, 180000);
+        }
+    }
+    return checkStatus;
+}
+
 function submitRedirect(obj, type, url) {
     var options = {
         dataType: 'json',
+        beforeSubmit: function (formData, jqForm, ops) {
+            return validateForm(formData, jqForm, ops, type);
+        },
         success: function (data) {
             $("#loadingDiv").remove();
+            window.clearInterval(timeId);
             if (data.error) {
                 alert(data.error);
                 document.getElementById("vericode")
@@ -742,20 +789,6 @@ function submitRedirect(obj, type, url) {
             $("#loadingDiv").remove();
         }
     };
-    if ($("#approveIt").val() == 0 || type.indexOf("crawler") > -1) {
-        $("#crawlResult").html("");
-        // timerId = window.setInterval(getProcess, 2000);  
-        
-        // var loadingDiv = createLoadingDiv('总共{0}位可能学者，正在爬取第{0}位')
-        var loadingDiv = createLoadingDiv('正在处理中，估计需要几分钟~~~没开发进度监视');
-        
-        // 呈现loading效果
-        $(".container-fluid").append(loadingDiv);
-        /* setTimeout(function() {
-            if (typeof($("#loadingDiv")) != "undefined")
-                $("#loadingDiv").remove();
-        }, 18000);*/
-    }
 
     $(obj).ajaxSubmit(options);
     return false;
@@ -800,34 +833,32 @@ $(document).ready(function () {
 
     $("#directoryUrl").on("paste", function(){
         setTimeout(function() {
-            var url = $("#directoryUrl").val();
-            var parts = url.split("/")[2].split(".");
-            for (var i in parts) {
-                var p = parts[i], flag = false;
-                if (p == 'edu' || p == 'www')
-                    continue;
-                var re = new RegExp("\\b" + p + ".edu\\b","i");
-                for (var j in collegeList) {
-                    var univ = collegeList[j];
-                    if ('info' in univ && 'webpage' in univ.info) {
-                        if (univ.info.webpage.match(re)) {
-                            console.log(p+ ' contains in ' + univ.name);
-                            $("#collegeName").val(univ.name);
-                            flag = true;
-                            break;
-                        }
-                    }
-                }
-                if (flag)
+            var p = null, url = $("#directoryUrl").val(),
+                parts = url.split("/")[2].split(".");
+            if (parts[parts.length-1] == 'edu') {
+                p = parts[parts.length-2];
+            } else if (parts[parts.length-2] == 'edu' || parts[parts.length-2].length == 2) {
+                p = parts[parts.length-3];
+            } 
+
+            if (p == 'edu' || p == 'www' || p == 'cs' || p == 'ee' || p == 'ece')
+                return;
+            var re = new RegExp("\\b" + p + "\\b","i");
+            for (var j in collegeList) {
+                var univ = collegeList[j];
+                if (('info' in univ && 'webpage' in univ.info && univ.info.webpage.match(re)) || univ.name.match(re)) {
+                    console.log(p+ ' contains in ' + univ.name);
+                    $("#collegeName").val(univ.name);
                     break;
-            }
+                }
+            }            
         });
     });
 
     $("#collegeName").keyup(function (event) {
         var text = $("#collegeName").val().toLowerCase();
         $("#collegeNameList").html("");
-        if (text.length == 1 && !(/[0-9a-z]/i.test(text))) {
+        if ((text.length == 1 && !(/[0-9a-z]/i.test(text))) || text.length > 1) {
             for (var i in collegeList) {
                 if (!('cn' in collegeList[i].info))
                     continue;
@@ -889,10 +920,10 @@ function sortMajorIndex(a, b) {
 
 function updateCollegeConfig(data, type) {
     var t = '<option value="{0}">{1}</option>';
-    $("#degreeName").html("");
+    $("#nationName").html("");
     for (var i in data.nation) {
         var nation = data.nation[i];
-        $("#degreeName").append($(t.format(nation != "不限"?nation: "", nation))); 
+        $("#nationName").append($(t.format(nation != "不限"?nation: "", nation))); 
     }
     $("#sortName").html("");
     for (var i in data['sort']) {
@@ -922,7 +953,10 @@ function getProperty(type, callback) {
     if (storedCollegeFile && 'sort' in storedCollegeFile) {
         updateCollegeConfig(storedCollegeFile, type);
     }
-
+    var params = getSharpParam();
+    if (params && "专业" in params) {
+        $("#majorName").find("option[value='{0}']".format(params["专业"])).attr("selected",true);
+    }
     var url = '/qnfile/zcollege-college.txt';
     $.ajax({
         method: "get",
@@ -936,7 +970,9 @@ function getProperty(type, callback) {
             } else {
                 alert("同步参数文件，使用本地缓存数据，一直没有则请翻墙？或将www换成http://proxy试试?");
             }
-
+            if (params && "专业" in params) {
+                $("#majorName").find("option[value='{0}']".format(params["专业"])).attr("selected",true);
+            }
             callback();
         }
     });

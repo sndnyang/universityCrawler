@@ -2,6 +2,7 @@
 {% block body %}
 {% from "major_detail.html" import render_major %}
 <script src="//cdn.bootcss.com/jquery.form/4.2.1/jquery.form.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery-validate/1.17.0/jquery.validate.min.js"></script>
 <script src="{{url_for('uni_major_page.static', filename='js/college.js')}}?v={{ version }}"></script>
 <div class="container-fluid">
     <div class="row-fluid">
@@ -124,6 +125,7 @@ $(document).ready(function(){
         }
         $(".name-div").html(p);
     }
+    
     $("#college").submit(function() {
         return submitRedirect(this, "university", "{{url_for('uni_major_page.college_page')}}");
     });

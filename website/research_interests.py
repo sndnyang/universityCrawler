@@ -23,7 +23,7 @@ research_page = Blueprint('research_page', __name__,
                           template_folder=os.path.join(
                              os.path.dirname(__file__), 'templates'),
                           static_folder="static")
-version = 10
+version = 18
 
 @research_page.route('/research.html')
 @research_page.route('/research')
@@ -183,7 +183,7 @@ def custom_crawler(task_id=None):
     meta = {'title': u'学者研究兴趣 知维图 -- 互联网学习实验室',
             'description': u'学者研究兴趣信息库，主要就是学校、主页、研究方向、招生与否',
             'keywords': u'zhimind 美国 大学 CS 研究方向 research interests 招生'}
-    task = {'school': '', 'example': '', 'school': '', 'major': '0'}
+    task = {'school': '', 'example': '', 'school': '', 'major': '1-1'}
     if task_id:
         task = CrawlTask.query.get(task_id)
     return render_template('custom_crawler.html', meta=meta, temp=0,
@@ -318,11 +318,10 @@ def custom_crawler_step(step):
     if isinstance(task, unicode) and task.startswith("Error at"):
         return json.dumps({'error': task}, ensure_ascii=False)
 
-    if task is None:
+    if task is None and os.environ.get("DEBUG_MODE"):
         task = CrawlTask(college, major, directory_url, prof_url)
         db.session.add(task)
         db.session.commit()
-
 
     crawl = ResearchCrawler(directory_url, prof_url, major)
     flag = update_key_words(request.form, crawl)
@@ -349,6 +348,11 @@ def custom_crawler_step(step):
         return json.dumps({'info': u'成功', "list": link_list, 'keywords': crawl.key_words},
                           ensure_ascii=False)
     elif step == 3:
+        if task is None:
+            task = CrawlTask(college, major, directory_url, prof_url)
+            db.session.add(task)
+            db.session.commit()
+
         if task and (task.school_url != directory_url or task.example != prof_url):
             task.school_url = directory_url
             task.example = prof_url

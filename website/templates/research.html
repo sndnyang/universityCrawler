@@ -13,7 +13,7 @@
                 <a href="{{ url_for('uni_major_page.major_page') }}.html" class="btn btn-primary">专业信息汇总</a>
                 <a href="{{ url_for('uni_major_page.college_page') }}.html" class="btn btn-primary">学校信息汇总</a>
                 
-                <a href="{{ url_for('research_page.research_task') }}" class="btn btn-primary">已爬取院系</a>
+                <a href="{{ url_for('research_page.research_task') }}" class="btn btn-primary">按已爬取院系查询</a>
                     
             </div>
             <div class="col-sm-2">
@@ -92,7 +92,10 @@
         getProperty("catego_major", function() {
             getDataList("{{ url_for('research_page.research_index') }}", {{ temp }});
         });
-        
+        var params = getSharpParam();
+        if (params && "学校" in params) {
+            $("#collegeName").val(params["学校"]);
+        }
     </script>
 </div>
 {% endblock %}

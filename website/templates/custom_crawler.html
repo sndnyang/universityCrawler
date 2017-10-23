@@ -2,6 +2,7 @@
 {% block body %}
 {% from "major_detail.html" import render_major %}
 <script src="//cdn.bootcss.com/jquery.form/4.2.1/jquery.form.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery-validate/1.17.0/jquery.validate.min.js"></script>
 <link href="/static/css/loader.css" rel="stylesheet" media="screen" type="text/css"/>
 <script type="text/javascript" src="{{url_for('research_page.static', filename='js/research.js')}}?v={{ version }}"></script>
 <script src="{{url_for('uni_major_page.static', filename='js/college.js')}}?v={{ version }}"></script>
@@ -19,18 +20,18 @@
 
                 <form method="post" action="{{ url_for('research_page.custom_crawler') }}" id="research">
                     <input type="hidden" name="id">
-                    <label for="college_name">学校:</label>
-                    <input id="collegeName" name="college_name" list="collegeNameList" class="form-control" value="{{ task.school }}"/>
-                    <datalist id="collegeNameList"></datalist>
-                    <label for="major">专业:</label>
-                    {{ render_major() }}
+                    <label for="directory_url">教授目录主页</label>
+                    <input type="url" id="directoryUrl" name="directory_url" class="form-control" value="{{ task.school_url }}" placeholder="输入链接，自动查找学校名">
+                    <label for="professor_url">请提供第一个有个人主页的学者的链接</label>
+                    <input type="url" id="professorUrl" name="professor_url" class="form-control" value="{{ task.example }}">
                     <hr>
                     <div class="container-fluid">
                         <div class="col-md-12 col-lg-7">
-                            <label for="directory_url">教授目录主页</label>
-                            <input type="url" id="directoryUrl" name="directory_url" class="form-control" value="{{ task.school_url }}">
-                            <label for="professor_url">请提供第一个有个人主页的学者的链接</label>
-                            <input type="url" id="professorUrl" name="professor_url" class="form-control" value="{{ task.example }}">
+                            <label for="college_name">学校:</label>
+                            <input id="collegeName" name="college_name" list="collegeNameList" class="form-control" value="{{ task.school }}"/>
+                            <datalist id="collegeNameList"></datalist>
+                            <label for="major">专业:</label>
+                            {{ render_major() }}
                         </div>
                         <div class="col-md-12 col-lg-5">
                             <p>示例</p>
@@ -89,7 +90,20 @@ function refresh(obj) {
 }
 </script>
 <script>
-$(document).ready(function(){
+$(document).ready(function() {
+    $("#research").validate({  
+        /* 重写错误显示消息方法,以alert方式弹出错误消息 */  
+        showErrors: function(errorMap, errorList) {  
+            var msg = "";  
+            $.each(errorList, function(i, v) {
+                msg += (v.message+"\r\n");  
+            });  
+            if (msg != "")
+                alert(msg);  
+        },
+        /* 失去焦点时不验证 */
+        onfocusout: false
+    }); 
     $("#step1").click(function() {
         $("#research").attr("action", "/oversea/custom_crawler/1");
         submitRedirect($("#research"), "crawler-1", "{{url_for('research_page.research_index')}}");
@@ -108,9 +122,9 @@ $(document).ready(function(){
         $("#crawlResult").html("");
         $("#researchSubmit").html("重新提交");
     });
-
+});
+getProperty("detail_major", function() {
     $("#majorName").val('{{task.major}}');
 });
-getProperty("detail_major", function(){});
 </script>
 {% endblock %}

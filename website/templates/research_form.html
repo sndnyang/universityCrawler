@@ -2,6 +2,7 @@
 {% block body %}
 {% from "major_detail.html" import render_major %}
 <script src="//cdn.bootcss.com/jquery.form/4.2.1/jquery.form.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery-validate/1.17.0/jquery.validate.min.js"></script>
 <link href="/static/css/loader.css" rel="stylesheet" media="screen" type="text/css"/>
 <script type="text/javascript" src="{{url_for('research_page.static', filename='js/research.js')}}?v={{ version }}"></script>
 <script src="{{url_for('uni_major_page.static', filename='js/college.js')}}?v={{ version }}"></script>
@@ -79,6 +80,20 @@ function refresh(obj) {
 </script>
 <script>
 $(document).ready(function(){
+    $("#research").validate({  
+        /* 重写错误显示消息方法,以alert方式弹出错误消息 */  
+        showErrors: function(errorMap, errorList) {  
+            var msg = "";  
+            $.each(errorList, function(i, v) {
+                msg += (v.message+"\r\n");  
+            });  
+            if (msg != "")
+                alert(msg);  
+        },
+        /* 失去焦点时不验证 */
+        onfocusout: false
+    });
+    
     $("#research").submit(function() {
         return submitRedirect(this, "research", "{{url_for('research_page.research_index')}}");
     });

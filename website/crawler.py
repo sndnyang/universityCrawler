@@ -97,6 +97,7 @@ def get_and_store_page(page_url, university, major='1-1',force=False,
     :rtype: string
     """
     # if debug_level.find("open") > 0: print("now open page url %s" % page_url)
+    url = page_url
     dir_name = os.path.join(os.environ.get('OPENSHIFT_PYTHON_LOG_DIR', '.'), 'data', university, major)
     if not os.path.isdir(dir_name):
         os.makedirs(dir_name)
@@ -106,12 +107,20 @@ def get_and_store_page(page_url, university, major='1-1',force=False,
     else:
         file_name = extract_name_from_url(page_url, dir_name)
 
-    # if debug_level.find("open") > 0: print("now save it to %s" % file_name)
+    # 遇到 http://www.cse.unt.edu/~rakl 这种有时候会难办， 
+    # 比如链接 resume.html， 解析后成了http://www.cse.unt.edu/resume.html
+    # 但多数情况又应该正常~~~
+    dir_fname = file_name + "_"
 
-    # if debug_level.find("open") > 0: print("now open page url %s" % file_name)
     if os.path.isfile(file_name) and not force:
+        # if debug_level.find("open") > 0: print("now open page url %s" % file_name)
         with open(file_name) as fp:
             html = fp.read()
+    elif os.path.isfile(dir_fname) and not force:
+        # if debug_level.find("open") > 0: print("now open page url %s" % dir_fname)
+        with open(dir_fname) as fp:
+            html = fp.read()
+            url = url + '/'
     else:
         try:
             # proxies = {
@@ -134,17 +143,22 @@ def get_and_store_page(page_url, university, major='1-1',force=False,
             else:
                 r = requests.get(page_url, verify=False, timeout=30)
             html = r.content
+            url = r.url
         except (ConnectionError, HTTPError):
             html = "Error at " + page_url
         except requests.exceptions.InvalidSchema:
             html = "Error at " + page_url
 
         try:
+
+            if url != page_url:
+                file_name = dir_fname
+
             with open(file_name, 'w') as fp:
                 fp.write(html)
         except TypeError:
             pass
-    return html
+    return html, url
 
 
 def onsocial(href):
@@ -242,7 +256,7 @@ def filter_url(e, index_url, key_words, access_urls):
     if href.find(domain) == -1:
         return False
 
-    e['href'] = href
+    e["href"] = href
     return True
 
 
@@ -307,8 +321,8 @@ class CollegeCrawler:
         urls = []
         final_list = []
         for e in temp_list:
-            if e['href'] not in urls:
-                urls.append(e['href'])
+            if e["href"] not in urls:
+                urls.append(e["href"])
                 final_list.append(e)
 
         for e in final_list:
@@ -347,7 +361,8 @@ class ResearchCrawler:
     def __init__(self, directory_url, example, major='1-1'):
         self.example = example
         self.url = directory_url
-        self.university_name = re.search('(\w+).edu', self.url).group(1)
+        domain = self.url.split("/")[2].split(".")
+        self.university_name = domain[-2] if domain[-2] != 'edu' else domain[-3]
         self.domain = '/'.join(directory_url.split("/")[:3])
         dir_path = os.path.join(os.path.dirname(__file__), 'crawler', self.university_name, major)
         if not os.path.isdir(dir_path):
@@ -356,15 +371,15 @@ class ResearchCrawler:
 
         self.key_words = load_key(self.config)
 
-    def open_page(self, page_url, force=False, major='1-1'):
+    def open_page(self, page_url, force=False, major='1-1', name=''):
         """
 
         """
         # if debug_level.find("open") > 0: print "open url", page_url
-        html = get_and_store_page(page_url, force=force, major=major,
-                                  university=self.university_name)
+        html, url = get_and_store_page(page_url, force=force, major=major,
+                                  university=self.university_name, name=name)
         if html.startswith("Error at "):
-            return "Error to load %s " % html, None
+            return "Error to load %s " % html, None, None
         soup = BeautifulSoup(html, 'html.parser')
         redirect = soup.find(attrs={"http-equiv": "refresh"})
         e = None
@@ -376,14 +391,14 @@ class ResearchCrawler:
             e = None
         if redirect and not contain_keys(redirect['content'].split("=")[1],
                                          ['your', 'browser'], True):
-            redir = redirect['content'].split("=")[1]
+            redir = redirect['content'].split("=")[1].strip()
             origin_url = page_url
             page_url = urlparse.urljoin(page_url, redir)
             name = ''
             if self.university_name+'.edu' not in page_url.split("?")[0]:
                 name = origin_url.split("?")[0][:-1] + '-2'
             # if debug_level.find("open") > 0: print("now refres %s" % page_url)
-            html = get_and_store_page(page_url, force=force, major=major, 
+            html, url = get_and_store_page(page_url, force=force, major=major, 
                                       university=self.university_name,
                                       name=name)
             soup = BeautifulSoup(html, 'html.parser')
@@ -401,7 +416,7 @@ class ResearchCrawler:
                 if self.university_name+'.edu' not in page_url.split("?")[0]:
                     name = origin_url.split("?")[0][:-1] + '-2'
                 # if debug_level.find("open") > 0: print("now frameset %s" % page_url)
-                html = get_and_store_page(page_url, force=force, major=major,
+                html, url = get_and_store_page(page_url, force=force, major=major,
                                           university=self.university_name,
                                           name=name)
                 soup = BeautifulSoup(html, 'html.parser')
@@ -413,15 +428,15 @@ class ResearchCrawler:
             if self.university_name+'.edu' not in page_url.split("?")[0]:
                 name = origin_url.split("?")[0][:-1] + '-2'
             # if debug_level.find("open") > 0: print("i frame %s and %s" % (page_url, name))
-            html = get_and_store_page(page_url, force=force, major=major,
+            html, url = get_and_store_page(page_url, force=force, major=major,
                                       university=self.university_name,
                                       name=name)
             soup = BeautifulSoup(html, 'html.parser')
-        return html, soup
+        return html, soup, url
 
     def crawl_faculty_list(self, directory_url, example, force=False, major='1-1'):
 
-        content, soup = self.open_page(directory_url, force=force, major=major)
+        content, soup, url = self.open_page(directory_url, force=force, major=major)
         if content.startswith("Error at "):
             return 0, "Error to load %s " % content
         anchors = find_all_anchor(soup)
@@ -451,7 +466,7 @@ class ResearchCrawler:
         return save_json_file(self.config, self.key_words)
 
     def filter_list(self, e):
-        href = e.get('href')
+        href = e.get("href")
         if not href or len(href) < 5:
             return True
         href = urlparse.urljoin(self.url, href.strip())
@@ -498,11 +513,11 @@ class ResearchCrawler:
         mail = ''
 
         for a in l:
-            href = a.get('href')
+            href = a.get("href")
             if not href or len(href) < 5:
                 continue
             href = urlparse.urljoin(page_url, urllib2.unquote(href.strip()))
-            # if debug_level.find("website") > 0: print(' href: ' + str(href))
+            # if debug_level.find("website") > 0: print(' %s to href: ' % page_url + str(href))
 
             suffix = href.split('.')[-1]
             if len(suffix) < 5 and contain_keys(suffix, self.key_words[u'文件而不是网页']):
@@ -512,7 +527,7 @@ class ResearchCrawler:
             if faculty_page and mail:
                 break
             
-            if href in page_url or page_url in href or onsocial(href):
+            if href in page_url or onsocial(href):
                 # if debug_level.find("website") > 0: print(' is social network')
                 continue
 
@@ -521,9 +536,10 @@ class ResearchCrawler:
                 continue
 
             # if debug_level.find("website") > 0: print(' href: ' + str(href))
-            if contain_keys(href, potential_name, True) or \
-                    contain_keys(a.get_text(), potential_name + 
-                                 self.key_words[u'教授个人主页可能显示为']):
+            if (contain_keys(href, potential_name, True) and 
+                page_url not in href) or \
+                contain_keys(a.get_text(), potential_name + 
+                             self.key_words[u'教授个人主页可能显示为']):
                 # if debug_level.find("website") > 0: print(' search it ok : ' + href)
                 if href.find('@') > -1 or href.find("mailto") > -1:
                     mail = href
@@ -550,7 +566,7 @@ class ResearchCrawler:
         for e in l:
             if self.filter_list(e):
                 continue
-            href = e.get('href').strip()
+            href = e.get("href").strip()
             faculty_link = urlparse.urljoin(self.url, href)
             # if debug_level.find("list") > 0: print faculty_link
 
@@ -563,13 +579,13 @@ class ResearchCrawler:
                 # if debug_level.find('faculty_list') > 0: print('replicate %s %s' % (name, faculty_link))
                 i = links.index(faculty_link)
                 if name and not faculty_list[i].string:
-                    e['href'] = faculty_link
+                    e["href"] = faculty_link
                     faculty_list[i] = e
                 continue
             if e.string and contain_keys(e.string, self.key_words[u'教员URL不可能包含']):
                 continue
             links.append(faculty_link)
-            e['href'] = faculty_link.strip()
+            e["href"] = faculty_link.strip()
             faculty_list.append(e)
             count += 1
         return count, faculty_list
@@ -663,11 +679,10 @@ class ResearchCrawler:
             pnode_text = replace_html(node.get_text()).strip()
 
         # if debug_level.find("sibling") > 0: print("%s' '%s" % (node.get_text(), slog))
-        # if debug_level.find("sibling") > 0: print("%s' '%s" % (node.get_text(), slog))
 
         text = re.sub("[\n\r]+", " ", unicode(node.get_text(".", strip=True)))
         if words == "interest":
-            text = select_line_part(text, ["research\s*interest"] + 
+            text = select_line_part(text, ["research\s*interests?"] + 
                                     self.key_words[u'一段研究兴趣的起始词'])
         else: 
             text = select_line_part(text, self.key_words[words] + 
@@ -711,11 +726,21 @@ class ResearchCrawler:
         elif len(result) > 1:
             # 多个的情况太复杂，不处理了
             for node in result:
-                # if debug_level.find('comment') > 0: print("type is " + str(type(node.parent)) + ' ' + str(type(node)))
-                # if debug_level.find("debug") > 0: print node.name, node.parent.name
-                if node.parent.name == 'a' or isinstance(node, Comment) \
-                        or isinstance(node.parent, Comment):
+                # if debug_level.find('comment') > 0: print("type is " + str(type(node.parent)) + ' ' + str(type(node)) + ' ' + node.parent.name)
+                if isinstance(node,Comment) or isinstance(node.parent,Comment):
                     continue
+                toggle = node.parent.get("data-toggle", None)
+                if node.parent.name == 'a' and toggle is None:
+                    continue
+
+                if toggle:
+                    href = node.parent.get("href", "#")[1:]
+                    while node.parent:
+                        node = node.parent
+                        if node.find(id=href):
+                            node = node.find(id=href).get_text(".")
+                            break
+
                 if len(node) > 30:
                     node = select_line_part(re.sub("\n", ".", node), 
                                             key_words)
@@ -786,7 +811,7 @@ class ResearchCrawler:
                     research_link = urlparse.urljoin(website, node.parent.get("href"))
                     if research_link == website:
                         continue
-                    re_content, re_soup = self.open_page(research_link)
+                    re_content, re_soup, re_url = self.open_page(research_link)
                     tags, tag_text = self.get_research_interests(re_soup, tags, research_link, tag_text)
 
         if not len(tags):
@@ -847,12 +872,12 @@ class ResearchCrawler:
         term = ""
         position_text = ""
         if faculty_page:
-            page_c, page_soup = self.open_page(faculty_page, True)
+            page_c, page_soup, temp_url = self.open_page(faculty_page, True)
             if not page_c.startswith('Error to'):
                 position, term, position_text = self.get_open_position(page_soup)
 
         if not position:
-            content, soup = self.open_page(faculty_link, True)
+            content, soup, temp_url = self.open_page(faculty_link, True)
             if content.startswith('Error to load'):
                 # print "Error!!!!!! at the link", faculty_link
                 return None, term, "Error %s " % content
@@ -872,7 +897,7 @@ class ResearchCrawler:
             return person
 
         # 打开教员索引主页
-        content, soup = self.open_page(faculty_link)
+        content, soup, url = self.open_page(faculty_link)
         if content.startswith('Error to load'):
             # print "Error!!!!!! at the link", faculty_link
             return person
@@ -890,16 +915,21 @@ class ResearchCrawler:
 
         anchors = find_all_anchor(soup)
         faculty_page, mail, page_name = self.get_personal_website(anchors,
-                                                                  faculty_link, person['name'])
+                                                                  url, person['name'])
         if flag:
             person['source_website'] = {u'个人主页名字': page_name,
                                         u'个人主页链接URL': faculty_page}
 
         if faculty_page:
+            faculty_page = urlparse.urljoin(url, faculty_page)
             # if debug_level.find("website") > 0: print 'website page url: ',faculty_page
-            faculty_page = urlparse.urljoin(faculty_link, faculty_page)
-            # if debug_level.find("website") > 0: print 'website page url: ',faculty_page
-            page_c, page_soup = self.open_page(faculty_page)
+            if faculty_link in faculty_page:
+                temp = faculty_link + faculty_page.split("/")[-1]
+                page_c, page_soup, temp_url = self.open_page(faculty_page, 
+                                                             name=temp)
+            else:
+                page_c, page_soup, temp_url = self.open_page(faculty_page)
+
             if page_c.startswith('Error to load'):
                 faculty_page += u"#哟！打不开"
                 # print "Error!!!!!! at the page", faculty_page

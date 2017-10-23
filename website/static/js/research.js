@@ -107,6 +107,7 @@ function getProfessorsList(col) {
         return;
     }
     var params = getSharpParam() || {};
+    console.log(params);
     if (college.length > 4) {
         params["学校"] = college;
     }
@@ -121,15 +122,6 @@ function getProfessorsList(col) {
     }
     var temp = "{0}#{1}".format(document.URL.split("#")[0], jsonToSharpParam(params));
     window.location.href = temp;
-    if (college)
-        param = "学校={0}".format(college);
-    param = "专业={0}".format(major);
-    if (interest)
-        param = "研究方向={0}".format(interest);
-    if (position)
-        param = "招生={0}".format(position);
-
-    window.location.href = "{0}#{1}".format(document.URL.split("#")[0], param);
 
     if (!college) {
         college = 0;

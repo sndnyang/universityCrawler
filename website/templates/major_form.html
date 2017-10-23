@@ -2,6 +2,7 @@
 {% block body %}
 {% from "major_detail.html" import render_major %}
 <script src="//cdn.bootcss.com/jquery.form/4.2.1/jquery.form.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery-validate/1.17.0/jquery.validate.min.js"></script>
 <script src="{{url_for('uni_major_page.static', filename='js/college.js')}}?v={{ version }}"></script>
 <div class="container-fluid">
     <div class="row-fluid">
@@ -182,6 +183,19 @@ $(document).ready(function(){
         });   
     }
     
+    $("#majors").validate({  
+        /* 重写错误显示消息方法,以alert方式弹出错误消息 */  
+        showErrors: function(errorMap, errorList) {  
+            var msg = "";  
+            $.each(errorList, function(i, v) {
+                msg += (v.message+"\r\n");  
+            });  
+            if (msg != "")
+                alert(msg);  
+        },
+        /* 失去焦点时不验证 */
+        onfocusout: false
+    });
     $("#majors").submit(function() {
         return submitRedirect(this, "major", "{{url_for('uni_major_page.major_page')}}");
     });
